@@ -1,4 +1,4 @@
-# Proposal: Energy Consumption Forecasting
+# Proposal: Energy Consumption Forecasting Based on Weather
 
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
