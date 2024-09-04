@@ -42,7 +42,7 @@
 	- Identifying and removing inconsistent or missing data from energy and weather datasets.
 	- Handle outliers or anomalies in the data.
 
-- Feature Engineering and Dimensionality Reduction:
+- Feature Engineering:
 	- Create new features that better represent the relationship between energy consumption and weather. 
 	- Identify the most impactful features in the data.
 
