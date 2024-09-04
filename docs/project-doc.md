@@ -3,9 +3,9 @@
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
 
-- This project will develop a predictive model for energy (electricity) consumption in California (northern CA/Bay Area/location in NA still undecided) by analyzin historical energy usage and weather data.
+- This project will develop a predictive model for energy (electricity) consumption in California (northern CA/Bay Area/location in NA still undecided) by analyzing historical energy usage and weather data.
 
-- The goal is to forecast energy demands which will be used to prepare for periods of high and low energy usage as well as optimize energy distribution to reduce costs and system strain. Forecasting energy consumption impacts energy management agencies, environmental sustainability, and financial costs for both consumers and energy providers. Historical data will be sourced from government agencies such as the Department of Energy (DOE) and the National Oceanic and Atmospheric Administration (NOAA), ensuring reliable data. Other potential sources of data are the UCI Machine Learning Repository and Kaggle. Additionally, data.gov provides API for real-time data collection.
+- The goal is to forecast energy demands which will be used to prepare for periods of high and low energy usage by optimizing energy distribution. This will reduce costs and system strain. Forecasting energy consumption impacts energy management agencies, environmental sustainability, and financial costs for both consumers and energy providers. Historical data will be sourced from government agencies such as the Department of Energy (DOE) and the National Oceanic and Atmospheric Administration (NOAA), ensuring reliable data. Other potential sources of data are the UCI Machine Learning Repository and Kaggle. Additionally, data.gov provides API for real-time data collection.
 
 
 ## Data Sources
