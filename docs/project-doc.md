@@ -1,19 +1,53 @@
-# Proposal: Project Title
+# Proposal: Energy Consumption Forecasting
 
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
+
+- This project will develop a predictive model for energy (electricity) consumption in California (northern CA/Bay Area/location in NA still undecided) by analyzin historical energy usage and weather data.
+
+- The goal is to forecast energy demands which will be used to prepare for periods of high and low energy usage as well as optimize energy distribution to reduce costs and system strain. Forecasting energy consumption impacts energy management agencies, environmental sustainability, and financial costs for both consumers and energy providers. Historical data will be sourced from government agencies such as the Department of Energy (DOE) and the National Oceanic and Atmospheric Administration (NOAA), ensuring reliable data. Other potential sources of data are the UCI Machine Learning Repository and Kaggle. Additionally, data.gov provides API for real-time data collection.
+
 
 ## Data Sources
 <!--- List data sources, including the existing datasets and anything you are going to collect by yourself. It is expected to combine two or more data sources in your project. -->
 <!--- Each dataset should be briefly explained: what kinds of data are available, who collected the dataset, how the data was collected. -->
 
+- Energy Consumption Data:
+	- This dataset will include historical energy consumption records for the [X] region, typically collected by local and national energy agencies. Data may include daily, monthly, and annual energy usage.
+
+	- The Total Energy Data and Statistics dataset, provided by the DOE, offers monthly and annual records of US regional energy consumption, production, imports, exports, and prices dating back to 1973. It includes residential, industrial, and commercial end-use sectors.
+
+- Weather Data:
+	- Historical weather data will be obtained from the NOAA database, a federal meteorological agency that gathers information relating to the weather, climate, and environment.
+
+	- A potential dataset is the Daily Weather Records, a collection of weather-related records of temperature, humidity, wind speed, and precipitation. The data was gathered from various weather stations across the US. The dataset has been collected for more than 30 years and records are current to the present day.
+	- The San Francisco Weather Data dataset is from Kaggle and was provides weather-related data from 1973 to 2023. It contains daily weather observations in San Francisco, CA. The data was gathered from Meteostat. The dataset includes various temperature, wind, and precipitation records.
+
+
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
+
+- This project is expected to identify patterns and correlations between weather conditions and energy consumption in Northern CA (or somewhere else). The main findings are likely to include:
+	- Weather events and factors that most significantly impact energy consumption and demand.
+	- Seasonal trends in energy usage.
+	- Forecasts of energy consumption that can be used to optimize energy distribution and reduce costs.
 
 ## Preprocessing Steps
 <!--- List major preprocessing steps needed for the datasets and explain why. -->
 
+- Data Aggregation:
+	- Combine/align the energy consumption data with its corresponding weather data. This would require matching time periods due to differences in data collection intervals.
 
+- Data Cleaning:
+	- Identifying and removing inconsistent or missing data from energy and weather datasets.
+	- Handle outliers or anomalies in the data.
+
+- Feature Engineering and Dimensionality Reduction:
+	- Create new features that better represent the relationship between energy consumption and weather. 
+	- Identify the most impactful features in the data.
+
+- Data Normalization:
+	- Normalize the data considering the differences in scales between energy consumption and weather variables (not yet sure of actual scales, yet).
 
 
 <!--- 
