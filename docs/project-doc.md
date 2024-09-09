@@ -1,53 +1,69 @@
-# Proposal: Energy Consumption Forecasting Based on Weather
+# Proposal: Effects of Weather on Energy Consumption in the Bay Area
 
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
 
-- This project will develop a predictive model for energy (electricity) consumption in California (northern CA/Bay Area/location in NA still undecided) by analyzing historical energy usage and weather data.
+- This project will develop a predictive model for energy (electricity) consumption in the California Bay Area by analyzing historical weather trends and energy usage.
+- The goal is to forecast energy demand (periods of high or low usage) which will be used to optimize energy distribution. Forecasting energy consumption impactboth energy provider and consumer costs, aid management agencies, and promote environmental sustainability. Data will be collected from governmental agencies such as the U.S. Energy Information Administation (EIA) and the National Oceanic and Atmospheric Administration (NOAA). Other sources of data include data.gov (real-time data) and PG&E electricity usage records. Data collected from these sources ensure accuracte and reliable data.
 
-- The goal is to forecast energy demands which will be used to prepare for periods of high and low energy usage by optimizing energy distribution. This will reduce costs and system strain. Forecasting energy consumption impacts energy management agencies, environmental sustainability, and financial costs for both consumers and energy providers. Historical data will be sourced from government agencies such as the Department of Energy (DOE) and the National Oceanic and Atmospheric Administration (NOAA), ensuring reliable data. Other potential sources of data are the UCI Machine Learning Repository and Kaggle. Additionally, data.gov provides API for real-time data collection.
 
 
 ## Data Sources
 <!--- List data sources, including the existing datasets and anything you are going to collect by yourself. It is expected to combine two or more data sources in your project. -->
 <!--- Each dataset should be briefly explained: what kinds of data are available, who collected the dataset, how the data was collected. -->
 
-- Energy Consumption Data:
-	- This dataset will include historical energy consumption records for the [X] region, typically collected by local and national energy agencies. Data may include daily, monthly, and annual energy usage.
-
-	- The Total Energy Data and Statistics dataset, provided by the DOE, offers monthly and annual records of US regional energy consumption, production, imports, exports, and prices dating back to 1973. It includes residential, industrial, and commercial end-use sectors.
+- Energy Data:
+	- This dataset was collected by PG&E, a company that provides electricity and natural gas to consumers in northern and central California. The data is publically accessible through PG&E's public data sets. Energy usage data is reported by ZIP code, per month, in kilowatt-hours (kWh). It contains usage by customer type (residential, commercial, agricultural, and industrial) and report total customers, total kWh, and average kWh. 
+	- Another dataset is provided by the EIA, a federal agency that collects and shares data on energy supply and consumption in the United States. This dataset lists daily PG&E electricity consumption per day. It is recorded in megawatt-hours (mWh). 
 
 - Weather Data:
-	- Historical weather data will be obtained from the NOAA database, a federal meteorological agency that gathers information relating to the weather, climate, and environment.
+	- Historical weather records will be sourced from the NOAA. The NOAA is a federal agency that records national weather, climate, environment, and ocean information. The NOAA gathers data from the Global Historical Climatology Network. It includes various station networks across the country. For this project specifically, the weather data will be sourced from various Bay Area weather stations. The datasets include daily measurements such as maximum and minimum temperature, precipitation, and wind speed. 
 
-	- A potential dataset is the Daily Weather Records, a collection of weather-related records of temperature, humidity, wind speed, and precipitation. The data was gathered from various weather stations across the US. The dataset has been collected for more than 30 years and records are current to the present day.
-	- The San Francisco Weather Data dataset is from Kaggle and was provides weather-related data from 1973 to 2023. It contains daily weather observations in San Francisco, CA. The data was gathered from Meteostat. The dataset includes various temperature, wind, and precipitation records.
 
 
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
 
-- This project is expected to identify patterns and correlations between weather conditions and energy consumption in Northern CA (or somewhere else). The main findings are likely to include:
-	- Weather events and factors that most significantly impact energy consumption and demand.
-	- Seasonal trends in energy usage.
-	- Forecasts of energy consumption that can be used to optimize energy distribution and reduce costs.
+- This project aims to uncover significant relationships between weather conditions and energy consumption patterns in California's Bay Area. The key findings are expected to include:
+	- Identification of Critical Weather Factors:
+		- An analysis of which weather variables (e.g., temperature, humidity, extreme events) have the greatest impact on energy consumption.
+
+	- Seasonal Energy Consumption Trends:
+		- Insights into how energy usage fluctuates throughout the year.
+
+	- Predictive Model for Energy Consumption Forecasting:
+		- Development of models to forecast energy consumption based on projected weather patterns.
+
+	- Broader Implications:
+		- The findings may provide valuable information for energy providers to improve energy efficiency.
+
+
 
 ## Preprocessing Steps
 <!--- List major preprocessing steps needed for the datasets and explain why. -->
 
 - Data Aggregation:
-	- Combine/align the energy consumption data with its corresponding weather data. This would require matching time periods due to differences in data collection intervals.
+	- Combine the energy consumption data with corresponding weather data by aligning their time intervals.
+		- Energy data is available monthly, while weather data is available daily. To integrate these, daily weather data will be aggregated into monthly averages (e.g., max temperature per month).
+		- Since energy data is provided by ZIP code, each weather station will need to be mapped to the appropriate ZIP code or nearby areas to ensure proper alignment between datasets.
 
 - Data Cleaning:
-	- Identifying and removing inconsistent or missing data from energy and weather datasets.
-	- Handle outliers or anomalies in the data.
+	- Address any inconsistencies, missing values, or anomalies in both datasets
+		- In the energy data, some ZIP codes may have missing monthly records. Missing values may be interpolated, especially if the gaps are small, to maintain data consistency.
+		- Outliers and anomalies in both energy and weather data will be reviewed. In some cases, extreme weather events or usage spikes may be relevant and kept for analysis, while others may need to be flagged.
 
-- Feature Engineering:
-	- Create new features that better represent the relationship between energy consumption and weather. 
-	- Identify the most impactful features in the data.
+- Feature Scaling:
+	- Normalize the features to ensure they are on comparable scales.
+		- Different variables like temperature, humidity, and energy consumption may have varying units and magnitudes. Standardization or min/max scaling will be applied, depending on data distributions, to ensure features contribute equally to analysis and modeling.
 
-- Data Normalization:
-	- Normalize the data considering the differences in scales between energy consumption and weather variables (not yet sure of actual scales, yet).
+- Feature Selection:
+	- Identify the most relevant features for analyzing the impact of weather on energy consumption.
+		- Some features in the weather data (e.g., wind speed, humidity) may have minimal influence, while others like temperature might be more significant. Feature selection techniques will help improve the analysis by focusing on the most impactful variables.
+
+- Data Pipelining:
+	- Implement a data processing pipeline to streamline tasks such as feature scaling, selection, and model training.
+		- Using a pipeline will allow efficient experimentation with parameters, such as through grid search, while automating the transformation of raw data into a suitable format for analysis and modeling.
+
 
 
 <!--- 
