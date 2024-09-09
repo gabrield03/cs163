@@ -46,7 +46,7 @@
 - Data Aggregation:
 	- Combine the energy consumption data with corresponding weather data by aligning their time intervals.
 		- Energy data is available monthly, while weather data is available daily. To integrate these, daily weather data will be aggregated into monthly averages (e.g., max temperature per month).
-		- Since energy data is provided by ZIP code, each weather station will need to be mapped to the appropriate ZIP code or nearby areas to ensure proper alignment between datasets.
+		- Since energy data is provided by ZIP code, each weather station will need to be mapped to the ZIP codes they service to properly align the datasets.
 
 - Data Cleaning:
 	- Address any inconsistencies, missing values, or anomalies in both datasets
