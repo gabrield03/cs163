@@ -3,9 +3,8 @@
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
 
-- This project will develop a predictive model for energy (electricity) consumption in the California Bay Area by analyzing historical weather trends and energy usage.
-- The goal is to forecast energy demand (periods of high or low usage) which will be used to optimize energy distribution. Forecasting energy consumption impactboth energy provider and consumer costs, aid management agencies, and promote environmental sustainability. Data will be collected from governmental agencies such as the U.S. Energy Information Administation (EIA) and the National Oceanic and Atmospheric Administration (NOAA). Other sources of data include data.gov (real-time data) and PG&E electricity usage records. Data collected from these sources ensure accuracte and reliable data.
-
+- This project aims to predict electricity consumption in the California Bay Area by analyzing historical weather data and energy usage patterns. The primary goal is to forecast periods of high or low energy demand, which can assist in optimizing energy distribution. Identifying key weather factors that influence electricity usage can help energy providers reduce operational costs, enhance efficiency, and support environmental sustainability.
+- Data will be sourced from the U.S. Energy Information Administration (EIA), PG&E, and the National Oceanic and Atmospheric Administration (NOAA). Data collected from these agencies will ensure accurate and reliable datasets.
 
 
 ## Data Sources
@@ -13,12 +12,15 @@
 <!--- Each dataset should be briefly explained: what kinds of data are available, who collected the dataset, how the data was collected. -->
 
 - Energy Data:
-	- This dataset was collected by PG&E, a company that provides electricity and natural gas to consumers in northern and central California. The data is publically accessible through PG&E's public data sets. Energy usage data is reported by ZIP code, per month, in kilowatt-hours (kWh). It contains usage by customer type (residential, commercial, agricultural, and industrial) and report total customers, total kWh, and average kWh. 
-	- Another dataset is provided by the EIA, a federal agency that collects and shares data on energy supply and consumption in the United States. This dataset lists daily PG&E electricity consumption per day. It is recorded in megawatt-hours (mWh). 
+	- PG&E Electricity Usage:
+		- This dataset, publicly available from PG&E, includes monthly electricity consumption by ZIP code for northern and central California. It provides details on customer types (residential, commercial, etc.), total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code. This dataset is useful for analyzing trends in energy usage over time at a local level.
+
+	- EIA Daily Energy Data:
+		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a more granular view of energy consumption patterns over time, particularly useful for capturing short-term fluctuations.
 
 - Weather Data:
-	- Historical weather records will be sourced from the NOAA. The NOAA is a federal agency that records national weather, climate, environment, and ocean information. The NOAA gathers data from the Global Historical Climatology Network. It includes various station networks across the country. For this project specifically, the weather data will be sourced from various Bay Area weather stations. The datasets include daily measurements such as maximum and minimum temperature, precipitation, and wind speed. 
-
+	- NOAA Climate Data:
+		- The weather data will be sourced from the National Oceanic and Atmospheric Administration (NOAA), specifically from the Global Historical Climatology Network. This dataset includes daily weather metrics like maximum/minimum temperatures, precipitation, and wind speed. Multiple Bay Area weather stations will be used to align weather patterns with energy consumption.
 
 
 ## Expected Major Findings
@@ -36,7 +38,6 @@
 
 	- Broader Implications:
 		- The findings may provide valuable information for energy providers to improve energy efficiency.
-
 
 
 ## Preprocessing Steps
