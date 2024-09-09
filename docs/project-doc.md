@@ -16,7 +16,7 @@
 		- This publicly accessible dataset from PG&E, includes monthly electricity consumption by ZIP code for northern and central California. It provides details on customer types (residential, commercial, etc.), total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code. This dataset is useful for analyzing trends in energy usage over time at a local level.
 
 	- EIA Daily Energy Data:
-		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a more granular view of energy consumption patterns over time, particularly useful for capturing short-term fluctuations.
+		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a more granular view of energy consumption patterns over time.
 
 - Weather Data:
 	- NOAA Climate Data:
@@ -26,7 +26,7 @@
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
 
-- This project aims to uncover significant relationships between weather conditions and energy consumption patterns in California's Bay Area. The key findings are expected to include:
+- This project aims to identify relationships between weather conditions and energy consumption patterns in California's Bay Area. The key findings are expected to include:
 	- Identification of Critical Weather Factors:
 		- An analysis of which weather variables (e.g., temperature, humidity, extreme events) have the greatest impact on energy consumption.
 
