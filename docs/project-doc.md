@@ -49,7 +49,7 @@
 		- Since energy data is provided by ZIP code, each weather station will need to be mapped to the ZIP codes they service to properly align the datasets.
 
 - Data Cleaning:
-	- Address any inconsistencies, missing values, or anomalies in both datasets
+	- Address any inconsistencies, missing values, or anomalies in both datasets.
 		- In the energy data, some ZIP codes may have missing monthly records. Missing values may be interpolated, especially if the gaps are small, to maintain data consistency.
 		- Outliers and anomalies in both energy and weather data will be reviewed. In some cases, extreme weather events or usage spikes may be relevant and kept for analysis, while others may need to be flagged.
 
@@ -63,7 +63,7 @@
 
 - Data Pipelining:
 	- Implement a data processing pipeline to streamline tasks such as feature scaling, selection, and model training.
-		- Using a pipeline will allow efficient experimentation with parameters, such as through grid search, while automating the transformation of raw data into a suitable format for analysis and modeling.
+		- Using a pipeline will allow efficient use of grid search to identify the best parameters while automating the transformation of raw data into a suitable format for analysis and modeling.
 
 
 
