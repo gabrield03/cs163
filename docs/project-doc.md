@@ -89,6 +89,8 @@ The following sections should be used for the full proposal document. These are 
 			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots.
 			- The visualizations will help us understand how energy usage varies across the regions.
 			- It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
+
+			![alt text](image.png)
 			
 			- [SJ - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_95110.png)
 			- [SF - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_94102.png)
