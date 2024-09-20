@@ -89,15 +89,15 @@ The following sections should be used for the full proposal document. These are 
 			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots.
 			- These provide insights into how energy usage varies across the regions. Understanding the central tendency, spread, and skewness of energy usage helps identify patterns or anomalies in the data.
 			
-			- [SJ - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_95110)
-			- [SF - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_94102)
+			- [SJ - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_95110.png)
+			- [SF - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_94102.png)
 
 		- Heatmap of Energy Usage:
 			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis.
 			- This will show patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
-			- [SJ - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_95110)
-			- [SF - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_94102)
+			- [SJ - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_95110.png)
+			- [SF - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_94102.png)
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
