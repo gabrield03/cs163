@@ -78,7 +78,7 @@ The following sections should be used for the full proposal document. These are 
 
 ## Basic Data Properties and Analysis Techniques
 <!--- Based on the lectures on "Exploratory Data Analysis" and "Data and Sampling", list and explain what types of basic statistical analysis you plan to provide to give the meta information and overall picture of the datasets. -->
-
+[Test lightbuild pic](/assets/images/pngegg.png)
 
 
 ## Automation, Scalability, and Portability
