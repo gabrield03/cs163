@@ -78,7 +78,58 @@ The following sections should be used for the full proposal document. These are 
 
 ## Basic Data Properties and Analysis Techniques
 <!--- Based on the lectures on "Exploratory Data Analysis" and "Data and Sampling", list and explain what types of basic statistical analysis you plan to provide to give the meta information and overall picture of the datasets. -->
-[Test lightbuild pic](/docs/assets/images/pngegg.png)
+FORMAT: [Test lightbuild pic](/docs/assets/images/pngegg.png)
+
+- Exploratory Data Analysis (EDA):
+	- The EDA techniques I will use to provide the meta information and overall picture of the datasets will show the data's general distributions and variability.
+		- Specifically, the distribution of monthly energy usage for specific regions, energy usage trends over time, and the variability in energy usage per month. The same will be conducted with weather data.
+		- Additionally, the impact of temperature on energy usage and correlations between energy usage and temperature will be explored.
+
+	- Energy
+		- Distribution of Energy Usage:
+			- 
+
+		- Heatmap of Energy Usage:
+			- 
+
+	- Weather
+		- Distribution of Average Maximum and Minimum Temperatures:
+			- 
+
+		- Heatmap of Average Maximum and Minimum Temperatures:
+			- 
+
+	- Combined:
+		- Average Monthly Energy Usage and Temperature Comparison:
+			- 
+
+- Statistical Testing:
+	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the observed differences in energy usage across months and between regions (SJ and SF) are statistically significant.
+		- One-way ANOVA will be used to compute the variance in energy usage by month and whether those differences are statistically significant.
+		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region) and assess whether the results are statistically significant.
+
+	- ANOVA Assumptions:
+		- 1. Normality:
+			- [Scipy - normaltest](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html)  
+			- The data within each group should be normally distributed.
+			- I will use the normaltest to assess whether the distribution of energy usage follows a normal distribution for each group (month).
+
+		- 2. Homogeneity of Variance: 
+			- [Scipy - Levene Test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.levene.html)  
+			- The variance of the data within each group should be equal.
+			- I will use Levene's test to determine whether the variance in energy usage is similar across each group.
+
+		- 3. Independence:
+			- Observations within each group should be independent.
+			- Assuming that energy usage in different months is independent of each other.
+
+	- One-way ANOVA:
+		- [Scipy - one-way ANOVA](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html)
+		- 
+
+	- Multi-way ANOVA:
+		- 
+
 
 
 ## Automation, Scalability, and Portability
