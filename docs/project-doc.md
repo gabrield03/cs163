@@ -78,7 +78,6 @@ The following sections should be used for the full proposal document. These are 
 
 ## Basic Data Properties and Analysis Techniques
 <!--- Based on the lectures on "Exploratory Data Analysis" and "Data and Sampling", list and explain what types of basic statistical analysis you plan to provide to give the meta information and overall picture of the datasets. -->
-FORMAT: [Test lightbuild pic](/docs/assets/images/pngegg.png)
 
 - Exploratory Data Analysis (EDA):
 	- The EDA techniques I will use to provide the meta information and overall picture of the datasets will show the data's general distributions and variability.
@@ -87,10 +86,18 @@ FORMAT: [Test lightbuild pic](/docs/assets/images/pngegg.png)
 
 	- Energy
 		- Distribution of Energy Usage:
-			- 
+			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots.
+			- These provide insights into how energy usage varies across the regions. Understanding the central tendency, spread, and skewness of energy usage helps identify patterns or anomalies in the data.
+			
+			- [SJ - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_95110)
+			- [SF - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_94102)
 
 		- Heatmap of Energy Usage:
-			- 
+			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis.
+			- This will show patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
+			
+			- [SJ - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_95110)
+			- [SF - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_94102)
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
@@ -109,17 +116,17 @@ FORMAT: [Test lightbuild pic](/docs/assets/images/pngegg.png)
 		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region) and assess whether the results are statistically significant.
 
 	- ANOVA Assumptions:
-		- 1. Normality:
+		- Normality:
 			- [Scipy - normaltest](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html)  
 			- The data within each group should be normally distributed.
 			- I will use the normaltest to assess whether the distribution of energy usage follows a normal distribution for each group (month).
 
-		- 2. Homogeneity of Variance: 
+		- Homogeneity of Variance: 
 			- [Scipy - Levene Test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.levene.html)  
 			- The variance of the data within each group should be equal.
 			- I will use Levene's test to determine whether the variance in energy usage is similar across each group.
 
-		- 3. Independence:
+		- Independence:
 			- Observations within each group should be independent.
 			- Assuming that energy usage in different months is independent of each other.
 
