@@ -96,9 +96,9 @@ The following sections should be used for the full proposal document. These are 
 		- Heatmap of Energy Usage:
 			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis. This will show patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
-			![alt text](/docs/assets/plots/Heatmap_Avg_Energy_Usage_95110.png)
-
-			![alt text](/docs/assets/plots/Heatmap_Avg_Energy_Usage_94102.png)
+			| Average Energy Usage Heatmap (SJ - 95110)                              | Average Energy Usage Heatmap (SF - 94102)                              |
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+			| ![Energy Heatmap](/docs/assets/plots/Heatmap_Avg_Energy_Usage_95110.png) | ![Energy Heatmap](/docs/assets/plots/Heatmap_Avg_Energy_Usage_94102.png) |
 
 
 	- Weather
@@ -118,9 +118,9 @@ The following sections should be used for the full proposal document. These are 
 			| Average Max Temperature Heatmap (SJ - 95110)                           | Average Min Temperature Heatmap (SJ - 95110)                           |
 			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 			| ![Max Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Max_Temp_95110.png) | ![Min Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Min_Temp_95110.png) |
-			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-			| Average Max Temperature Heatmap (SJ - 94102)                           | Average Min Temperature Heatmap (SJ - 94102)                           |
+
+
+			| Average Max Temperature Heatmap (SF - 94102)                           | Average Min Temperature Heatmap (SF - 94102)                           |
 			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 			| ![Max Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Max_Temp_94102.png) | ![Min Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Min_Temp_94102.png) |
 
