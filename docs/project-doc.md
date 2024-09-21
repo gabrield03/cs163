@@ -102,33 +102,33 @@ The following sections should be used for the full proposal document. These are 
 			- Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
 			- SJ
-			![alt text](image-6.png)
+			![alt text](image-2.png)
 
 			- SF
-			![alt text](image-7.png)
+			![alt text](image-3.png)
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
 			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
 
 			- SJ:
-			![alt text](image-2.png)
-			![alt text](image-3.png)
-
-			- SF:
 			![alt text](image-4.png)
 			![alt text](image-5.png)
+
+			- SF:
+			![alt text](image-6.png)
+			![alt text](image-7.png)
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
 			- Again, like the energy visualizations, I will show the temperature trends over time in each region (SJ and SF).
 
 			- SJ:
-			![alt text](image-10.png)
-			![alt text](image-11.png)
-
-			- SF:
 			![alt text](image-8.png)
 			![alt text](image-9.png)
+
+			- SF:
+			![alt text](image-10.png)
+			![alt text](image-11.png)
 
 	- Combined:
 		- Average Monthly Energy Usage and Temperature Comparison:
