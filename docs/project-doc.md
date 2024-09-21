@@ -202,6 +202,7 @@ The following sections should be used for the full proposal document. These are 
 			- This result suggests that there might be a relationship between energy consumption and time of year. It can help direct us in understanding how energy usage is affected by external factors. Next to look at is how region and weather affect energy consumption.
 
 	- Multi-way ANOVA:
+		- [GeeksforGeeks two-way ANOVA](https://www.geeksforgeeks.org/how-to-perform-a-two-way-anova-in-python/)
 		- Merged the two SJ and SF datasets
 		- Null Hypothesis: The average energy usage across the months, region, and max temperature is the same.
 		- Alternative Hypothesis: At least one of the month's mean is different.
