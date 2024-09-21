@@ -3,8 +3,9 @@
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
 
-- This project aims to predict electricity consumption in the California Bay Area by analyzing historical weather data and energy usage patterns. The primary goal is to forecast periods of high or low energy demand, which can assist in optimizing energy distribution. Identifying key weather factors that influence electricity usage can help energy providers reduce operational costs, enhance efficiency, and support environmental sustainability.
-- Data will be sourced from the U.S. Energy Information Administration (EIA), PG&E, and the National Oceanic and Atmospheric Administration (NOAA). Data collected from these agencies will ensure accurate and reliable datasets.
+- This project investigates the relationship between electricity consumption and weather patterns in the California Bay Area. By examining historical weather data and energy usage trends, the primary goal is to uncover key weather factors that influence electricity demand. The broader goal is to explore how shifts in climate (e.g., increased frequency of extreme temperatures) affect energy usage. Identifying these factors not only helps energy providers reduce operational costs by enhancing energy distribution efficiency but also the general public concerned with climate adaptation and mitigation strategies. This analysis could be expanded to other regions by providing a template for understanding climate-driven energy trends on a larger scale.
+
+- Data will be sourced from the U.S. Energy Information Administration (EIA), PG&E, and the National Oceanic and Atmospheric Administration (NOAA). These are reliable data sources that ensure the any findings can be trusted by both the public and energy providers.
 
 
 ## Data Sources
@@ -13,31 +14,28 @@
 
 - Energy Data:
 	- PG&E Electricity Usage:
-		- This publicly accessible dataset from PG&E, includes monthly electricity consumption by ZIP code for northern and central California. It provides details on customer types (residential, commercial, etc.), total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code. This dataset is useful for analyzing trends in energy usage over time at a local level.
+		- Publicly accessible datasets from PG&E that includes monthly electricity consumption by ZIP code for northern and central California. It contains details on customer types (residential, commercial, etc.), total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code.
 
 	- EIA Daily Energy Data:
-		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a more granular view of energy consumption patterns over time.
+		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a granular view of energy consumption patterns over time.
 
 - Weather Data:
 	- NOAA Climate Data:
-		- The weather data will be sourced from the National Oceanic and Atmospheric Administration (NOAA), specifically from the Global Historical Climatology Network. This dataset includes daily weather metrics like maximum/minimum temperatures, precipitation, and wind speed. Multiple Bay Area weather stations will be used to align weather patterns with energy consumption.
+		- Daily weather data from the National Oceanic and Atmospheric Administration (NOAA), including maximum/minimum temperatures, precipitation, and wind speed measurements from various Bay Area (San Jose and San Francisco) weather stations.
 
 
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
 
-- This project aims to identify relationships between weather conditions and energy consumption patterns in the California Bay Area. The key findings are expected to include:
-	- Identification of Critical Weather Factors:
-		- An analysis of the weather variables (e.g., temperature, humidity, extreme events) that have the greatest impact on energy consumption.
+	- Climate Impact on Energy Demand:
+		- Identification of weather variables (e.g., temperatures and extreme weather events) that significantly affect energy consumption. This analysis could reveal regions that are more susceptible or vulnerable to the effects of climate change. I expect to learn about the disproportionate affect that various weather conditions have on different regions.
+	
+	- Predictive Models for Energy Consumption Forecasting:
+		- I expect to develop predictive models for energy consumption that use weather data to forecast periods of high and low-energy demand caused by weather patterns or seasonal changes.
 
-	- Seasonal Energy Consumption Trends:
-		- Insights into how energy usage fluctuates throughout the year.
-
-	- Predictive Model for Energy Consumption Forecasting:
-		- Development of models to forecast energy consumption based on projected weather patterns.
-
-	- Broader Implications:
-		- The findings may provide valuable information for energy providers to improve energy efficiency.
+	- Generalizable Climate Models:
+		- Ideally, this analysis will have a broader impact beyond just predicting energy consumption in the Bay Area. It can serve as a model for analyzing the energy-climate relationship in regions with different climate conditions.
+		- For instance, regions less affected by temperature fluctuations may have more stable energy demands despite having broader climate variability. By providing a generalized model, this analysis could guide climate adaptation strategies for different regions.
 
 
 ## Preprocessing Steps
@@ -66,14 +64,11 @@
 		- Using a pipeline will allow efficient use of grid search to identify the best parameters while automating the transformation of raw data into a suitable format for analysis and modeling.
 
 
-
 <!--- 
 ----------
 The following sections should be used for the full proposal document. These are not required for the proposal draft discussion.
 ----------
 -->
-
-
 
 
 ## Basic Data Properties and Analysis Techniques
@@ -86,7 +81,7 @@ The following sections should be used for the full proposal document. These are 
 
 	- Energy
 		- Distribution of Energy Usage:
-			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots. The visualizations will help us understand how energy usage varies across the regions. It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
+			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots. The visualizations will help us understand how energy usage varies across the regions. It will depict the central tendency, spread, and skew of energy usage - we can use these to identify patterns or trends in the data.
 
 			![alt text](/docs/assets/plots/Hist_Avg_Energy_Usage_95110.png)
 
