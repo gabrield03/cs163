@@ -146,7 +146,7 @@ The following sections should be used for the full proposal document. These are 
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
-			- SJ normaltest statistic = 5.004			SF normaltest statistic = 18.089
+			- SJ normaltest statistic = 5.004		&nbsp; &nbsp; 	SF normaltest statistic = 18.089
 
 			![alt text](/docs/assets/statistical-testing/normality_test_95110.png)
 
@@ -164,7 +164,7 @@ The following sections should be used for the full proposal document. These are 
 			that all input samples (average kWh) are from populations (months) with equal variances.
 			- The p-value represents the proportion of values in the null distribution greater than or equal to the observed value of the statistic.
 
-			- SJ levene statistic = 1.019				SF levene statistic = 1.324
+			- SJ levene statistic = 1.019		&nbsp; &nbsp; 	SF levene statistic = 1.324
 
 			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_95110.png)
 
@@ -173,7 +173,7 @@ The following sections should be used for the full proposal document. These are 
 			- Interpretation:
 				- SJ and SF p-values > 0.05, we fail to reject the null hypothesis.
 				
-				- Actual SF p-value = 0.434				Actual SF p-value = 0.219
+				- Actual SF p-value = 0.434		&nbsp; &nbsp; 	Actual SF p-value = 0.219
 
 		- Independence: Observations within each group should be independent.
 			- Assuming that energy usage in different months is independent of each other.
