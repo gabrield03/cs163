@@ -146,7 +146,7 @@ The following sections should be used for the full proposal document. These are 
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
-			| --- | normal statistic |
+			| | normal statistic |
 			| --- | --- |
 			| SJ (95110) | 5.004 |
 			| SF (94102) | 18.809 |
@@ -219,13 +219,25 @@ The following sections should be used for the full proposal document. These are 
 		- Interpretation:
 			- All of the resulting p-values are extremely small except for Temp (max). In all other cases besides Temp (max), we reject the null hypothesis because p < 0.05. 
 			- These results are highly suggestive that there are relationships between combinations of the month, region, and temperature. Using ANOVA has allowed us to statistically, see, some of the underlying relationships in the data that may exist.
-			- There are other weather features that can and will be tested (e.g., Temp (min), precipitation, wind, etc.)
+			- There are other weather features that can and will be tested (e.g., Temp (min), precipitation, average daily wind speed, direction, etc.)
 
 
 
 ## Automation, Scalability, and Portability
 <!--- Assume that newer datasets will become available from the same source in future, or you need to ask your colleague to inherit this project. What will be major challenges? List and explain technical and implementational practices you will use to enhance automation, scalability, and portability aspects of the project. -->
+- Automation:
+	- I will automate the functionality of data preprocessing so that new data can be incorporated into the existing functionality of the model/program.
+		- Regularly (hourly) check for and pull data from data.gov APIs or another energy and weather database.
+		- Use pipelines to ensure timely and efficient retrieval, processing, and fitting of new data.
 
+- Scalability:
+	- The size of the data must be considered as it grows on its own when new data is retrieved. Integrating with the Cloud like AWS will increase the ability to store data.
+	- Processing the data quickly is also a factor if data is constantly being retrieved. However, this is also controllable if the interval that the data is that is retrieved is lengthened. For instance, pulling data every minute may require some type of parallel processing setup, whereas pulling it every hour will be less intensive.
+
+- Portability:
+	- To meet portability requirements, the project should be easily transferred from one person to another. This should be seamless even if they are on different systems.
+		- Using a Docker container will allow the project to be easily reproduced in various system environments. Docker can be used to aggregate the required dependencies, libraries, and system configurations of the project.
+		- Include a requirements file for other cases so that an aggregated list of necessary dependencies is available. 
 
 
 
