@@ -27,15 +27,15 @@
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
 
-	- Climate Impact on Energy Demand:
-		- Identification of weather variables (e.g., temperatures and extreme weather events) that significantly affect energy consumption. This analysis could reveal regions that are more susceptible or vulnerable to the effects of climate change. I expect to learn about the disproportionate affect that various weather conditions have on different regions.
+- Climate Impact on Energy Demand:
+	- Identification of weather variables (e.g., temperatures and extreme weather events) that significantly affect energy consumption. This analysis could reveal regions that are more susceptible or vulnerable to the effects of climate change. I expect to learn about the disproportionate affect that various weather conditions have on different regions.
 	
-	- Predictive Models for Energy Consumption Forecasting:
-		- I expect to develop predictive models for energy consumption that use weather data to forecast periods of high and low-energy demand caused by weather patterns or seasonal changes.
+- Predictive Models for Energy Consumption Forecasting:
+	- I expect to develop predictive models for energy consumption that use weather data to forecast periods of high and low-energy demand caused by weather patterns or seasonal changes.
 
-	- Generalizable Climate Models:
-		- Ideally, this analysis will have a broader impact beyond just predicting energy consumption in the Bay Area. It can serve as a model for analyzing the energy-climate relationship in regions with different climate conditions.
-		- For instance, regions less affected by temperature fluctuations may have more stable energy demands despite having broader climate variability. By providing a generalized model, this analysis could guide climate adaptation strategies for different regions.
+- Generalizable Climate Models:
+	- Ideally, this analysis will have a broader impact beyond just predicting energy consumption in the Bay Area. It can serve as a model for analyzing the energy-climate relationship in regions with different climate conditions.
+	- For instance, regions less affected by temperature fluctuations may have more stable energy demands despite having broader climate variability. By providing a generalized model, this analysis could guide climate adaptation strategies for different regions.
 
 
 ## Preprocessing Steps
