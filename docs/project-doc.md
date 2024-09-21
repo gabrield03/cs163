@@ -86,53 +86,52 @@ The following sections should be used for the full proposal document. These are 
 
 	- Energy
 		- Distribution of Energy Usage:
-			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots.
-			- The visualizations will help us understand how energy usage varies across the regions.
-			- It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
+			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots. The visualizations will help us understand how energy usage varies across the regions. It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
 
-			- SJ
-			![alt text](/docs/assets/plots/image.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Energy_Usage_95110.png)
 
-			- SF
-			![alt text](/docs/assets/plots/image-1.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Energy_Usage_94102.png)
+
 
 		- Heatmap of Energy Usage:
-			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis.
-			- This will show patterns in energy consumption and any long-term trends that emerge over the years.
-			- Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
+			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis. This will show patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
-			- SJ
-			![alt text](/docs/assets/plots/image-2.png)
+			![alt text](/docs/assets/plots/Heatmap_Avg_Energy_Usage_95110.png)
 
-			- SF
-			![alt text](/docs/assets/plots/image-3.png)
+			![alt text](/docs/assets/plots/Heatmap_Avg_Energy_Usage_94102.png)
+
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
 			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
 
-			- SJ:
-			![alt text](/docs/assets/plots/image-4.png)
-			![alt text](/docs/assets/plots/image-5.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Max_Temp_95110.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Min_Temp_95110.png)
 
-			- SF:
-			![alt text](/docs/assets/plots/image-6.png)
-			![alt text](/docs/assets/plots/image-7.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Max_Temp_94102.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Min_Temp_94102.png)
+
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
-			- Again, like the energy visualizations, I will show the temperature trends over time in each region (SJ and SF).
+			- Like the energy visualizations, I will show the temperature (min and max) data over time in each region (SJ and SF). Comparing the heatmaps of temperatures will allow us to visualize the regional differences in temperature trends from 2013 to 2024.
 
-			- SJ:
-			![alt text](/docs/assets/plots/image-8.png)
-			![alt text](/docs/assets/plots/image-9.png)
+			![alt text](/docs/assets/plots/Heatmap_Avg_Max_Temp_95110.png)
+			![alt text](/docs/assets/plots/Heatmap_Avg_Min_Temp_95110.png)
 
-			- SF:
-			![alt text](/docs/assets/plots/image-10.png)
-			![alt text](/docs/assets/plots/image-11.png)
 
-	- Combined:
+			![alt text](/docs/assets/plots/Heatmap_Avg_Max_Temp_94102.png)
+			![alt text](/docs/assets/plots/Heatmap_Avg_Min_Temp_94102.png)
+
+
+	- Energy Usage and Weather Combined:
 		- Average Monthly Energy Usage and Temperature Comparison:
-			- 
+			- I will use a dual-axis plot to compare the average energy usage per month (from 2013 to 2024) with the average maximum and minimum temperatures, by region. Visually, energy usage is shown as a box plot and the min/max temperatures will be shown as line plots. With this plot, the goal is to identify patterns, relationships, or correlations between temperature and energy consumption as they change over time.
+
+			![alt text](/docs/assets/plots/Dual_Ax_95110.png)
+
+			![alt text](/docs/assets/plots/Dual_Ax_94102.png)
+
+
 
 - Statistical Testing:
 	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the observed differences in energy usage across months and between regions (SJ and SF) are statistically significant.
