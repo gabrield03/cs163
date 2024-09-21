@@ -90,32 +90,45 @@ The following sections should be used for the full proposal document. These are 
 			- The visualizations will help us understand how energy usage varies across the regions.
 			- It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
 
+			- SJ
 			![alt text](image.png)
-			
-			- [SJ - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_95110.png)
-			- [SF - Hist/KDE: Average Energy Usage](/docs/assets/images/Hist_Avg_Energy_Usage_94102.png)
+
+			- SF
+			![alt text](image-1.png)
 
 		- Heatmap of Energy Usage:
 			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis.
 			- This will show patterns in energy consumption and any long-term trends that emerge over the years.
 			- Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
-			- [SJ - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_95110.png)
-			- [SF - Heatmap: Average Energy Usage](/docs/assets/images/Heatmap_Avg_Energy_Usage_94102.png)
+			- SJ
+			![alt text](image-6.png)
+
+			- SF
+			![alt text](image-7.png)
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
 			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
 
-			- [SJ - Hist/KDE: Average Max Temperature](/docs/assets/images/Hist_Avg_Max_Temp_95110.png)	[SJ - Hist/KDE: Average Min Temperature](/docs/assets/images/Hist_Avg_Min_Temp_95110.png)
-			- [SF - Hist/KDE: Average Max Temperature](/docs/assets/images/Hist_Avg_Max_Temp_94102.png)	[SF - Hist/KDE: Average Min Temperature](/docs/assets/images/Hist_Avg_Min_Temp_94102.png)
+			- SJ:
+			![alt text](image-2.png)
+			![alt text](image-3.png)
+
+			- SF:
+			![alt text](image-4.png)
+			![alt text](image-5.png)
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
 			- Again, like the energy visualizations, I will show the temperature trends over time in each region (SJ and SF).
 
-			- [SJ - Heatmap: Average Max Temperature](/docs/assets/images/Heatmap_Avg_Max_Temp_95110.png)	[SJ - Heatmap: Average Min Temperature](/docs/assets/images/Heatmap_Avg_Min_Temp_95110.png)
-			- [SF - Heatmap: Average Max Temperature](/docs/assets/images/Heatmap_Avg_Max_Temp_94102.png)	[SF - Heatmap: Average Min Temperature](/docs/assets/images/Heatmap_Avg_Min_Temp_94102.png)
+			- SJ:
+			![alt text](image-10.png)
+			![alt text](image-11.png)
 
+			- SF:
+			![alt text](image-8.png)
+			![alt text](image-9.png)
 
 	- Combined:
 		- Average Monthly Energy Usage and Temperature Comparison:
