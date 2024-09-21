@@ -91,10 +91,10 @@ The following sections should be used for the full proposal document. These are 
 			- It will depict the central tendency, spread, and skewn of energy usage - we can use these to identify patterns or trends in the data.
 
 			- SJ
-			![alt text](image.png)
+			![alt text](/docs/assets/plots/image.png)
 
 			- SF
-			![alt text](image-1.png)
+			![alt text](/docs/assets/plots/image-1.png)
 
 		- Heatmap of Energy Usage:
 			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis.
@@ -102,33 +102,33 @@ The following sections should be used for the full proposal document. These are 
 			- Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
 			
 			- SJ
-			![alt text](image-2.png)
+			![alt text](/docs/assets/plots/image-2.png)
 
 			- SF
-			![alt text](image-3.png)
+			![alt text](/docs/assets/plots/image-3.png)
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
 			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
 
 			- SJ:
-			![alt text](image-4.png)
-			![alt text](image-5.png)
+			![alt text](/docs/assets/plots/image-4.png)
+			![alt text](/docs/assets/plots/image-5.png)
 
 			- SF:
-			![alt text](image-6.png)
-			![alt text](image-7.png)
+			![alt text](/docs/assets/plots/image-6.png)
+			![alt text](/docs/assets/plots/image-7.png)
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
 			- Again, like the energy visualizations, I will show the temperature trends over time in each region (SJ and SF).
 
 			- SJ:
-			![alt text](image-8.png)
-			![alt text](image-9.png)
+			![alt text](/docs/assets/plots/image-8.png)
+			![alt text](/docs/assets/plots/image-9.png)
 
 			- SF:
-			![alt text](image-10.png)
-			![alt text](image-11.png)
+			![alt text](/docs/assets/plots/image-10.png)
+			![alt text](/docs/assets/plots/image-11.png)
 
 	- Combined:
 		- Average Monthly Energy Usage and Temperature Comparison:
