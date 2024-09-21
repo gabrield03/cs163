@@ -134,23 +134,48 @@ The following sections should be used for the full proposal document. These are 
 
 
 - Statistical Testing:
-	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the observed differences in energy usage across months and between regions (SJ and SF) are statistically significant.
-		- One-way ANOVA will be used to compute the variance in energy usage by month and whether those differences are statistically significant.
-		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region) and assess whether the results are statistically significant.
+	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the variance observed in average energy usage across months, between regions (SJ and SF), and by temperature are statistically significant.
+		- One-way ANOVA will be used to compute the variance in average energy usage by month.
+		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region).
 
-	- ANOVA Assumptions:
-		- Normality:
+	- ANOVA Assumptions
+		- Normality: The data within each group should be normally distributed.
 			- [Scipy - normaltest](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html)  
-			- The data within each group should be normally distributed.
-			- I will use the normaltest to assess whether the distribution of energy usage follows a normal distribution for each group (month).
 
-		- Homogeneity of Variance: 
+			- I will use the normaltest to test whether the average energy usage per month in a region is not normally distributed.
+			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
+			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
+
+			- SJ normaltest statistic = 5.004			SF normaltest statistic = 18.089
+
+			![alt text](/docs/assets/statistical-testing/normality_test_95110.png)
+
+			![alt text](/docs/assets/statistical-testing/normality_test_94102.png)
+
+			- Interpretation:
+				- SJ's p-value > 0.05, we fail to reject the null hypothesis.
+				- SF's p-value < 0.05, we reject the null hypothesis. There is evidence that the sampled data is not normally distributed.
+
+
+		- Homogeneity of Variance: The variance of the data within each group should be equal.
 			- [Scipy - Levene Test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.levene.html)  
-			- The variance of the data within each group should be equal.
-			- I will use Levene's test to determine whether the variance in energy usage is similar across each group.
 
-		- Independence:
-			- Observations within each group should be independent.
+			- I will use Levene's test to determine whether the variance in energy usage is similar across each group. It tests the null hypothesis
+			that all input samples (average kWh) are from populations (months) with equal variances.
+			- The p-value represents the proportion of values in the null distribution greater than or equal to the observed value of the statistic.
+
+			- SJ levene statistic = 1.019				SF levene statistic = 1.324
+
+			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_95110.png)
+
+			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_94102.png)
+
+			- Interpretation:
+				- SJ and SF p-values > 0.05, we fail to reject the null hypothesis.
+				
+				- Actual SF p-value = 0.434				Actual SF p-value = 0.219
+
+		- Independence: Observations within each group should be independent.
 			- Assuming that energy usage in different months is independent of each other.
 
 	- One-way ANOVA:
