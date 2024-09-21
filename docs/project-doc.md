@@ -79,7 +79,7 @@ The following sections should be used for the full proposal document. These are 
 ## Basic Data Properties and Analysis Techniques
 <!--- Based on the lectures on "Exploratory Data Analysis" and "Data and Sampling", list and explain what types of basic statistical analysis you plan to provide to give the meta information and overall picture of the datasets. -->
 
-- Exploratory Data Analysis (EDA):
+- **Exploratory Data Analysis (EDA)**:
 	- The EDA techniques I will use to provide the meta information and overall picture of the datasets will show the data's general distributions and variability.
 		- Specifically, the distribution of monthly energy usage for specific regions, energy usage trends over time, and the variability in energy usage per month. The same will be conducted with weather data.
 		- Additionally, the impact of temperature on energy usage and correlations between energy usage and temperature will be explored.
@@ -133,7 +133,7 @@ The following sections should be used for the full proposal document. These are 
 
 
 
-- Statistical Testing:
+- **Statistical Testing**:
 	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the variance observed in average energy usage across months, between regions (SJ and SF), and by temperature are statistically significant.
 		- One-way ANOVA will be used to compute the variance in average energy usage by month.
 		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region).
@@ -146,7 +146,7 @@ The following sections should be used for the full proposal document. These are 
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
-			| | normal statistic |
+			| --- | normal statistic |
 			| --- | --- |
 			| SJ (95110) | 5.004 |
 			| SF (94102) | 18.809 |
