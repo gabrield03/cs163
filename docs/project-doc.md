@@ -146,7 +146,10 @@ The following sections should be used for the full proposal document. These are 
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
-			- SJ normaltest statistic = 5.004		&nbsp; &nbsp; &nbsp; &nbsp; 	SF normaltest statistic = 18.089
+			| | normal statistic |
+			| --- | --- |
+			| SJ (95110) | 5.004 |
+			| SF (94102) | 18.809 |
 
 			![alt text](/docs/assets/statistical-testing/normality_test_95110.png)
 
@@ -164,7 +167,10 @@ The following sections should be used for the full proposal document. These are 
 			that all input samples (average kWh) are from populations (months) with equal variances.
 			- The p-value represents the proportion of values in the null distribution greater than or equal to the observed value of the statistic.
 
-			- SJ levene statistic = 1.019		&nbsp; &nbsp; &nbsp; &nbsp; 	SF levene statistic = 1.324
+			| | Levene statistic |
+			| --- | --- |
+			| SJ (95110) | 1.019 |
+			| SF (94102) | 1.324 |
 
 			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_95110.png)
 
@@ -185,8 +191,8 @@ The following sections should be used for the full proposal document. These are 
 		- Alternative Hypothesis: At least one of the month's mean is different.
 
 		- Results:
-			| ANOVA for the average monthly energy usage 	|
-			| --- 											|
+			| | ANOVA for the average monthly energy usage  | |
+			| --- 			| --- 			| --- 			|
 			|				|	p-value		| 	F-statistic	|
 			| SJ (95110)	| 1.846e-28 	|	27.56 		|
 			| SF (94102)	| 1.190e-32		|	35.85		|
@@ -201,7 +207,7 @@ The following sections should be used for the full proposal document. These are 
 		- Alternative Hypothesis: At least one of the month's mean is different.
 
 		- Results:
-			&nbsp;&nbsp;&nbsp;&nbsp; |     				| p-value 		| F-statistic 	|
+			|     				| p-value 		| F-statistic 	|
 			| --- 				| --- 			| --- 			| 
 			| Month 			| 4.201e-57 	| 53.071 		|
 			| Region 			| 2.566e-115 	| 1968.4 		|
