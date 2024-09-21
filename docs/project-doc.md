@@ -201,12 +201,14 @@ The following sections should be used for the full proposal document. These are 
 		- Alternative Hypothesis: At least one of the month's mean is different.
 
 		- Results:
-			Month: 			p-value = 4.201e-57		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 53.071
-			Region: 		p-value = 2.566e-115	&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 1968.4
-			Temp (max):	 	p-value = 6.242e-02		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 3.5056
-			Month & Region: p-value = 2.928e-38		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 29.532
-			Month & Temp: 	p-value = 4.255e-14		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 9.5045
-			Region & Temp: 	p-value = 2.086e-3		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 9.6892
+			|     				| p-value 		| F-statistic 	|
+			| --- 				| --- 			| --- 			| 
+			| Month 			| 4.201e-57 	| 53.071 		|
+			| Region 			| 2.566e-115 	| 1968.4 		|
+			| Temp (max) 		| 6.242e-02 	| 3.5056 		|
+			| Month & Region 	| 2.928e-38 	| 29.532 		|
+			| Month & Temp 		| 4.255e-14		| 9.5045 		|
+			| Region & Temp 	| 2.086e-3 		| 9.6892 		|
 
 		- Interpretation:
 			- All of the resulting p-values are extremely small except for Temp (max). In all other cases besides Temp (max), we reject the null hypothesis because p < 0.05. 
