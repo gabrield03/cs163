@@ -105,11 +105,9 @@ The following sections should be used for the full proposal document. These are 
 		- Distribution of Average Maximum and Minimum Temperatures:
 			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
 
-			![alt text](/docs/assets/plots/Hist_Avg_Max_Temp_95110.png)
-			![alt text](/docs/assets/plots/Hist_Avg_Min_Temp_95110.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Max_Min_Temp_95110.png)
 
-			![alt text](/docs/assets/plots/Hist_Avg_Max_Temp_94102.png)
-			![alt text](/docs/assets/plots/Hist_Avg_Min_Temp_94102.png)
+			![alt text](/docs/assets/plots/Hist_Avg_Max_Min_Temp_94102.png)
 
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
