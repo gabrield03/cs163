@@ -113,24 +113,16 @@ The following sections should be used for the full proposal document. These are 
 		- Heatmap of Average Maximum and Minimum Temperatures:
 			- Like the energy visualizations, I will show the temperature (min and max) data over time in each region (SJ and SF). Comparing the heatmaps of temperatures will allow us to visualize the regional differences in temperature trends from 2013 to 2024.
 
+	
+			
+			| Average Max Temperature Heatmap (SJ - 95110)                           | Average Min Temperature Heatmap (SJ - 95110)                           |
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 			| ![Max Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Max_Temp_95110.png) | ![Min Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Min_Temp_95110.png) |
-			|:---------------------------------------------------------------------:|:---------------------------------------------------------------------:|
-			| Average Max Temperature Heatmap                                        | Average Min Temperature Heatmap                                        |
-
-			<!--
-			![alt text](/docs/assets/plots/Heatmap_Avg_Max_Temp_95110.png)
-			![alt text](/docs/assets/plots/Heatmap_Avg_Min_Temp_95110.png)
-			-->
-
-
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+			| Average Max Temperature Heatmap (SJ - 94102)                           | Average Min Temperature Heatmap (SJ - 94102)                           |
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 			| ![Max Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Max_Temp_94102.png) | ![Min Temp Heatmap](/docs/assets/plots/Heatmap_Avg_Min_Temp_94102.png) |
-			|:---------------------------------------------------------------------:|:---------------------------------------------------------------------:|
-			| Average Max Temperature Heatmap                                        | Average Min Temperature Heatmap                                        |
-
-			<!--
-			![alt text](/docs/assets/plots/Heatmap_Avg_Max_Temp_94102.png)
-			![alt text](/docs/assets/plots/Heatmap_Avg_Min_Temp_94102.png)
-			-->
 
 
 	- Energy Usage and Weather Combined:
