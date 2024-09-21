@@ -146,7 +146,7 @@ The following sections should be used for the full proposal document. These are 
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
-			- SJ normaltest statistic = 5.004		&nbsp; &nbsp; 	SF normaltest statistic = 18.089
+			- SJ normaltest statistic = 5.004		&nbsp; &nbsp; &nbsp; &nbsp; 	SF normaltest statistic = 18.089
 
 			![alt text](/docs/assets/statistical-testing/normality_test_95110.png)
 
@@ -164,7 +164,7 @@ The following sections should be used for the full proposal document. These are 
 			that all input samples (average kWh) are from populations (months) with equal variances.
 			- The p-value represents the proportion of values in the null distribution greater than or equal to the observed value of the statistic.
 
-			- SJ levene statistic = 1.019		&nbsp; &nbsp; 	SF levene statistic = 1.324
+			- SJ levene statistic = 1.019		&nbsp; &nbsp; &nbsp; &nbsp; 	SF levene statistic = 1.324
 
 			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_95110.png)
 
@@ -173,17 +173,45 @@ The following sections should be used for the full proposal document. These are 
 			- Interpretation:
 				- SJ and SF p-values > 0.05, we fail to reject the null hypothesis.
 				
-				- Actual SF p-value = 0.434		&nbsp; &nbsp; 	Actual SF p-value = 0.219
+				- Actual SF p-value = 0.434		&nbsp; &nbsp; &nbsp; &nbsp; 	Actual SF p-value = 0.219
 
 		- Independence: Observations within each group should be independent.
 			- Assuming that energy usage in different months is independent of each other.
 
 	- One-way ANOVA:
 		- [Scipy - one-way ANOVA](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html)
-		- 
+
+		- Null Hypothesis: The average energy usage across the months is the same.
+		- Alternative Hypothesis: At least one of the month's mean is different.
+
+		- Results:
+			- ANOVA for the average monthly energy usage (SJ - 95110)
+			p-value = 1.846e-28		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 27.56
+
+			- ANOVA for the average monthly energy usage (SF - 94102)
+			p-value = 1.190e-32		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 35.85
+
+		- Interpretation:
+			- The p-values for each region are extremely small. Because p < 0.05, we reject the null hypothesis. The observed differences between the groups (months) are very unlikely to have occurred by random chance. There is a significant difference between at least one pair of group means.
+			- This result suggests that there might be a relationship between energy consumption and time of year. It can help direct us in understanding how energy usage is affected by external factors. Next to look at is how region and weather affect energy consumption.
 
 	- Multi-way ANOVA:
-		- 
+		- Merged the two SJ and SF datasets
+		- Null Hypothesis: The average energy usage across the months, region, and max temperature is the same.
+		- Alternative Hypothesis: At least one of the month's mean is different.
+
+		- Results:
+			Month: 			p-value = 4.201e-57		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 53.071
+			Region: 		p-value = 2.566e-115	&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 1968.4
+			Temp (max):	 	p-value = 6.242e-02		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 3.5056
+			Month & Region: p-value = 2.928e-38		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 29.532
+			Month & Temp: 	p-value = 4.255e-14		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 9.5045
+			Region & Temp: 	p-value = 2.086e-3		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 9.6892
+
+		- Interpretation:
+			- All of the resulting p-values are extremely small except for Temp (max). In all other cases besides Temp (max), we reject the null hypothesis because p < 0.05. 
+			- These results are highly suggestive that there are relationships between combinations of the month, region, and temperature. Using ANOVA has allowed us to statistically, see, some of the underlying relationships in the data that may exist.
+			- There are other weather features that can and will be tested (e.g., Temp (min), precipitation, wind, etc.)
 
 
 
