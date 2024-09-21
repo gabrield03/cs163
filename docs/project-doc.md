@@ -185,11 +185,11 @@ The following sections should be used for the full proposal document. These are 
 		- Alternative Hypothesis: At least one of the month's mean is different.
 
 		- Results:
-			- ANOVA for the average monthly energy usage (SJ - 95110)
-			p-value = 1.846e-28		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 27.56
-
-			- ANOVA for the average monthly energy usage (SF - 94102)
-			p-value = 1.190e-32		&nbsp; &nbsp; &nbsp; &nbsp; 	F-statistic = 35.85
+			| ANOVA for the average monthly energy usage 	|
+			| --- 											|
+			|				|	p-value		| 	F-statistic	|
+			| SJ (95110)	| 1.846e-28 	|	27.56 		|
+			| SF (94102)	| 1.190e-32		|	35.85		|
 
 		- Interpretation:
 			- The p-values for each region are extremely small. Because p < 0.05, we reject the null hypothesis. The observed differences between the groups (months) are very unlikely to have occurred by random chance. There is a significant difference between at least one pair of group means.
@@ -201,7 +201,7 @@ The following sections should be used for the full proposal document. These are 
 		- Alternative Hypothesis: At least one of the month's mean is different.
 
 		- Results:
-			|     				| p-value 		| F-statistic 	|
+			&nbsp;&nbsp;&nbsp;&nbsp; |     				| p-value 		| F-statistic 	|
 			| --- 				| --- 			| --- 			| 
 			| Month 			| 4.201e-57 	| 53.071 		|
 			| Region 			| 2.566e-115 	| 1968.4 		|
