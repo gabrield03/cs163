@@ -152,6 +152,10 @@ The following sections should be used for the full proposal document. These are 
 
 			![alt text](/docs/assets/statistical-testing/normality_test_94102.png)
 
+			- Results:
+				- SJ p-value = 0.081911
+				- SF p-value = 0.000118
+
 			- Interpretation:
 				- SJ's p-value > 0.05, we fail to reject the null hypothesis.
 				- SF's p-value < 0.05, we reject the null hypothesis. There is evidence that the sampled data is not normally distributed.
@@ -173,10 +177,14 @@ The following sections should be used for the full proposal document. These are 
 
 			![alt text](/docs/assets/statistical-testing/homogeneity_of_variance_94102.png)
 
+			- Results:
+				- SJ p-value = 0.364
+				- SF p-value = 0.270
+
 			- Interpretation:
 				- SJ and SF p-values > 0.05, we fail to reject the null hypothesis.
-				
-				- Actual SF p-value = 0.434		&nbsp; &nbsp; &nbsp; &nbsp; 	Actual SF p-value = 0.219
+				- *Note: Actual SF p-value = 0.434		&nbsp; &nbsp; &nbsp; &nbsp; 	Actual SF p-value = 0.219
+					- At this momeny, I am unsure why the the incorrect p-value is shown in the plot, but it does not affect the interpreation of the results.
 
 		- Independence: Observations within each group should be independent.
 			- Assuming that energy usage in different months is independent of each other, but I do not think that observations can be considered independent because data at the end of a prior day rolls into the data of the next day (e.g., energy usage at 11:59 PM on day 1 is continous into 12:00 AM on day 2).
