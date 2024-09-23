@@ -16,9 +16,6 @@
 	- PG&E Electricity Usage:
 		- Includes publicly accessible data from PG&E that contain monthly electricity consumption by ZIP code for northern and central California. Data consists of customer types (residential, commercial, etc.), average kilowatt-hours per customer (kWh) consumed, total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code.
 
-	- EIA Daily Energy Data:
-		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a granular view of energy consumption patterns over time.
-
 - Weather Data:
 	- NOAA Climate Data:
 		- Includes data from the National Oceanic and Atmospheric Administration (NOAA), consisting of daily maximum/minimum temperatures, precipitation, and wind speed measurements from various Bay Area (San Jose and San Francisco) weather stations.
