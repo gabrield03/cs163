@@ -3,9 +3,9 @@
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
 
-- This project investigates the relationship between electricity consumption and weather patterns in the California Bay Area. By examining historical weather data and energy usage trends, the primary goal is to uncover key weather factors that influence electricity demand. The broader goal is to explore how shifts in climate (e.g., increased frequency of extreme temperatures) affect energy usage. Identifying these factors not only helps energy providers reduce operational costs by enhancing energy distribution efficiency but also the general public concerned with climate adaptation and mitigation strategies. This analysis could be expanded to other regions by providing a template for understanding climate-driven energy trends on a larger scale.
+- This project investigates the relationship between electricity consumption and weather patterns in the California Bay Area. By analysizing historical weather data and energy usage trends, the primary goal is to uncover key weather factors that influence electricity usage. After discovering influential weather factors, electricity demands predictions will be made. The broader goal is to explore how shifts in climate (e.g., increased frequency of extreme temperatures) affect energy usage. Identifying these factors not only helps energy providers reduce operational costs by increasing energy distribution efficiency but also helps the general public concerned with climate change and how it affects their local regions. This analysis could be expanded to other regional areas by providing a template for understanding climate-driven energy trends on a larger scale.
 
-- Data will be sourced from the U.S. Energy Information Administration (EIA), PG&E, and the National Oceanic and Atmospheric Administration (NOAA). These are reliable data sources that ensure the any findings can be trusted by both the public and energy providers.
+- Data will be sourced from the U.S. Energy Information Administration (EIA), PG&E, and the National Oceanic and Atmospheric Administration (NOAA). These are reliable data sources that ensures that any published data is accurate and trutworthy.
 
 
 ## Data Sources
@@ -14,24 +14,24 @@
 
 - Energy Data:
 	- PG&E Electricity Usage:
-		- Publicly accessible datasets from PG&E that includes monthly electricity consumption by ZIP code for northern and central California. It contains details on customer types (residential, commercial, etc.), total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code.
+		- Includes publicly accessible data from PG&E that contain monthly electricity consumption by ZIP code for northern and central California. Data consists of customer types (residential, commercial, etc.), average kilowatt-hours per customer (kWh) consumed, total kilowatt-hours (kWh) consumed, and the number of customers per ZIP code.
 
 	- EIA Daily Energy Data:
 		- The U.S. Energy Information Administration (EIA) provides daily electricity consumption data for the PG&E service area, measured in megawatt-hours (mWh). This dataset offers a granular view of energy consumption patterns over time.
 
 - Weather Data:
 	- NOAA Climate Data:
-		- Daily weather data from the National Oceanic and Atmospheric Administration (NOAA), including maximum/minimum temperatures, precipitation, and wind speed measurements from various Bay Area (San Jose and San Francisco) weather stations.
+		- Includes data from the National Oceanic and Atmospheric Administration (NOAA), consisting of daily maximum/minimum temperatures, precipitation, and wind speed measurements from various Bay Area (San Jose and San Francisco) weather stations.
 
 
 ## Expected Major Findings
 <!--- List and explain what information you want to obtain in this project. Explain how valuable this project could be based on the objective discussion. You may want to list main claims and questions you want to answer through the project. -->
 
 - Climate Impact on Energy Demand:
-	- Identification of weather variables (e.g., temperatures and extreme weather events) that significantly affect energy consumption. This analysis could reveal regions that are more susceptible or vulnerable to the effects of climate change. I expect to learn about the disproportionate affect that various weather conditions have on different regions.
+	- Identification of weather variables (e.g., temperatures, precipitation, extreme weather events etc.) that significantly affect energy consumption. This analysis could reveal regions that are more susceptible or vulnerable to the effects of climate change. I expect to learn about the disproportionate affect that various weather conditions have on different regions.
 	
 - Predictive Models for Energy Consumption Forecasting:
-	- I expect to develop predictive models for energy consumption that use weather data to forecast periods of high and low-energy demand caused by weather patterns or seasonal changes.
+	- I expect to develop predictive models for energy consumption that use weather data to forecast periods of high and low-energy demand influenced by weather patterns and seasonal changes.
 
 - Generalizable Climate Models:
 	- Ideally, this analysis will have a broader impact beyond just predicting energy consumption in the Bay Area. It can serve as a model for analyzing the energy-climate relationship in regions with different climate conditions.
@@ -43,7 +43,7 @@
 
 - Data Aggregation:
 	- Combine the energy consumption data with corresponding weather data by aligning their time intervals.
-		- Energy data is available monthly, while weather data is available daily. To integrate these, daily weather data will be aggregated into monthly averages (e.g., max temperature per month).
+		- Energy data is available monthly, while weather data is available daily. To integrate these, daily weather data will be aggregated into monthly averages (e.g., max average temperature per month).
 		- Since energy data is provided by ZIP code, each weather station will need to be mapped to the ZIP codes they service to properly align the datasets.
 
 - Data Cleaning:
@@ -75,13 +75,13 @@ The following sections should be used for the full proposal document. These are 
 <!--- Based on the lectures on "Exploratory Data Analysis" and "Data and Sampling", list and explain what types of basic statistical analysis you plan to provide to give the meta information and overall picture of the datasets. -->
 
 - **Exploratory Data Analysis (EDA)**:
-	- The EDA techniques I will use to provide the meta information and overall picture of the datasets will show the data's general distributions and variability.
+	- The EDA techniques I will use to provide the meta information and overall picture of the data will focus on showing the data's general distributions and variability.
 		- Specifically, the distribution of monthly energy usage for specific regions, energy usage trends over time, and the variability in energy usage per month. The same will be conducted with weather data.
 		- Additionally, the impact of temperature on energy usage and correlations between energy usage and temperature will be explored.
 
 	- Energy
 		- Distribution of Energy Usage:
-			- For both San Jose (SJ) and San Francisco (SF), I will visualize the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots. The visualizations will help us understand how energy usage varies across the regions. It will depict the central tendency, spread, and skew of energy usage - we can use these to identify patterns or trends in the data.
+			- For both San Jose (SJ) and San Francisco (SF), I created visualizations to show the distribution of average energy usage using Histogram and Kernel Density Estimation (KDE) plots. The visualizations explain how energy usage varies across regions. It depicts the central tendency, spread, and skew of energy usage - we can use these to identify patterns or trends in the data. Each regional plot is plotted on the same x-axis scale to display the difference in average energy usage between regions.
 
 			![alt text](/docs/assets/plots/Hist_Avg_Energy_Usage_95110.png)
 
@@ -89,7 +89,7 @@ The following sections should be used for the full proposal document. These are 
 
 
 		- Heatmap of Energy Usage:
-			- I will create a heatmap that visualizes energy usage over time, with years on the x-axis and months on the y-axis. This will show patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, potentially providing evidence of climate-related shifts in energy usage.
+			- These heatmaps show energy usage over time (by month and year), with years on the x-axis and months on the y-axis. This shows patterns in energy consumption and any long-term trends that emerge over the years. Coupled with weather statistics, it can potentially provide evidence of climate-related shifts in energy usage.
 			
 			| Average Energy Usage Heatmap (SJ - 95110)                              | Average Energy Usage Heatmap (SF - 94102)                              |
 			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
@@ -98,7 +98,7 @@ The following sections should be used for the full proposal document. These are 
 
 	- Weather
 		- Distribution of Average Maximum and Minimum Temperatures:
-			- Similar to the energy visualizations, I will create histogram and KDE plots to display the distributions of the average maximum and average minimum temperatures in each region.
+			- Similar to the energy visualizations, I these Histograms and KDE plots display the distributions of the average maximum and average minimum temperatures in each region. The plots combine the distribution for each of the temperature metrics to show the indvidual differences between minimum and maximum temperatures. Additionally, each plot is on the same x-axis scale to display the difference in average temperature between regions.
 
 			![alt text](/docs/assets/plots/Hist_Avg_Max_Min_Temp_95110.png)
 
@@ -106,7 +106,7 @@ The following sections should be used for the full proposal document. These are 
 
 
 		- Heatmap of Average Maximum and Minimum Temperatures:
-			- Like the energy visualizations, I will show the temperature (min and max) data over time in each region (SJ and SF). Comparing the heatmaps of temperatures will allow us to visualize the regional differences in temperature trends from 2013 to 2024.
+			- Like the energy visualizations of temperature, these show the temperature (min and max) data over time in each region (SJ and SF). Comparing the heatmaps of temperatures allows us to visualize the regional differences in temperature trends from 2013 to 2024.
 
 	
 			
@@ -122,7 +122,7 @@ The following sections should be used for the full proposal document. These are 
 
 	- Energy Usage and Weather Combined:
 		- Average Monthly Energy Usage and Temperature Comparison:
-			- I will use a dual-axis plot to compare the average energy usage per month (from 2013 to 2024) with the average maximum and minimum temperatures, by region. Visually, energy usage is shown as a box plot and the min/max temperatures will be shown as line plots. With this plot, the goal is to identify patterns, relationships, or correlations between temperature and energy consumption as they change over time.
+			- These are dual-axis plot that compare the average energy usage per month (from 2013 to 2024) with the average maximum and minimum temperatures, by region. Visually, energy usage is plotted using a box plot and the min/max temperatures are plotted with line plots. With these plots, the goal is to identify patterns, relationships, or correlations between temperature and energy consumption as they change over time.
 
 			![alt text](/docs/assets/plots/Dual_Ax_95110.png)
 
@@ -131,15 +131,15 @@ The following sections should be used for the full proposal document. These are 
 
 
 - **Statistical Testing**:
-	- I plan to use Analyis of Variance (ANOVA), one-way and multi-way, to evaluate whether the variance observed in average energy usage across months, between regions (SJ and SF), and by temperature are statistically significant.
-		- One-way ANOVA will be used to compute the variance in average energy usage by month.
-		- Multi-way ANOVA will be used to compute the variance between groups (average energy usage, temperature, and region).
+	- I used Analyis of Variance (ANOVA) (one-way and multi-way) to evaluate whether the variance observed in average energy usage across months, between regions (SJ and SF), and by temperature are statistically significant.
+		- One-way ANOVA is used to compute the variance in average energy usage by month.
+		- Multi-way ANOVA is used to compute the variance between groups (average energy usage, temperature, and region).
 
 	- ANOVA Assumptions
 		- Normality: The data within each group should be normally distributed.
 			- [Scipy - normaltest](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.normaltest.html)  
 
-			- I will use the normaltest to test whether the average energy usage per month in a region is not normally distributed.
+			- I used the normaltest to test whether the average energy usage per month in a region is not normally distributed.
 			- The Null Hypothesis is that the data follows a normal distribution. We reject the null hypothesis if the p-value < 0.05.
 			It indicates that there is a low probability of sampling data from a normally distributed population that produces such an extreme value of the statistic.
 
@@ -160,7 +160,7 @@ The following sections should be used for the full proposal document. These are 
 		- Homogeneity of Variance: The variance of the data within each group should be equal.
 			- [Scipy - Levene Test](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.levene.html)  
 
-			- I will use Levene's test to determine whether the variance in energy usage is similar across each group. It tests the null hypothesis
+			- I used Levene's test to determine whether the variance in energy usage is similar across each group. It tests the null hypothesis
 			that all input samples (average kWh) are from populations (months) with equal variances.
 			- The p-value represents the proportion of values in the null distribution greater than or equal to the observed value of the statistic.
 
@@ -179,7 +179,7 @@ The following sections should be used for the full proposal document. These are 
 				- Actual SF p-value = 0.434		&nbsp; &nbsp; &nbsp; &nbsp; 	Actual SF p-value = 0.219
 
 		- Independence: Observations within each group should be independent.
-			- Assuming that energy usage in different months is independent of each other.
+			- Assuming that energy usage in different months is independent of each other, but I do not think that observations can be considered independent because data at the end of a prior day rolls into the data of the next day (e.g., energy usage at 11:59 PM on day 1 is continous into 12:00 AM on day 2).
 
 	- One-way ANOVA:
 		- [Scipy - one-way ANOVA](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.f_oneway.html)
