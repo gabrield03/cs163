@@ -11,8 +11,8 @@ from scipy.stats import gaussian_kde
 app = Dash(__name__)
 
 # Import and clean data
-sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src/interactiveVisualizations/Data/SJ_Combined.csv')
-sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src/interactiveVisualizations/Data/SF_Combined.csv')
+sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
+sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
 
 regions_combined = pd.concat([sj_df, sf_df])
 
