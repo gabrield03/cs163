@@ -11,8 +11,8 @@ from scipy.stats import gaussian_kde
 app = Dash(__name__)
 
 # Import and clean data
-sj_df = pd.read_csv('Data/SJ_Combined.csv')
-sf_df = pd.read_csv('Data/SF_Combined.csv')
+sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src/interactiveVisualizations/Data/SJ_Combined.csv')
+sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src/interactiveVisualizations/Data/SF_Combined.csv')
 
 regions_combined = pd.concat([sj_df, sf_df])
 
@@ -70,26 +70,26 @@ app.layout = html.Div([
     html.Br(), html.Br(),
 
 
-    ## Plots 3 - Chloropleth SJ and SF energy
-    html.H3('Energy Usage in the Bay Area (San Jose & San Francisco)'),
+    # ## Plots 3 - Chloropleth SJ and SF energy
+    # html.H3('Energy Usage in the Bay Area (San Jose & San Francisco)'),
     
-    dcc.Graph(id='choropleth'),
-    dcc.Slider(
-        id='year-month-slider',
-        min=2013,
-        max=2024,
-        value=2023,
-        marks={i: str(i) for i in range(2013, 2025)},
-        step=1
-    ),
-    dcc.Dropdown(
-        id='month-dropdown',
-        options=[{'label': month, 'value': i} for i, month in enumerate(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 1)],
-        value=1,  # Default to January
-        clearable=False
-    ),
+    # dcc.Graph(id='choropleth'),
+    # dcc.Slider(
+    #     id='year-month-slider',
+    #     min=2013,
+    #     max=2024,
+    #     value=2023,
+    #     marks={i: str(i) for i in range(2013, 2025)},
+    #     step=1
+    # ),
+    # dcc.Dropdown(
+    #     id='month-dropdown',
+    #     options=[{'label': month, 'value': i} for i, month in enumerate(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 1)],
+    #     value=1,  # Default to January
+    #     clearable=False
+    # ),
 
-    html.Br(), html.Br(),
+    # html.Br(), html.Br(),
 
 
 ])
@@ -345,46 +345,46 @@ def update_sf_graph(option_selected):
 
 
 
-# Callback for the choropleth
-@app.callback(
-    Output('choropleth', 'figure'),
-    [Input('year-month-slider', 'value'),
-     Input('month-dropdown', 'value')]
-)
-def update_choropleth(selected_year, selected_month):
-    sf_dff = sf_df.copy()
-    print(sf_dff.dtypes)
+# # Callback for the choropleth
+# @app.callback(
+#     Output('choropleth', 'figure'),
+#     [Input('year-month-slider', 'value'),
+#      Input('month-dropdown', 'value')]
+# )
+# def update_choropleth(selected_year, selected_month):
+#     sf_dff = sf_df.copy()
+#     print(sf_dff.dtypes)
 
-    month_mapping = {
-        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May',
-        6: 'Jun', 7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct',
-        11: 'Nov', 12: 'Dec'
-    }
-    selected_month_name = month_mapping[selected_month]
+#     month_mapping = {
+#         1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May',
+#         6: 'Jun', 7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct',
+#         11: 'Nov', 12: 'Dec'
+#     }
+#     selected_month_name = month_mapping[selected_month]
 
-    # Filter data based on year and month
-    filtered_df = sf_dff[
-        (sf_dff['year'] == selected_year) & 
-        (sf_dff['month'] == selected_month_name)
-    ]
+#     # Filter data based on year and month
+#     filtered_df = sf_dff[
+#         (sf_dff['year'] == selected_year) & 
+#         (sf_dff['month'] == selected_month_name)
+#     ]
 
-    # Create choropleth map
-    fig = px.choropleth(
-        filtered_df,
-        geojson='https://gist.githubusercontent.com/cdolek/d08cac2fa3f6338d84ea/raw/ebe3d2a4eda405775a860d251974e1f08cbe4f48/SanFrancisco.Neighborhoods.json',
-        locations='zipcode',  # Ensure this column exists in your DataFrame
-        color='averagekwh',  # Color by average energy usage
-        featureidkey='id',  # Use 'id' to match the GeoJSON structure
-        hover_name='zipcode',
-        hover_data=['averagekwh', 'totalkwh'],
-        title=f'Energy Usage in San Francisco Neighborhoods ({selected_month_name} {selected_year})',
-        color_continuous_scale='Viridis'
-    )
+#     # Create choropleth map
+#     fig = px.choropleth(
+#         filtered_df,
+#         geojson='https://gist.githubusercontent.com/cdolek/d08cac2fa3f6338d84ea/raw/ebe3d2a4eda405775a860d251974e1f08cbe4f48/SanFrancisco.Neighborhoods.json',
+#         locations='zipcode',  # Ensure this column exists in your DataFrame
+#         color='averagekwh',  # Color by average energy usage
+#         featureidkey='id',  # Use 'id' to match the GeoJSON structure
+#         hover_name='zipcode',
+#         hover_data=['averagekwh', 'totalkwh'],
+#         title=f'Energy Usage in San Francisco Neighborhoods ({selected_month_name} {selected_year})',
+#         color_continuous_scale='Viridis'
+#     )
 
-    fig.update_geos(visible=False)
-    fig.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
+#     fig.update_geos(visible=False)
+#     fig.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
 
-    return fig
+#     return fig
 
 
 
