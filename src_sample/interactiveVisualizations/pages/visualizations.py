@@ -2,13 +2,14 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from dash import Dash, dcc, html, dash_table
+import dash
+from dash import Dash, dcc, html, dash_table, callback
 from dash.dependencies import Input, Output
 
 import numpy as np
 from scipy.stats import gaussian_kde
 
-app = Dash(__name__)
+dash.register_page(__name__)
 
 # Import and clean data
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
@@ -17,21 +18,8 @@ sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/hea
 regions_combined = pd.concat([sj_df, sf_df])
 
 # Layout of the Dash app
-app.layout = html.Div([
-
-    html.H1('Effects of Weather on Energy Consumption in the Bay Area', style = {'text-align': 'center'}),
-
-    # Intro about the project
-    html.Div([
-        html.H2("Introduction"),
-        html.P("This project explores the impact of climate change on energy consumption in the California Bay Area, with a focus on San Jose and San Francisco."),
-        html.P("By analyzing historical weather data and energy usage trends, I aim to identify key weather factors, such as extreme temperatures, that influence electricity demand. Ultimately, this project hopes to shed light on how shifts in climate can affect local energy consumption, with the potential to apply these findings to other regions."),
-        html.P("Explore the data visualizations below to see how weather patterns correlate with energy usage in each region!")
-    ], style={'font-size': '20px', 'margin': '20px'}),
-
-    html.Br(), html.Br(),
-
-
+layout = html.Div([
+    
     ## Plots 1 - SJ Dataset
     html.H3('Data Visualizations for San Jose'),
     dcc.Dropdown(id = 'select_sj_option',
@@ -96,7 +84,7 @@ app.layout = html.Div([
 
 # Connect the Plotly graphs with Dash Components
 ## Plots 1 - SJ
-@app.callback(
+@callback(
     [Output(component_id = 'sj_output_container', component_property = 'children'),
      Output(component_id = 'sj_data', component_property = 'figure')],
     [Input(component_id = 'select_sj_option', component_property = 'value')]
@@ -221,7 +209,7 @@ def update_sj_graph(option_selected):
 
 
 ## Plots 2 - SF
-@app.callback(
+@callback(
     [Output(component_id = 'sf_output_container', component_property = 'children'),
      Output(component_id = 'sf_data', component_property = 'figure')],
     [Input(component_id = 'select_sf_option', component_property = 'value')]
@@ -346,7 +334,7 @@ def update_sf_graph(option_selected):
 
 
 # # Callback for the choropleth
-# @app.callback(
+# @.callback(
 #     Output('choropleth', 'figure'),
 #     [Input('year-month-slider', 'value'),
 #      Input('month-dropdown', 'value')]
@@ -396,6 +384,6 @@ def update_sf_graph(option_selected):
 
 
 
-# Run the app
-if __name__ == '__main__':
-    app.run_server(debug=True)
+# # Run the app
+# if __name__ == '__main__':
+#     app.run_server(debug=True)
