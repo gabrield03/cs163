@@ -4,10 +4,8 @@ from dash import html
 dash.register_page(__name__, path='/')
 
 layout = html.Div([
-    html.H1('This is our Home page'),
-
     html.Br(), html.Br(),
-    
+
     html.H1('Effects of Weather on Energy Consumption in the Bay Area', style = {'text-align': 'center'}),
 
     # Intro about the project
