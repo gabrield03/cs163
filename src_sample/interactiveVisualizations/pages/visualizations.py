@@ -19,7 +19,10 @@ regions_combined = pd.concat([sj_df, sf_df])
 
 # Layout of the Dash app
 layout = html.Div([
-    
+    html.H1('This is the Visualizations page'),
+
+    html.Br(), html.Br(),
+
     ## Plots 1 - SJ Dataset
     html.H3('Data Visualizations for San Jose'),
     dcc.Dropdown(id = 'select_sj_option',
