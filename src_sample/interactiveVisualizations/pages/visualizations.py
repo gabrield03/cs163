@@ -45,11 +45,9 @@ layout = html.Div([
         html.Div(
             id='sj_output_container',
             children=[],
-            style={'flex': '1', 'padding': '50px'}
+            style={'flex': '1', 'padding': '0px 100px'}
         ),
     ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}),
-
-    html.Br(), html.Br(),
 
     ## Plots 2 - SF Dataset
     html.H3('Visualizations for San Francisco'),
@@ -75,7 +73,7 @@ layout = html.Div([
         html.Div(
             id='sf_output_container',
             children=[],
-            style={'flex': '1', 'padding': '50px'}
+            style={'flex': '1', 'padding': '0px 100px'}
         ),
     ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}),
 
