@@ -40,14 +40,14 @@ layout = html.Div([
         dcc.Graph(
             id='sj_data',
             figure={},
-            style={'flex': '1', 'height': '50vh', 'width': '100%', 'marginBottom': '200px'}
+            style={'flex': '1', 'height': '50%', 'width': '65%'}
         ),
         html.Div(
             id='sj_output_container',
             children=[],
-            style={'flex': '1', 'padding': '0px 100px'}
+            style={'flex': '1', 'padding-left': '5%'}
         ),
-    ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}),
+    ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
 
     ## Plots 2 - SF Dataset
     html.H3('Visualizations for San Francisco'),
@@ -68,27 +68,27 @@ layout = html.Div([
         dcc.Graph(
             id='sf_data',
             figure={},
-            style={'flex': '1', 'height': '50vh', 'width': '100%', 'marginBottom': '20px'}
+            style={'flex': '1', 'height': '50%', 'width': '65%'}
         ),
         html.Div(
             id='sf_output_container',
             children=[],
-            style={'flex': '1', 'padding': '0px 100px'}
+            style={'flex': '1', 'padding-left': '5%'}
         ),
-    ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}),
+    ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
 
     html.Br(), html.Br(),
 ])
 
 
 # Descriptions for each plot
-sj_averagekwh = html.P(["Plot Description", html.Br(), html.Br(), "This plot shows the distribution of average monthly energy usage in San Jose (kWh)."])
-sj_totalkwh = html.P(["Plot Description", html.Br(), html.Br(), "This plot displays the distribution of total energy usage in San Jose over the months (kWh)."])
-sj_max_min_temp = html.P(["Plot Description", html.Br(), html.Br(), "This plot presents the average monthly maximum and minimum temperatures in San Jose (°F)."])
+sj_averagekwh = html.P(["Plot Description:", html.Br(), html.Br(), "This plot shows the distribution of average monthly energy usage in San Jose (kWh)."])
+sj_totalkwh = html.P(["Plot Description:", html.Br(), html.Br(), "This plot displays the distribution of total energy usage in San Jose over the months (kWh)."])
+sj_max_min_temp = html.P(["Plot Description:", html.Br(), html.Br(), "This plot presents the average monthly maximum and minimum temperatures in San Jose (°F)."])
 
-sf_averagekwh = html.P(["Plot Description", html.Br(), html.Br(), "This plot shows the distribution of average monthly energy usage in San Francisco (kWh)."])
-sf_totalkwh = html.P(["Plot Description", html.Br(), html.Br(), "This plot displays the distribution of total energy usage in San Francisco over the months (kWh)."])
-sf_max_min_temp = html.P(["Plot Description", html.Br(), html.Br(), "This plot presents the average monthly maximum and minimum temperatures in San Francisco (°F)."])
+sf_averagekwh = html.P(["Plot Description:", html.Br(), html.Br(), "This plot shows the distribution of average monthly energy usage in San Francisco (kWh)."])
+sf_totalkwh = html.P(["Plot Description:", html.Br(), html.Br(), "This plot displays the distribution of total energy usage in San Francisco over the months (kWh)."])
+sf_max_min_temp = html.P(["Plot Description:", html.Br(), html.Br(), "This plot presents the average monthly maximum and minimum temperatures in San Francisco (°F)."])
 
 # Connect the Plotly graphs with Dash Components
 ## Plots 1 - SJ
@@ -129,7 +129,8 @@ def update_sj_graph(option_selected):
                            nbins=40,
                            title=plot_title,
                            color_discrete_sequence=[color],
-                           height=800)
+                           #height=800
+                           )
 
         # Update the figure to set white outlines for the bars
         fig.update_traces(marker_line_color='white',
@@ -154,7 +155,7 @@ def update_sj_graph(option_selected):
             barmode='overlay',
             yaxis_title='Frequency',
             xaxis_range=x_range,
-            height=800,
+            #height=800,
             legend=dict(
                 x=1,
                 y=1,
@@ -231,7 +232,7 @@ def update_sj_graph(option_selected):
             xaxis_title='Temperature (F)',
             yaxis_title='Frequency',
             xaxis_range=[30, 90],
-            height=800,
+            #height=800,
             legend=dict(
                 x=1,
                 y=1,
@@ -287,7 +288,8 @@ def update_sf_graph(option_selected):
                            nbins=40,
                            title=plot_title,
                            color_discrete_sequence=[color],
-                           height=800)
+                           #height=800
+                           )
 
         # Update the figure to set white outlines for the bars
         fig.update_traces(marker_line_color='white',
@@ -312,7 +314,7 @@ def update_sf_graph(option_selected):
             barmode='overlay',
             yaxis_title='Frequency',
             xaxis_range=x_range,
-            height=800,
+            #height=800,
             legend=dict(
                 x=1,
                 y=1,
@@ -350,7 +352,7 @@ def update_sf_graph(option_selected):
         # tmin histogram
         fig.add_trace(go.Histogram(
             x=sf_dff['tmin'],
-            nbinsx=40,
+            nbinsx=30,
             name='Min Temp (tmin)',
             marker_color='#003FFF',
             opacity=0.75
@@ -376,7 +378,7 @@ def update_sf_graph(option_selected):
         # Add tmin KDE line
         fig.add_trace(go.Scatter(
             x=tmin_range,
-            y=tmin_kde(tmin_range) * len(sf_dff['tmin']) * (sf_dff['tmin'].max() - sf_dff['tmin'].min()) / 40,
+            y=tmin_kde(tmin_range) * len(sf_dff['tmin']) * (sf_dff['tmin'].max() - sf_dff['tmin'].min()) / 30,
             mode='lines',
             name='Min Temp KDE',
             line=dict(color='#A5E5FF', width=2, dash='dash')
@@ -389,7 +391,7 @@ def update_sf_graph(option_selected):
             xaxis_title='Temperature (F)',
             yaxis_title='Frequency',
             xaxis_range=[30, 90],
-            height=800,
+            #height=800,
             legend=dict(
                 x=1,
                 y=1,
