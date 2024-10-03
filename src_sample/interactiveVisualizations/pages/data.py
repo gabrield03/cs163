@@ -73,7 +73,7 @@ dash.register_page(__name__)
 PAGE_SIZE = 10
 
 layout = html.Div([
-    html.H1('Passage about the data.'),
+    html.H1('Passage about the data:'),
 
     html.Br(), html.Br(),
 

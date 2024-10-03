@@ -1,22 +1,20 @@
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from scipy.stats import gaussian_kde
 
 import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 
-import numpy as np
-from scipy.stats import gaussian_kde
-
 dash.register_page(__name__)
 
-# NEED PREPROCESSING PIPELINE
 # Import data
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
 sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
 
-# Preprocessing
+### Preprocessing + pipeline ###
 sj_df['month_numeric'] = sj_df['month'].map({
     'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
     'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
@@ -32,61 +30,8 @@ sf_df['month_numeric'] = sf_df['month'].map({
 sj_df['region'] = 'San Jose'
 sf_df['region'] = 'San Francisco'
 
-# Reshape sj_df to include temperature and energy columns
-sj_melted_temp = pd.melt(
-    sj_df,
-    id_vars = [
-        'zipcode', 'month', 'year', 'customerclass', 
-        'combined', 'totalcustomers', 'totalkwh', 
-        'averagekwh', 'year-month', 'month_numeric', 
-        'awnd', 'prcp', 'wdf2', 'wdf5', 'wsf2', 'wsf5', 'region'
-    ],
-    value_vars = ['tmax', 'tmin'], 
-    var_name = 'temp_type', 
-    value_name = 'temp'
-)
 
-sj_melted_energy = pd.melt(
-    sj_melted_temp,
-    id_vars = [
-        'zipcode', 'month', 'year', 'customerclass', 
-        'combined', 'totalcustomers', 'year-month', 
-        'month_numeric', 'awnd', 'prcp', 'wdf2', 'wdf5', 
-        'wsf2', 'wsf5', 'region', 'temp_type', 'temp'
-    ],
-    value_vars = ['totalkwh', 'averagekwh'], 
-    var_name = 'energy_type', 
-    value_name = 'energy'
-)
-
-# Reshape sf_df to include temperature and energy columns
-sf_melted_temp = pd.melt(
-    sf_df,
-    id_vars = [
-        'zipcode', 'month', 'year', 'customerclass', 
-        'combined', 'totalcustomers', 'totalkwh', 
-        'averagekwh', 'year-month', 'month_numeric', 'prcp', 'region'
-    ],
-    value_vars = ['tmax', 'tmin'], 
-    var_name = 'temp_type', 
-    value_name = 'temp'
-)
-
-sf_melted_energy = pd.melt(
-    sf_melted_temp,
-    id_vars = [
-        'zipcode', 'month', 'year', 'customerclass', 
-        'combined', 'totalcustomers', 'year-month', 
-        'month_numeric', 'prcp', 'region', 'temp_type', 'temp'
-    ],
-    value_vars = ['totalkwh', 'averagekwh'], 
-    var_name = 'energy_type', 
-    value_name = 'energy'
-)
-
-# Combine both dataframes
-combined_df = pd.concat([sj_melted_energy, sf_melted_energy], ignore_index = True)
-
+### End preprocessing data ###
 
 # Layout of the Dash app
 layout = html.Div([

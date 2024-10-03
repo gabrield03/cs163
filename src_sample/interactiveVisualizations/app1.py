@@ -12,14 +12,15 @@ app.layout = html.Div([
         className = 'nav-bar',
         children = [
             dcc.Link(
-                f"{page['name']}",
+                f"{page['name'].title()}",
                 href = page["relative_path"],
                 style = {
-                    'margin': '10px',
+                    'margin-right': '17px',
                     'textDecoration': 'none',
                     'color': 'blue',
-                    'fontSize': '20px',
-                }
+                    'fontSize': '15px',
+                    'padding': '0px 5px'
+                },
             ) for page in dash.page_registry.values()
         ],
         style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}
