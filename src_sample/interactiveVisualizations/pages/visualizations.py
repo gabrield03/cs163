@@ -9,11 +9,50 @@ from dash.dependencies import Input, Output
 import numpy as np
 from scipy.stats import gaussian_kde
 
+# FOLIUM DEPENDENCIES 
+import folium
+#from jobs.routes import *
+#from jobs import db
+
 dash.register_page(__name__)
 
-# Import and clean data
+# NEED PREPROCESSING PIPELINE
+# Import data
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
 sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
+
+sj_df['month_numeric'] = sj_df['month'].map({
+    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
+    'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
+    'Nov': 11, 'Dec': 12
+})
+
+# FOLIUM - base map
+# SJ_COORDINATES = (37.35411, -121.95524)
+# sj_map = folium.Map(location = SJ_COORDINATES, tiles = "Stamen Toner", attr = "something", zoom_start = 10)
+# sj_map_html = sj_map._repr_html_()
+
+# ### DEBUG
+# # Create a simple folium map of the US
+# def create_map():
+#     us_map = folium.Map(location=[37.0902, -95.7129], zoom_start=4)
+
+#     # Add markers for major US cities
+#     cities = {
+#         "New York": [40.7128, -74.0060],
+#         "Los Angeles": [34.0522, -118.2437],
+#         "Chicago": [41.8781, -87.6298],
+#         "Houston": [29.7604, -95.3698],
+#         "Miami": [25.7617, -80.1918]
+#     }
+
+#     for city, coord in cities.items():
+#         folium.Marker(location=coord, popup=city).add_to(us_map)
+
+#     # Save to a temporary file and return the HTML
+#     temp_map = "us_map.html"
+#     us_map.save(temp_map)
+#     return temp_map
 
 # Layout of the Dash app
 layout = html.Div([
@@ -77,6 +116,71 @@ layout = html.Div([
         ),
     ], style={'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
 
+    html.Br(), html.Br(),
+
+
+    # Plot 3 - Folium SJ
+    html.H3('Map of San Jose'),
+    # Folium map placeholder
+    html.Div(id='sj_map', children=[]),
+
+    # Year and month sliders
+    html.Div([
+        html.Label('Select Year'),
+        dcc.Slider(
+            id='year_slider',
+            min=sj_df['year'].min(),
+            max=sj_df['year'].max(),
+            value=sj_df['year'].min(),
+            marks={str(year): str(year) for year in range(sj_df['year'].min(), sj_df['year'].max()+1)},
+            step=None
+        ),
+        html.Label('Select Month'),
+        dcc.Slider(
+            id='month_slider',
+            min=1,
+            max=12,
+            value=1,
+            marks={i: str(i) for i in range(1, 13)},
+            step=None
+        ),
+    ], style={'width': '80%', 'margin': 'auto', 'padding': '20px'}),
+
+    html.Br(), html.Br(),
+
+
+    html.H3("San Jose Correlation Heatmap"),
+
+    # Year Slider
+    dcc.Slider(
+        id='year-slider',
+        min=sj_df['year'].min(),
+        max=sj_df['year'].max(),
+        value=sj_df['year'].min(),
+        marks={str(year): str(year) for year in sj_df['year'].unique()},
+        step=None
+    ),
+    
+    # Month Slider
+    dcc.Slider(
+        id='month-slider',
+        min=1,
+        max=12,
+        value=1,
+        marks={i: month for i, month in enumerate(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 1)},
+        step=1
+    ),
+    
+    # Graph output
+    dcc.Graph(id='heatmap'),
+
+
+
+    # ### DEBUG
+    # html.Div([
+    #     html.H1("US States Map"),
+    #     html.Iframe(id='map', srcDoc=open(create_map(), 'r').read(), width='100%', height='600'),
+    # ]),
     html.Br(), html.Br(),
 ])
 
@@ -407,3 +511,70 @@ def update_sf_graph(option_selected):
                           marker_line_width=1.5)
 
         return container, fig
+
+
+# SJ Heatmap
+# Callback to update heatmap
+@callback(
+    Output('heatmap', 'figure'),
+    [Input('year-slider', 'value'),
+     Input('month-slider', 'value')]
+)
+def update_heatmap(selected_year, selected_month):
+    # Filter data based on selected year and month
+    filtered_df = sj_df[(sj_df['year'] == selected_year) & (sj_df['month_numeric'] == selected_month)]
+    
+    # Select relevant columns for correlation (e.g., energy usage, tmax, tmin)
+    correlation_data = filtered_df[['averagekwh', 'totalkwh', 'tmax', 'tmin']].corr()
+    
+    # Create heatmap
+    heatmap = go.Figure(data=go.Heatmap(
+        z=correlation_data.values,
+        x=correlation_data.columns,
+        y=correlation_data.columns,
+        colorscale='Viridis'
+    ))
+    
+    heatmap.update_layout(
+        title=f"Correlation Heatmap for Year: {selected_year}, Month: {selected_month}",
+        xaxis_title="Variables",
+        yaxis_title="Variables"
+    )
+    
+    return heatmap
+
+
+# ### DEBUG
+# # Define the callback for updating the Folium map
+# @callback(
+#     Output(component_id='sj_map', component_property='children'),
+#     [Input(component_id='year_slider', component_property='value'),
+#      Input(component_id='month_slider', component_property='value')]
+# )
+# def update_sj_map(selected_year, selected_month):
+#     # Filter data based on selected year and month
+#     filtered_df = sj_df[(sj_df['year'] == selected_year) & (sj_df['month'] == selected_month)]
+
+#     # San Jose coordinates
+#     SJ_COORDINATES = (37.35411, -121.95524)
+#     sj_map = folium.Map(location=SJ_COORDINATES, tiles="Stamen Toner", attr = "something", zoom_start=10)
+
+#     # Plot each zip code's energy consumption on the map
+#     for _, row in filtered_df.iterrows():
+#         zip_code = row['zipcode']
+#         total_energy = row['totalkwh']  # Assuming 'totalkwh' is the energy consumption column
+
+#         # Adjust coordinates as per actual zip code locations in San Jose (you'll need to add lat/lon for zip codes)
+#         zip_coordinates = (row['latitude'], row['longitude'])  # Ensure latitude/longitude columns are in the dataset
+
+#         folium.CircleMarker(
+#             location=zip_coordinates,
+#             radius=total_energy / 100000,  # Adjust radius scaling based on energy values
+#             color='blue',
+#             fill=True,
+#             fill_color='blue',
+#             fill_opacity=0.6,
+#             popup=f"Zip Code: {zip_code}<br>Total Energy: {total_energy} kWh"
+#         ).add_to(sj_map)
+
+#     return [html.Iframe(srcDoc=sj_map._repr_html_(), width='100%', height='600')]
