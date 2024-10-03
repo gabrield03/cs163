@@ -1,28 +1,28 @@
 import dash
 from dash import html
 
-dash.register_page(__name__, path='/')
+dash.register_page(__name__, path = '/')
 
 layout = html.Div(
-    style={
+    style = {
         'backgroundColor': '#D3D3D3',
         'minHeight': '100vh',
         'padding': '20px',
     },
-    children=[
+    children = [
         html.Br(), html.Br(),
-        html.H1('Effects of Weather on Energy Consumption in the Bay Area', style={'text-align': 'center'}),
+        html.H1('Effects of Weather on Energy Consumption in the Bay Area', style = {'text-align': 'center'}),
 
         # Image and text styles
         html.Div(
-            style={'maxWidth': '800px', 'margin': '0 auto'},
-            children=[
+            style = {'maxWidth': '800px', 'margin': '0 auto'},
+            children = [
                 html.Div(
-                    style={'textAlign': 'center', 'margin': '20px'},
-                    children=[
+                    style = {'textAlign': 'center', 'margin': '20px'},
+                    children = [
                         html.Img(
-                            src='/assets/bayareascenic.jpg',
-                            style={
+                            src = '/assets/bayareascenic.jpg',
+                            style = {
                                 'width': '100%',
                                 'maxWidth': '800px',
                                 'height': 'auto',
@@ -36,8 +36,8 @@ layout = html.Div(
 
         # Project Intro
         html.Div(
-            style={'text-align': 'center', 'font-size': '20px', 'margin': '20px 60px'},
-            children=[
+            style = {'text-align': 'center', 'font-size': '20px', 'margin': '20px 60px'},
+            children = [
                 html.H2("Introduction"),
                 html.P([
                     "This project explores the impact of climate change on energy consumption in the California Bay Area, with a focus on San Jose and San Francisco.",

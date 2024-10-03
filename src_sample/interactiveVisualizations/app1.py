@@ -4,16 +4,17 @@ import dash
 from dash import Dash, html, dcc
 
 app = Dash(__name__, use_pages=True)
+# app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Horizontal Navigation Bar
 app.layout = html.Div([
     html.Div(
-        className='nav-bar',
-        children=[
+        className = 'nav-bar',
+        children = [
             dcc.Link(
                 f"{page['name']}",
-                href=page["relative_path"],
-                style={
+                href = page["relative_path"],
+                style = {
                     'margin': '10px',
                     'textDecoration': 'none',
                     'color': 'blue',
