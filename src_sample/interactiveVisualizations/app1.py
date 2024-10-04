@@ -3,16 +3,17 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 import importlib
 
+# debating between LUX, MORPH, SLATE, SOLAR
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.DARKLY],
+    external_stylesheets=[dbc.themes.SLATE],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}]
 )
 
 # Sidebar layout
 sidebar_header = dbc.Row(
     [
-        dbc.Col(html.H2("Navigation", className="display-4")),
+        dbc.Col(html.H2("Navigation", className="text-muted")),
         dbc.Col(
             [
                 html.Button(
@@ -48,7 +49,7 @@ sidebar = html.Div(
             dbc.Nav(
                 [
                     dbc.NavLink("Home", href="/", active="exact"),
-                    dbc.NavLink("Visualization", href="/visualizations", active="exact"),
+                    dbc.NavLink("Visualizations", href="/visualizations", active="exact"),
                     dbc.NavLink("Analytics", href="/analytics", active="exact"),
                     dbc.NavLink("Real-Time Analysis", href="/real_time_analysis", active="exact"),
                     dbc.NavLink("Data", href="/data", active="exact"),
