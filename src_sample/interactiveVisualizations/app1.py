@@ -5,14 +5,14 @@ import importlib
 
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.CERULEAN],
+    external_stylesheets=[dbc.themes.DARKLY],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}]
 )
 
 # Sidebar layout
 sidebar_header = dbc.Row(
     [
-        dbc.Col(html.H2("Directory", className="display-4")),
+        dbc.Col(html.H2("Navigation", className="display-4")),
         dbc.Col(
             [
                 html.Button(
