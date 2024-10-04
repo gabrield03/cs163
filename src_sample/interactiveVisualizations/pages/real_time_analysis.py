@@ -8,8 +8,6 @@ import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 
-dash.register_page(__name__)
-
 layout = html.Div([
     html.H1('Passage about real-time data analysis:'),
 

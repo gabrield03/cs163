@@ -8,8 +8,6 @@ import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 
-dash.register_page(__name__)
-
 # Import data
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
 sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
@@ -117,7 +115,7 @@ layout = html.Div([
 
     html.Br(),
 
-     # Split the layout for the plot and the description
+    # Split the layout for the plot and the description
     html.Div([
         dcc.Graph(
             id = 'heatmap',

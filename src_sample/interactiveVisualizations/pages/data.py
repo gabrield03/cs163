@@ -68,7 +68,6 @@ sf_melted_energy = pd.melt(
 combined_df = pd.concat([sj_melted_energy, sf_melted_energy], ignore_index = True)
 
 
-dash.register_page(__name__)
 
 PAGE_SIZE = 10
 

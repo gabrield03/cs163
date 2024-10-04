@@ -5,58 +5,55 @@ import plotly.figure_factory as ff
 import plotly.express as px
 import pandas as pd
 
-dash.register_page(__name__, path = '/')
 
-layout = html.Div(
+layout = html.Div([
+    html.Br(), html.Br(),
+    html.H1('Effects of Weather on Energy Consumption in the Bay Area', style = {'text-align': 'center'}),
 
-    children = [
-        html.Br(), html.Br(),
-        html.H1('Effects of Weather on Energy Consumption in the Bay Area', style = {'text-align': 'center'}),
-
-        # Image styles
-        html.Div(
-            style = {'maxWidth': '800px', 'margin': '0 auto'},
-            children = [
-                html.Div(
-                    style = {'textAlign': 'center', 'margin': '20px'},
-                    children = [
-                        html.Img(
-                            src = '/assets/bayareascenic.jpg',
-                            style = {
-                                'width': '100%',
-                                'maxWidth': '800px',
-                                'height': 'auto',
-                                'borderRadius': '10px',
-                            }
-                        )
-                    ]
-                )
-            ]
-        ),
+    # Image styles
+    html.Div(
+        style = {'maxWidth': '800px', 'margin': '0 auto'},
+        children = [
+            html.Div(
+                style = {'textAlign': 'center', 'margin': '20px'},
+                children = [
+                    html.Img(
+                        src = '/assets/bayareascenic.jpg',
+                        style = {
+                            'width': '100%',
+                            'maxWidth': '800px',
+                            'height': 'auto',
+                            'borderRadius': '10px',
+                        }
+                    )
+                ]
+            )
+        ]
+    ),
+    
+    html.H2("Introduction", style = {'text-align': 'center'}),
         
-        html.H2("Introduction", style = {'text-align': 'center'}),
-            
-        html.P([
-            "This project explores the impact of climate change on energy consumption in the California Bay Area, with a focus on San Jose and San Francisco. \
-            By analyzing historical weather data and energy usage trends, I aim to identify key weather factors, such as extreme temperatures, that influence \
-            electricity demand. Ultimately, this project hopes to shed light on how shifts in climate can affect local energy consumption, with the potential \
-            to apply these findings to other regions.",
-
-            html.Br(), html.Br(),
-            "Explore the various pages to seehow weather patterns correlate with energy usage in each region!"
-        ], style = {'text-align': 'justify', 'font-size': '20px', 'margin': '20px 7%', 'word-break': 'keep-all'}),
+    html.P([
+        "This project explores the impact of climate change on energy consumption in the California Bay Area, with a focus on San Jose and San Francisco. \
+        By analyzing historical weather data and energy usage trends, I aim to identify key weather factors, such as extreme temperatures, that influence \
+        electricity demand. Ultimately, this project hopes to shed light on how shifts in climate can affect local energy consumption, with the potential \
+        to apply these findings to other regions.",
 
         html.Br(), html.Br(),
+        "Explore the various pages to seehow weather patterns correlate with energy usage in each region!"
+    ], style = {'text-align': 'justify', 'font-size': '20px', 'margin': '20px 7%', 'word-break': 'keep-all'}),
 
-        #dcc.Interval(id='interval', interval=1*1000, n_intervals=0),
+    html.Br(), html.Br(),
 
-        html.Div([
-            dcc.Graph(
-                id = 'ca_data',
-                figure = {},
-                style = {'flex': '1', 'height': '50%', 'width': '50%'}
-            ),
-        ]),
+    #dcc.Interval(id='interval', interval=1*1000, n_intervals=0),
+
+    # html.Div([
+    #     dcc.Graph(
+    #         id = 'ca_data',
+    #         figure = {},
+    #         style = {'flex': '1', 'height': '50%', 'width': '50%'}
+    #     ),
+    # ]),
     ],
 
 )
@@ -105,4 +102,3 @@ def update_ca_graph(graph_id):
         )
 
         return fig
-
