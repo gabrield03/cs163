@@ -106,7 +106,10 @@ sj_histplots_1 = html.Div(
                         dcc.Graph(
                             id = 'sj_data',
                             figure = {},
-                            style = {'width': '95vh', 'height': '50vh'},
+                            style = {
+                                'width': '95vh',
+                                'height': '50vh'
+                            },
                         ),
                     ],
                     width = 7,
@@ -119,7 +122,7 @@ sj_histplots_1 = html.Div(
                             style = {
                                 'color': '#0f0f0f', # text color
                                 # other stuff width, height, background-color, etc.
-                                },
+                            },
                         ),
                     ],
                 ), 

@@ -3,6 +3,7 @@
     padding: 2rem 1rem;
     background-color: #f4efe3;
     font-family: "sans-serif";
+    z-index: 999;
 }
   
 #sidebar h2 {
