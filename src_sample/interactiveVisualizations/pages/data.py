@@ -76,15 +76,27 @@ layout = html.Div([
 
     html.Br(), html.Br(),
 
-    dash_table.DataTable(sj_df.to_dict('records'), [{"name": i, "id": i} for i in sj_df.columns], page_size = PAGE_SIZE),
+    dash_table.DataTable(
+        sj_df.to_dict('records'),
+        [{"name": i, "id": i} for i in sj_df.columns],
+        page_size = PAGE_SIZE
+    ),
 
     html.Br(), html.Br(),
 
-    dash_table.DataTable(sf_df.to_dict('records'), [{"name": i, "id": i} for i in sf_df.columns], page_size = PAGE_SIZE),
+    dash_table.DataTable(
+        sf_df.to_dict('records'),
+        [{"name": i, "id": i} for i in sf_df.columns],
+        page_size = PAGE_SIZE
+    ),
 
     html.Br(), html.Br(),
 
-    dash_table.DataTable(combined_df.to_dict('records'), [{"name": i, "id": i} for i in combined_df.columns], page_size = PAGE_SIZE),
+    dash_table.DataTable(
+        combined_df.to_dict('records'),
+        [{"name": i, "id": i} for i in combined_df.columns],
+        page_size = PAGE_SIZE
+    ),
 
     html.Br(), html.Br(),
 ])

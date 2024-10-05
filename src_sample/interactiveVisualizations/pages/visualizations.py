@@ -7,6 +7,7 @@ from scipy.stats import gaussian_kde
 import dash
 from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 # Import data
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
@@ -29,125 +30,236 @@ sj_df['region'] = 'San Jose'
 sf_df['region'] = 'San Francisco'
 
 
-### End preprocessing data ###
-
-# Layout of the Dash app
-layout = html.Div([
-    html.H1('Passage about the visualizations created:'),
-    
-    html.Br(), html.Br(),
-
-    ## Plots 1 - SJ Dataset
-    html.H3('Visualizations for San Jose'),
-    dcc.Dropdown(
-        id = 'select_sj_option',
-        options = [
-            {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
-            {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
-            {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}],
-            multi = False,
-            value = 'averagekwh',
-            style = {'width': '55%'}
-    ),
-    
-    html.Br(),
-    
-    # Split the layout for the plot and the description
-    html.Div([
-        dcc.Graph(
-            id = 'sj_data',
-            figure = {},
-            style = {'flex': '1', 'height': '50%', 'width': '65%'}
-        ),
-        html.Div(
-            id = 'sj_output_container',
-            children = [],
-            style = {'flex': '1', 'padding-left': '5%'}
-        ),
-    ], style = {'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
-
-    ## Plots 2 - SF Dataset
-    html.H3('Visualizations for San Francisco'),
-    dcc.Dropdown(
-        id = 'select_sf_option',
-        options = [
-            {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
-            {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
-            {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}],
-            multi = False,
-            value = 'averagekwh',
-            style = {'width': '55%'}
-    ),
-
-    html.Br(),
-
-    # Split the layout for the plot and the description
-    html.Div([
-        dcc.Graph(
-            id = 'sf_data',
-            figure = {},
-            style = {'flex': '1', 'height': '50%', 'width': '65%'}
-        ),
-        html.Div(
-            id = 'sf_output_container',
-            children = [],
-            style = {'flex': '1', 'padding-left': '5%'}
-        ),
-    ], style = {'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
-
-    html.Br(), html.Br(),
-
-
-    # Plot 3 - Heatmaps
-    html.H3("Energy Usage and Weather History for San Jose and San Francisco"),
-    
-    # Tabs for selecting between SJ and SF, and averagekwh vs totalkwh
-    dcc.Tabs(
-        id = 'heatmap-tabs',
-        value = 'sj_avgkwh',
-        children = [
-            dcc.Tab(label = 'SJ Average kWh', value = 'sj_avgkwh'),
-            dcc.Tab(label = 'SF Average kWh', value = 'sf_avgkwh'),
-            dcc.Tab(label = 'SJ Max Temp', value = 'sj_tmax'),
-            dcc.Tab(label = 'SF Max Temp', value = 'sf_tmax'),
-        ]
-    ),
-
-    html.Br(),
-
-    # Split the layout for the plot and the description
-    html.Div([
-        dcc.Graph(
-            id = 'heatmap',
-            figure = {},
-            style = {'flex': '1', 'height': '50%', 'width': '65%'}
-        ),
-        html.Div(
-            id = 'heatmap_output_container',
-            children = [],
-            style = {'flex': '1', 'padding-left': '5%'}
-        ),
-    ], style = {'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'margin-bottom': '5%'}),
-
-    html.Br(), html.Br(),
-])
 
 
 # Descriptions for each plot
-sj_averagekwh = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
-sf_averagekwh = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
-sj_averagekwh_heat = html.P(["Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
-sf_averagekwh_heat = html.P(["Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
+sj_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
+sf_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
+sj_averagekwh_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
+sf_averagekwh_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
 
 
-sj_totalkwh = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Jose over the months (kWh)."])
-sf_totalkwh = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Francisco over the months (kWh)."])
+sj_totalkwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Jose over the months (kWh)."])
+sf_totalkwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Francisco over the months (kWh)."])
 
-sj_max_min_temp = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F)."])
-sf_max_min_temp = html.P(["Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F)."])
-sj_max_temp_heat = html.P(["Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F)."])
-sf_max_temp_heat = html.P(["Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F)."])
+sj_max_min_temp = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F)."])
+sf_max_min_temp = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F)."])
+sj_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F)."])
+sf_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F)."])
 
+
+
+### End preprocessing data ###
+
+# # Layout of the Dash app
+visualizations_header = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H1(
+                        'Passage about the visualizations created:',
+                    ),
+                    className = 'text-center mb-5',
+                    width = 12,
+                    style = {'height': '100%'}
+                ),
+            ],
+        ),
+    ]
+)
+
+# 1st row of plots - SJ Energy Usage and Temperature
+sj_histplots_1 = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('San Jose Energy Usage and Weather History'),
+            ],
+            className = 'mb-2 text-center',
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Dropdown(
+                            id = 'select_sj_option',
+                            options = [
+                                {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
+                                {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
+                                {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}
+                            ],
+                            multi = False,
+                            value = 'averagekwh',
+                        ),
+                    ],
+                    width = {'size': 3}, className = 'mb-2'
+                ),
+            ]
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'sj_data',
+                            figure = {},
+                            style = {'width': '95vh', 'height': '50vh'},
+                        ),
+                    ],
+                    width = 7,
+                ),
+                dbc.Col(
+                    [
+                        html.Div(
+                            id = 'sj_output_container',
+                            children = [],
+                            style = {
+                                'color': '#0f0f0f', # text color
+                                # other stuff width, height, background-color, etc.
+                                },
+                        ),
+                    ],
+                ), 
+            ],
+        ),
+    ],
+    className = 'mb-5',
+)
+
+# 2nd row of plots - SF Energy Usage and Temperature
+sf_histplots_1 = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('San Francisco Energy Usage and Weather History'),
+            ],
+            className = 'mb-2 text-center',
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Dropdown(
+                            id = 'select_sf_option',
+                            options = [
+                                {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
+                                {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
+                                {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}
+                            ],
+                            multi = False,
+                            value = 'averagekwh',
+                        ),
+                    ],
+                    width = {'size': 3}, className = 'mb-2',
+                ),
+            ],
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'sf_data',
+                            figure = {},
+                            style = {'width': '95vh', 'height': '50vh'},
+                        ),
+                    ],
+                    width = 7,
+                ),
+                dbc.Col(
+                    [
+                        html.Div(
+                            id = 'sf_output_container',
+                            children = [],
+                            style = {
+                                'color': '#0f0f0f', # text color
+                                # other stuff width, height, background-color, etc.
+                                },
+                        ),
+                    ],
+                ), 
+            ],
+        ),
+    ],
+    className = 'mb-5',
+)
+
+# 3rd row of plots - Both Regions Average Energy Usage and AverageMax Temperature
+comb_heatmaps = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('Heatmaps for San Jose and San Francisco Energy Usage and Weather History'),
+            ],
+            className = 'mb-2 text-center',
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Tabs(
+                            id = 'heatmap-tabs',
+                            value = 'sj_avgkwh',
+                            children = [
+                                dcc.Tab(label = 'SJ Average kWh', value = 'sj_avgkwh'),
+                                dcc.Tab(label = 'SF Average kWh', value = 'sf_avgkwh'),
+                                dcc.Tab(label = 'SJ Max Temp', value = 'sj_tmax'),
+                                dcc.Tab(label = 'SF Max Temp', value = 'sf_tmax'),
+                            ],
+                        ),
+                    ],
+                    className = 'mb-2',
+                ),
+            ],
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'heatmap',
+                            figure = {},
+                            style = {'width': '95vh', 'height': '50vh'},
+                        ),
+                    ],
+                    width = 7,
+                ),
+
+                dbc.Col(
+                    [
+                        html.Div(
+                            id = 'heatmap_output_container',
+                            children = [],
+                            style = {
+                                'color': '#0f0f0f', # text color
+                                # other stuff width, height, background-color, etc.
+                                },
+                        ),
+                    ],
+                ), 
+            ],
+        ),
+    ],
+    className = 'mb-5',
+)
+
+
+layout = dbc.Container(
+    [
+        visualizations_header,
+        sj_histplots_1,
+        sf_histplots_1,
+        comb_heatmaps,
+    ],
+    fluid = True
+)
 
 # Connect the Plotly graphs with Dash Components
 ## Plots 1 - SJ
@@ -317,7 +429,7 @@ def update_sj_graph(option_selected):
                 bgcolor = 'rgba(255, 255, 255, 0.7)',
                 bordercolor = 'black',
                 borderwidth = 1,
-            )
+            ),
         )
 
         fig.update_traces(
@@ -560,7 +672,7 @@ def update_heatmap(selected_tab):
             color = value_column
         ),
         x = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        y = sorted(df['year'].unique(), reverse=True),
+        y = sorted(df['year'].unique(), reverse = True),
         color_continuous_scale = color_scale
     )
 

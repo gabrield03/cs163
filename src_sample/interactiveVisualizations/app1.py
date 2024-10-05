@@ -3,11 +3,14 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
 import importlib
 
+from pages import home, visualizations, analytics, real_time_analysis, data
+
 # debating between LUX, MORPH, SLATE, SOLAR
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.SLATE],
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}]
+    external_stylesheets=[dbc.themes.LUX],
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+    suppress_callback_exceptions=True
 )
 
 # Sidebar layout
@@ -65,22 +68,26 @@ sidebar = html.Div(
 
 content = html.Div(id="page-content")
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div([
+    dcc.Location(id="url"),
+    sidebar,
+    content
+])
 
 # Callback to render page content dynamically
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
-    # Dynamically import the correct page module based on URL
+    # Simply reference the layout from each module based on the pathname
     if pathname == "/":
-        page_module = importlib.import_module('pages.home')
+        return home.layout
     elif pathname == "/visualizations":
-        page_module = importlib.import_module('pages.visualizations')
+        return visualizations.layout
     elif pathname == "/analytics":
-        page_module = importlib.import_module('pages.analytics')
+        return analytics.layout
     elif pathname == "/real_time_analysis":
-        page_module = importlib.import_module('pages.real_time_analysis')
+        return real_time_analysis.layout
     elif pathname == "/data":
-            page_module = importlib.import_module('pages.data')
+        return data.layout
     else:
         return html.Div(
             [
@@ -90,9 +97,7 @@ def render_page_content(pathname):
             ],
             className="p-3 bg-light rounded-3",
         )
-    
-    # Assuming each page module defines a 'layout' variable
-    return page_module.layout
+
 
 # Sidebar toggling logic
 @app.callback(
