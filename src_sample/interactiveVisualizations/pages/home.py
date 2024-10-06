@@ -90,7 +90,7 @@ animated_plot_1 = html.Div(
                     [
                         dcc.Tabs(
                             id='animated-plot-tabs',
-                            value='Mar',  # Set default value to March
+                            value='Jan',
                             children=[
                                 dcc.Tab(label = 'January', value = 'Jan'),
                                 dcc.Tab(label = 'February', value = 'Feb'),
@@ -133,7 +133,7 @@ animated_plot_1 = html.Div(
                             id='animated_output_container',
                             children=[],
                             style={
-                                'color': '#0f0f0f',  # text color
+                                'color': '#0f0f0f',
                             },
                         ),
                     ],
@@ -144,26 +144,12 @@ animated_plot_1 = html.Div(
     className='mb-5',
 )
 
-# animated_graph = html.Div(
-#     [
-#         dbc.Row(
-#             [
-#                 dcc.Graph(
-#                     id = 'combined_energy_line_by_mo',
-#                     figure = {},
-#                 )
-#             ]
-#         )
-#     ]
-# )
-
 layout = dbc.Container(
     [
         home_header,
         home_picture,
         intro_text,
         intro_content,
-        #animated_graph,
         animated_plot_1,
     ],
     fluid = True
@@ -194,7 +180,20 @@ for month in months:
 # Sort the dataframe by year to maintain the chronological order
 sf_filled_df.sort_values(by='year', inplace=True)
 
-comb_energy_mar = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
+### Plot Descriptions ###
+comb_energy_jan = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of January."])
+comb_energy_feb = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of February."])
+comb_energy_mar = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of March."])
+comb_energy_apr = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of April."])
+comb_energy_may = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of May."])
+comb_energy_jun = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of June."])
+comb_energy_jul = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of July."])
+comb_energy_aug = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of August."])
+comb_energy_sep = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of September."])
+comb_energy_oct = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of October."])
+comb_energy_nov = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of November."])
+comb_energy_dec = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of December."])
+
 
 
 @callback(
@@ -203,7 +202,32 @@ comb_energy_mar = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), 
     Input('animated-plot-tabs', 'value')  # Take the selected tab (month) as input
 )
 def update_energy_line_plot(selected_month):
-    container = comb_energy_mar
+    container = ''
+    if selected_month == 'Jan':
+        container = comb_energy_jan
+    elif selected_month == 'Feb':
+        container = comb_energy_feb
+    elif selected_month == 'Mar':
+        container = comb_energy_mar
+    elif selected_month == 'Apr':
+        container = comb_energy_apr
+    elif selected_month == 'May':
+        container = comb_energy_may
+    elif selected_month == 'Jun':
+        container = comb_energy_jun
+    elif selected_month == 'Jul':
+        container = comb_energy_jul
+    elif selected_month == 'Aug':
+        container = comb_energy_aug
+    elif selected_month == 'Sep':
+        container = comb_energy_sep
+    elif selected_month == 'Oct':
+        container = comb_energy_oct
+    elif selected_month == 'Nov':
+        container = comb_energy_nov
+    elif selected_month == 'Dec':
+        container = comb_energy_dec
+    
 
     # Filter data for the selected month
     sf_filtered = sf_filled_df[sf_filled_df['month'] == selected_month]
@@ -243,7 +267,7 @@ def update_energy_line_plot(selected_month):
                           buttons=[dict(label="Play",
                                         method="animate",
                                         args=[None, {
-                                            "frame": {"duration": 200, "redraw": False},
+                                            "frame": {"duration": 500, "redraw": False},
                                             "fromcurrent": True,
                                             "transition": {"duration": 500}}])])]
     )
