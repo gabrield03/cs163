@@ -1,7 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
-import importlib
 
 from pages import home, visualizations, analytics, real_time_analysis, data
 

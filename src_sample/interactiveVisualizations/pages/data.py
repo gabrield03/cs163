@@ -1,5 +1,6 @@
 import dash
 from dash import html, dash_table, dcc, callback, Input, Output
+import dash_bootstrap_components as dbc
 
 import pandas as pd
 
@@ -68,35 +69,115 @@ sf_melted_energy = pd.melt(
 combined_df = pd.concat([sj_melted_energy, sf_melted_energy], ignore_index = True)
 
 
-
 PAGE_SIZE = 10
 
-layout = html.Div([
-    html.H1('Passage about the data:'),
+data_header = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H1(
+                        'Passage about the data used:',
+                    ),
+                    className = 'text-center mb-5',
+                    width = 12,
+                    style = {'height': '100%'}
+                ),
+            ],
+        ),
+    ]
+)
 
-    html.Br(), html.Br(),
+data_table1 = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('SJ Data Table'),
+            ],
+            className = 'mb-2 text-center',
+        ),
 
-    dash_table.DataTable(
-        sj_df.to_dict('records'),
-        [{"name": i, "id": i} for i in sj_df.columns],
-        page_size = PAGE_SIZE
-    ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dash_table.DataTable(
+                            sj_df.to_dict('records'),
+                            [{"name": i, "id": i} for i in sj_df.columns],
+                            page_size=PAGE_SIZE,
+                            style_table={'overflowX': 'auto'},
+                        ),
+                    ],
+                    width=10,
+                ),
+            ],
+            style={'marginBottom': '30px'}, 
+        ),
+    ],
+)
 
-    html.Br(), html.Br(),
+data_table2 = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('SF Data Table'),
+            ],
+            className = 'mb-2 text-center',
+        ),
 
-    dash_table.DataTable(
-        sf_df.to_dict('records'),
-        [{"name": i, "id": i} for i in sf_df.columns],
-        page_size = PAGE_SIZE
-    ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dash_table.DataTable(
+                            sf_df.to_dict('records'),
+                            [{"name": i, "id": i} for i in sj_df.columns],
+                            page_size=PAGE_SIZE,
+                            style_table={'overflowX': 'auto'},
+                        ),
+                    ],
+                    width=10,
+                ),
+            ],
+            style={'marginBottom': '30px'}, 
+        ),
+    ],
+)
 
-    html.Br(), html.Br(),
+data_table3 = html.Div(
+    [
+        dbc.Row(
+            [
+                html.H3('Combined Data Table on __something__'),
+            ],
+            className = 'mb-2 text-center',
+        ),
 
-    dash_table.DataTable(
-        combined_df.to_dict('records'),
-        [{"name": i, "id": i} for i in combined_df.columns],
-        page_size = PAGE_SIZE
-    ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dash_table.DataTable(
+                            combined_df.to_dict('records'),
+                            [{"name": i, "id": i} for i in sj_df.columns],
+                            page_size=PAGE_SIZE,
+                            style_table={'overflowX': 'auto'},
+                        ),
+                    ],
+                    width=10,
+                ),
+            ],
+            style={'marginBottom': '30px'}, 
+        ),
+    ],
+)
 
-    html.Br(), html.Br(),
-])
+layout = dbc.Container(
+    [
+        data_header,
+        data_table1,
+        data_table2,
+        data_table3,
+    ],
+    fluid = True
+)
