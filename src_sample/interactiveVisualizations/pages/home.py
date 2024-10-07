@@ -9,6 +9,8 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
+from utils.data_preprocessing import load_and_preprocess_data, fill_sf, find_regional_diff
+
 home_header = html.Div(
     [
         html.H1(
@@ -168,7 +170,7 @@ animated_plot_1 = html.Div(
                             id='combined_energy_line_by_mo',
                             figure={},
                             style={
-                                'width': '95vh',
+                                'width': '70vh',
                                 'height': '50vh'
                             },
                         ),
@@ -192,48 +194,10 @@ animated_plot_1 = html.Div(
     className='mb-5',
 )
 
-### Data Preprocessing
-# DEBUG
-sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
-sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
-
-sj_df['region'] = 'San Jose'
-sf_df['region'] = 'San Francisco'
-
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-sf_filled_df = sf_df.copy()
-
-for month in months:
-    # Filter data for the current month and the year 2014
-    sf_month_2014 = sf_filled_df[(sf_filled_df['month'] == month) & (sf_filled_df['year'] == 2014)].copy()
-    
-    # Modify the year to 2013 for this data
-    sf_month_2014['year'] = 2013
-    
-    # Append this "filler" data to the dataframe
-    sf_filled_df = pd.concat([sf_filled_df, sf_month_2014], ignore_index=True)
-
-# Sort the dataframe by year to maintain the chronological order
-sf_filled_df.sort_values(by='year', inplace=True)
-
-# Find the difference between regions
-region_diff = sj_df.copy()
-
-# Initialize the 'averagekwhdiff' column with NaN
-region_diff['averagekwhdiff'] = np.nan
-
-# Loop through each date in sj_df, check if the date exists in sf df, get the values and subtract
-for i, date in enumerate(sj_df['year-month']):
-    if date in sf_filled_df['year-month'].values:
-        sf_value = sf_filled_df[sf_filled_df['year-month'] == date]['averagekwh'].values[0]
-        
-        region_diff.loc[i, 'averagekwhdiff'] = sj_df.loc[i, 'averagekwh'] - sf_value
-    else:
-        # If data missing in sf df, just put NaN
-        region_diff.loc[i, 'averagekwhdiff'] = np.nan 
-
-region_diff = region_diff.reset_index(drop=True)
+### Load Data ###
+sj_df, sf_df = load_and_preprocess_data()
+sf_filled_df = fill_sf(sf_df)
+region_avgkwhdiff = find_regional_diff(sj_df, sf_filled_df, 'averagekwh', 'averagekwhdiff')
 
 
 ### Plot Descriptions ###
@@ -299,7 +263,7 @@ def update_energy_line_plot(selected_month):
     # Filter data for the selected month
     sf_filtered = sf_filled_df[sf_filled_df['month'] == selected_month]
     sj_filtered = sj_df[sj_df['month'] == selected_month]
-    region_filtered = region_diff[region_diff['month'] == selected_month]
+    region_filtered = region_avgkwhdiff[region_avgkwhdiff['month'] == selected_month]
 
     fig = go.Figure()
 
@@ -308,20 +272,20 @@ def update_energy_line_plot(selected_month):
         x=sf_filtered['year-month'],
         y=sf_filtered['averagekwh'],
         mode="lines",
-        name="San Francisco",
+        name="SF",
         line=dict(color="blue")))
     
     fig.add_trace(go.Scatter(
         x=sj_filtered['year-month'],
         y=sj_filtered['averagekwh'],
         mode="lines", 
-        name="San Jose",
+        name="SJ",
         line=dict(color="green")))
     
     fig.add_trace(go.Scatter(
         x=region_filtered['year-month'],
         y=region_filtered['averagekwhdiff'],
-        mode="lines", name="Region Difference",
+        mode="lines", name="SJ-SF Diff",
         line=dict(color="red")))
 
     # Add a starting point for each region's moving dot
@@ -330,22 +294,27 @@ def update_energy_line_plot(selected_month):
         y=[sf_filtered['averagekwh'].values[0]],
         mode="markers",
         marker=dict(color="blue", size=10),
-        name="SF moving point"))
+        name="SF moving point",
+        showlegend = False,
+    ))
 
     fig.add_trace(go.Scatter(
         x=[sj_filtered['year-month'].values[0]],
         y=[sj_filtered['averagekwh'].values[0]],
         mode="markers",
         marker=dict(color="green", size=10),
-        name="SJ moving point"))
+        name="SJ moving point",
+        showlegend = False,
+    ))
     
     fig.add_trace(go.Scatter(
         x=[region_filtered['year-month'].values[0]],
         y=[region_filtered['averagekwhdiff'].values[0]],
         mode="markers",
         marker=dict(color="red", size=10),
-        name="Regional Difference moving point"))
-    
+        name="Regional Difference moving point",
+        showlegend = False,
+    ))
     
 
     # Set layout properties for the plot
@@ -366,7 +335,6 @@ def update_energy_line_plot(selected_month):
     # Colors
     fig.update_layout(
         paper_bgcolor='#ecf0f1',  # Outside the plot area background
-
     )
 
     # Create frames for the animation
