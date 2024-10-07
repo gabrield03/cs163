@@ -1,7 +1,9 @@
 #sidebar {
     text-align: center;
     padding: 2rem 1rem;
-    background-color: #f4efe3;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    /* background-color: #c3c1be; */
     font-family: "sans-serif";
     z-index: 999;
 }
@@ -32,7 +34,9 @@
 #page-content {
     padding: 2rem 0.5rem 1rem 1rem;
     font-family: "sans-serif";
+    background-color: #f7f9f9;
 }
+
   
 @media (min-width: 48em) {
     #sidebar {

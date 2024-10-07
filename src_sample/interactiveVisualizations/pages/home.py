@@ -7,7 +7,7 @@ import plotly.figure_factory as ff
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-
+import numpy as np
 
 home_header = html.Div(
     [
@@ -92,18 +92,66 @@ animated_plot_1 = html.Div(
                             id='animated-plot-tabs',
                             value='Jan',
                             children=[
-                                dcc.Tab(label = 'January', value = 'Jan'),
-                                dcc.Tab(label = 'February', value = 'Feb'),
-                                dcc.Tab(label = 'March', value = 'Mar'),
-                                dcc.Tab(label = 'April', value = 'Apr'),
-                                dcc.Tab(label = 'May', value = 'May'),
-                                dcc.Tab(label = 'June', value = 'Jun'),
-                                dcc.Tab(label = 'July', value = 'Jul'),
-                                dcc.Tab(label = 'August', value = 'Aug'),
-                                dcc.Tab(label = 'September', value = 'Sep'),
-                                dcc.Tab(label = 'October', value = 'Oct'),
-                                dcc.Tab(label = 'November', value = 'Nov'),
-                                dcc.Tab(label = 'December', value = 'Dec'),
+                                dcc.Tab(
+                                    label = 'January',
+                                    value = 'Jan',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'February',
+                                    value = 'Feb',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'March',
+                                    value = 'Mar',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'April',
+                                    value = 'Apr',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'May',
+                                    value = 'May',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'June',
+                                    value = 'Jun',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'July',
+                                    value = 'Jul',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'August',
+                                    value = 'Aug',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'September',
+                                    value = 'Sep',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'October',
+                                    value = 'Oct',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'November',
+                                    value = 'Nov',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
+                                dcc.Tab(
+                                    label = 'December',
+                                    value = 'Dec',
+                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},),
                             ],
                         ),
                     ],
@@ -144,18 +192,7 @@ animated_plot_1 = html.Div(
     className='mb-5',
 )
 
-layout = dbc.Container(
-    [
-        home_header,
-        home_picture,
-        intro_text,
-        intro_content,
-        animated_plot_1,
-    ],
-    fluid = True
-)
-
-
+### Data Preprocessing
 # DEBUG
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
 sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
@@ -180,6 +217,25 @@ for month in months:
 # Sort the dataframe by year to maintain the chronological order
 sf_filled_df.sort_values(by='year', inplace=True)
 
+# Find the difference between regions
+region_diff = sj_df.copy()
+
+# Initialize the 'averagekwhdiff' column with NaN
+region_diff['averagekwhdiff'] = np.nan
+
+# Loop through each date in sj_df, check if the date exists in sf df, get the values and subtract
+for i, date in enumerate(sj_df['year-month']):
+    if date in sf_filled_df['year-month'].values:
+        sf_value = sf_filled_df[sf_filled_df['year-month'] == date]['averagekwh'].values[0]
+        
+        region_diff.loc[i, 'averagekwhdiff'] = sj_df.loc[i, 'averagekwh'] - sf_value
+    else:
+        # If data missing in sf df, just put NaN
+        region_diff.loc[i, 'averagekwhdiff'] = np.nan 
+
+region_diff = region_diff.reset_index(drop=True)
+
+
 ### Plot Descriptions ###
 comb_energy_jan = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of January."])
 comb_energy_feb = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of February."])
@@ -194,7 +250,19 @@ comb_energy_oct = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), 
 comb_energy_nov = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of November."])
 comb_energy_dec = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of December."])
 
+table_content = html.Div(id="table-content")
 
+
+layout = dbc.Container(
+    [
+        home_header,
+        home_picture,
+        intro_text,
+        intro_content,
+        animated_plot_1,
+    ],
+    fluid = True
+)
 
 @callback(
     [Output('animated_output_container', 'children'),
@@ -228,34 +296,57 @@ def update_energy_line_plot(selected_month):
     elif selected_month == 'Dec':
         container = comb_energy_dec
     
-
     # Filter data for the selected month
     sf_filtered = sf_filled_df[sf_filled_df['month'] == selected_month]
     sj_filtered = sj_df[sj_df['month'] == selected_month]
+    region_filtered = region_diff[region_diff['month'] == selected_month]
 
-    # Create figure for the selected month
     fig = go.Figure()
 
     # Plot the full lines for both regions
-    fig.add_trace(go.Scatter(x=sf_filtered['year-month'], y=sf_filtered['averagekwh'],
-                             mode="lines", name="San Francisco",
-                             line=dict(color="blue")))
-    fig.add_trace(go.Scatter(x=sj_filtered['year-month'], y=sj_filtered['averagekwh'],
-                             mode="lines", name="San Jose",
-                             line=dict(color="green")))
+    fig.add_trace(go.Scatter(
+        x=sf_filtered['year-month'],
+        y=sf_filtered['averagekwh'],
+        mode="lines",
+        name="San Francisco",
+        line=dict(color="blue")))
+    
+    fig.add_trace(go.Scatter(
+        x=sj_filtered['year-month'],
+        y=sj_filtered['averagekwh'],
+        mode="lines", 
+        name="San Jose",
+        line=dict(color="green")))
+    
+    fig.add_trace(go.Scatter(
+        x=region_filtered['year-month'],
+        y=region_filtered['averagekwhdiff'],
+        mode="lines", name="Region Difference",
+        line=dict(color="red")))
 
     # Add a starting point for each region's moving dot
-    fig.add_trace(go.Scatter(x=[sf_filtered['year-month'].values[0]],
-                             y=[sf_filtered['averagekwh'].values[0]],
-                             mode="markers",
-                             marker=dict(color="blue", size=10),
-                             name="SF moving point"))
+    fig.add_trace(go.Scatter(
+        x=[sf_filtered['year-month'].values[0]],
+        y=[sf_filtered['averagekwh'].values[0]],
+        mode="markers",
+        marker=dict(color="blue", size=10),
+        name="SF moving point"))
 
-    fig.add_trace(go.Scatter(x=[sj_filtered['year-month'].values[0]],
-                             y=[sj_filtered['averagekwh'].values[0]],
-                             mode="markers",
-                             marker=dict(color="green", size=10),
-                             name="SJ moving point"))
+    fig.add_trace(go.Scatter(
+        x=[sj_filtered['year-month'].values[0]],
+        y=[sj_filtered['averagekwh'].values[0]],
+        mode="markers",
+        marker=dict(color="green", size=10),
+        name="SJ moving point"))
+    
+    fig.add_trace(go.Scatter(
+        x=[region_filtered['year-month'].values[0]],
+        y=[region_filtered['averagekwhdiff'].values[0]],
+        mode="markers",
+        marker=dict(color="red", size=10),
+        name="Regional Difference moving point"))
+    
+    
 
     # Set layout properties for the plot
     fig.update_layout(
@@ -272,25 +363,46 @@ def update_energy_line_plot(selected_month):
                                             "transition": {"duration": 500}}])])]
     )
 
+    # Colors
+    fig.update_layout(
+        paper_bgcolor='#ecf0f1',  # Outside the plot area background
+
+    )
+
     # Create frames for the animation
     frames = []
-    max_len = min(len(sf_filtered), len(sj_filtered))  # Ensure we loop over the shortest data length
+    max_len = min(len(sf_filtered), len(sj_filtered))
 
     for i in range(0, max_len):
         frame_data = [
             # Keep the lines static
-            go.Scatter(x=sf_filtered['year-month'], y=sf_filtered['averagekwh'],
-                       mode="lines", line=dict(color="blue")),
-            go.Scatter(x=sj_filtered['year-month'], y=sj_filtered['averagekwh'],
-                       mode="lines", line=dict(color="green")),
+            go.Scatter(x=sf_filtered['year-month'],
+                       y=sf_filtered['averagekwh'],
+                       mode="lines",
+                       line=dict(color="blue")),
+
+            go.Scatter(x=sj_filtered['year-month'],
+                       y=sj_filtered['averagekwh'],
+                       mode="lines",
+                       line=dict(color="green")),
+
+            go.Scatter(x=region_filtered['year-month'],
+                       y=region_filtered['averagekwhdiff'],
+                       mode="lines",
+                       line=dict(color="red")),
 
             # Update the position of the moving dots for both regions
             go.Scatter(x=[sf_filtered['year-month'].values[i]],
                        y=[sf_filtered['averagekwh'].values[i]],
                        mode="markers", marker=dict(color="blue", size=10)),
+
             go.Scatter(x=[sj_filtered['year-month'].values[i]],
                        y=[sj_filtered['averagekwh'].values[i]],
-                       mode="markers", marker=dict(color="green", size=10))
+                       mode="markers", marker=dict(color="green", size=10)),
+
+            go.Scatter(x=[region_filtered['year-month'].values[i]],
+                       y=[region_filtered['averagekwhdiff'].values[i]],
+                       mode="markers", marker=dict(color="red", size=10)),
         ]
         frames.append(go.Frame(data=frame_data, name=str(i)))
 

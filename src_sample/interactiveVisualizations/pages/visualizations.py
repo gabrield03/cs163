@@ -13,25 +13,6 @@ import dash_bootstrap_components as dbc
 sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
 sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
 
-### Preprocessing + pipeline ###
-sj_df['month_numeric'] = sj_df['month'].map({
-    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
-    'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
-    'Nov': 11, 'Dec': 12
-})
-sf_df['month_numeric'] = sf_df['month'].map({
-    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
-    'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
-    'Nov': 11, 'Dec': 12
-})
-
-# Combine sj and sf
-sj_df['region'] = 'San Jose'
-sf_df['region'] = 'San Francisco'
-
-
-
-
 # Descriptions for each plot
 sj_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
 sf_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
@@ -454,6 +435,23 @@ def update_sf_graph(option_selected):
     container = ''
     plot_title = ''
 
+    # Data processing
+    ## Preprocessing + pipeline ###
+    sj_df['month_numeric'] = sj_df['month'].map({
+        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
+        'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
+        'Nov': 11, 'Dec': 12
+    })
+    sf_df['month_numeric'] = sf_df['month'].map({
+        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
+        'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
+        'Nov': 11, 'Dec': 12
+    })
+
+    # Add region to SF
+    sj_df['region'] = 'San Jose'
+    sf_df['region'] = 'San Francisco'
+
     # Plot energy
     if 'average' in option_selected or 'total' in option_selected:
         if 'average' in option_selected:
@@ -662,7 +660,7 @@ def update_heatmap(selected_tab):
     heatmap_data = df.pivot_table(
         values = value_column, 
         index = 'year', 
-        columns = 'month_numeric', 
+        columns = 'month_numeric',
         aggfunc = 'mean'
     )
 
