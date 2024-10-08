@@ -2,6 +2,10 @@ import dash
 from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 
+import utils.data_pipeline
+import os
+import pickle
+
 layout = dbc.Container([
     dbc.Row([
         html.H1('Passage about the data analysis conducted:',

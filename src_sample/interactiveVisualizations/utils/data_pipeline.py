@@ -24,7 +24,7 @@ def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
             clean_data(df, pickle_filename_clean)
     
         else:
-            print(f"Failed to fetch {file_url}")
+            print(f'Failed to fetch {file_url}')
 
 # Clean and format the historical data
 def clean_data(df, pickle_filename_clean):
@@ -161,6 +161,7 @@ def clean_data(df, pickle_filename_clean):
         # Pickle the data
         df_monthly_weather.to_pickle(pickle_filename)
 
+# Combine the historical dfs
 def combine_historical_data(df1, df2, df3, df4):
     # Sort each df by year and month (month is categorical)
 
@@ -194,8 +195,7 @@ def combine_historical_data(df1, df2, df3, df4):
     sj_combined.to_pickle('sj_combined.pkl')
     sf_combined.to_pickle('sf_combined.pkl')
 
-
-
+# Find the differences between a column between dataframes
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     dff = sj_df.copy()
 
@@ -215,8 +215,6 @@ def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     dff = dff.reset_index(drop=True)
 
     return dff
-
-
 
 
 

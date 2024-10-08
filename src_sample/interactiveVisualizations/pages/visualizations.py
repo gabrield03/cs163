@@ -24,21 +24,22 @@ if os.path.exists('sf_combined.pkl'):
         sf_df = pickle.load(f)
 
 # Descriptions for each plot
-sj_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
-sf_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
-sj_averagekwh_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
-sf_averagekwh_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
+sj_averagekwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
+sf_averagekwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
+sj_averagekwh_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
+sf_averagekwh_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
 
-sj_totalkwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Jose over the months (kWh)."])
-sf_totalkwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram displays the distribution of total energy usage in San Francisco over the months (kWh)."])
+sj_totalkwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Jose over the months (kWh).'])
+sf_totalkwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Francisco over the months (kWh).'])
 
-sj_max_min_temp = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F)."])
-sf_max_min_temp = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F)."])
-sj_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F)."])
-sf_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F)."])
+sj_max_min_temp = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F).'])
+sf_max_min_temp = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F).'])
+sj_max_temp_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F).'])
+sf_max_temp_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F).'])
 
 
-# # Layout of the Dash app
+#### Define the Container Partitions ####
+# Visualizations page header
 visualizations_header = html.Div(
     [
         dbc.Row(
@@ -56,7 +57,7 @@ visualizations_header = html.Div(
     ]
 )
 
-# 1st row of plots - SJ Energy Usage and Temperature
+# Histogram plots - SJ
 sj_histplots_1 = html.Div(
     [
         dbc.Row(
@@ -79,7 +80,10 @@ sj_histplots_1 = html.Div(
                             ],
                             multi = False,
                             value = 'averagekwh',
-                            style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                            style = {
+                                'backgroundColor': '#bdc3c7',
+                                'color': '#2c3e50'
+                            }, 
                         ),
                     ],
                     width = {'size': 3}, className = 'mb-2'
@@ -109,7 +113,7 @@ sj_histplots_1 = html.Div(
                             id = 'sj_output_container',
                             children = [],
                             style = {
-                                'color': '#0f0f0f', # text color
+                                'color': '#0f0f0f',
                                 # other stuff width, height, background-color, etc.
                             },
                         ),
@@ -121,7 +125,7 @@ sj_histplots_1 = html.Div(
     className = 'mb-5',
 )
 
-# 2nd row of plots - SF Energy Usage and Temperature
+# Histogram plots - SF
 sf_histplots_1 = html.Div(
     [
         dbc.Row(
@@ -144,7 +148,10 @@ sf_histplots_1 = html.Div(
                             ],
                             multi = False,
                             value = 'averagekwh',
-                            style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
+                            style={
+                                'backgroundColor': '#bdc3c7',
+                                'color': '#2c3e50'
+                            }, 
                         ),
                     ],
                     width = {'size': 3}, className = 'mb-2',
@@ -174,9 +181,9 @@ sf_histplots_1 = html.Div(
                             id = 'sf_output_container',
                             children = [],
                             style = {
-                                'color': '#0f0f0f', # text color
+                                'color': '#0f0f0f',
                                 # other stuff width, height, background-color, etc.
-                                },
+                            },
                         ),
                     ],
                 ), 
@@ -186,7 +193,7 @@ sf_histplots_1 = html.Div(
     className = 'mb-5',
 )
 
-# 3rd row of plots - Both Regions Average Energy Usage and AverageMax Temperature
+# Heatmap plots - Both regions
 comb_heatmaps = html.Div(
     [
         dbc.Row(
@@ -207,26 +214,53 @@ comb_heatmaps = html.Div(
                                 dcc.Tab(
                                     label = 'SJ Average kWh',
                                     value = 'sj_avgkwh',
-                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
-                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},
+                                    style = {
+                                        'backgroundColor': '#bdc3c7',
+                                        'color': '#2c3e50'
+                                    }, 
+                                    selected_style={
+                                        'backgroundColor': '#1abc9c',
+                                        'color': '#2c3e50'
+                                    },
                                 ),
+
                                 dcc.Tab(
                                     label = 'SF Average kWh',
                                     value = 'sf_avgkwh',
-                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
-                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},
+                                    style = {
+                                        'backgroundColor': '#bdc3c7',
+                                        'color': '#2c3e50'
+                                    }, 
+                                    selected_style = {
+                                        'backgroundColor': '#1abc9c',
+                                        'color': '#2c3e50'
+                                    },
                                 ),
+
                                 dcc.Tab(
                                     label = 'SJ Max Temp',
                                     value = 'sj_tmax',
-                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
-                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},
+                                    style = {
+                                        'backgroundColor': '#bdc3c7',
+                                        'color': '#2c3e50'
+                                    }, 
+                                    selected_style = {
+                                        'backgroundColor': '#1abc9c',
+                                        'color': '#2c3e50'
+                                    },
                                 ),
+
                                 dcc.Tab(
                                     label = 'SF Max Temp',
                                     value = 'sf_tmax',
-                                    style={'backgroundColor': '#bdc3c7', 'color': '#2c3e50'}, 
-                                    selected_style={'backgroundColor': '#1abc9c', 'color': '#2c3e50'},
+                                    style = {
+                                        'backgroundColor': '#bdc3c7',
+                                        'color': '#2c3e50'
+                                    }, 
+                                    selected_style = {
+                                        'backgroundColor': '#1abc9c',
+                                        'color': '#2c3e50'
+                                    },
                                 ),
                             ],
                         ),
@@ -259,9 +293,9 @@ comb_heatmaps = html.Div(
                             id = 'heatmap_output_container',
                             children = [],
                             style = {
-                                'color': '#0f0f0f', # text color
+                                'color': '#0f0f0f',
                                 # other stuff width, height, background-color, etc.
-                                },
+                            },
                         ),
                     ],
                 ), 
@@ -271,6 +305,7 @@ comb_heatmaps = html.Div(
     className = 'mb-5',
 )
 
+# Add the contents to the app layout
 layout = dbc.Container(
     [
         visualizations_header,
@@ -281,13 +316,16 @@ layout = dbc.Container(
     fluid = True
 )
 
-# Connect the Plotly graphs with Dash Components
-## Plots 1 - SJ
+#### Plots ####
+# Callback for SJ Histograms
 @callback(
-    [Output(component_id = 'sj_output_container', component_property = 'children'),
-     Output(component_id = 'sj_data', component_property = 'figure')],
-    [Input(component_id = 'select_sj_option', component_property = 'value')]
+    [
+        Output(component_id = 'sj_output_container', component_property = 'children'),
+        Output(component_id = 'sj_data', component_property = 'figure')
+    ],
+    Input(component_id = 'select_sj_option', component_property = 'value')
 )
+# Function for SJ Histograms
 def update_sj_graph(option_selected):
     container = ''
     plot_title = ''
@@ -312,7 +350,7 @@ def update_sj_graph(option_selected):
 
             container = sj_totalkwh
 
-        # Create histogram
+        # Create histogram - using try except because of strange non-rendering error
         try:
             fig = px.histogram(
                 sj_df,
@@ -468,12 +506,15 @@ def update_sj_graph(option_selected):
         return container, fig
 
 
-## Plots 2 - SF
+# Callback for SF histograms
 @callback(
-    [Output(component_id = 'sf_output_container', component_property = 'children'),
-     Output(component_id = 'sf_data', component_property = 'figure')],
-    [Input(component_id = 'select_sf_option', component_property = 'value')]
+    [
+        Output(component_id = 'sf_output_container', component_property = 'children'),
+        Output(component_id = 'sf_data', component_property = 'figure')
+    ],
+    Input(component_id = 'select_sf_option', component_property = 'value')
 )
+# Function for SF Histograms
 def update_sf_graph(option_selected):
     container = ''
     plot_title = ''
@@ -646,13 +687,15 @@ def update_sf_graph(option_selected):
         return container, fig
 
 
-# SJ Heatmap
-# Callback to update heatmap
+# Callback for heatmaps
 @callback(
-    [Output(component_id = 'heatmap_output_container', component_property = 'children'),
-     Output('heatmap', 'figure')],
-     Input('heatmap-tabs', 'value')
+    [
+        Output(component_id = 'heatmap_output_container', component_property = 'children'),
+        Output('heatmap', 'figure')
+    ],
+    Input('heatmap-tabs', 'value')
 )
+# Function for heatmaps
 def update_heatmap(selected_tab):
     color_scale = 'Aggrnyl'
     container = ''
