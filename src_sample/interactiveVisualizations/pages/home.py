@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-from utils.data_preprocessing import load_and_preprocess_data, fill_sf, find_regional_diff
+from utils.data_preprocessing import load_and_preprocess_data, find_regional_diff#, fill_sf
 
 home_header = html.Div(
     [
