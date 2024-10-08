@@ -30,24 +30,24 @@ def load_and_preprocess_data():
 
     return sj_dff, sf_dff
 
-def fill_sf(df):
-    dff = df.copy()
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+# def fill_sf(df):
+#     dff = df.copy()
+#     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    for month in months:
-        # Filter data for the current month and the year 2014
-        sf_month_2014 = dff[(dff['month'] == month) & (dff['year'] == 2014)].copy()
+#     for month in months:
+#         # Filter data for the current month and the year 2014
+#         sf_month_2014 = dff[(dff['month'] == month) & (dff['year'] == 2014)].copy()
         
-        # Modify the year to 2013 for this data
-        sf_month_2014['year'] = 2013
+#         # Modify the year to 2013 for this data
+#         sf_month_2014['year'] = 2013
         
-        # Append this "filler" data to the dataframe
-        dff = pd.concat([dff, sf_month_2014], ignore_index=True)
+#         # Append this "filler" data to the dataframe
+#         dff = pd.concat([dff, sf_month_2014], ignore_index=True)
 
-    # Sort the dataframe by year to maintain the chronological order
-    dff.sort_values(by='year', inplace=True)
+#     # Sort the dataframe by year to maintain the chronological order
+#     dff.sort_values(by='year', inplace=True)
 
-    return dff
+#     return dff
 
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     dff = sj_df.copy()
