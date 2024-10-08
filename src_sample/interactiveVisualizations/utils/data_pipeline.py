@@ -5,6 +5,7 @@ from io import StringIO
 import os
 import pickle
 
+# Fetch the historical data
 def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
 
     # Check if the data already exists (is pickled)
@@ -25,8 +26,7 @@ def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
         else:
             print(f"Failed to fetch {file_url}")
 
-
-#### NEED TO CLEAN THE DATA NEXT ####
+# Clean and format the historical data
 def clean_data(df, pickle_filename_clean):
     # Month mapping for month-numeric column
     month_dict = {
@@ -86,15 +86,15 @@ def clean_data(df, pickle_filename_clean):
         # May need to make them 0
 
         sj_energy_df.to_pickle('sj_energy_df.pkl')
-        sj_energy_df.to_pickle('sf_energy_df.pkl')
+        sf_energy_df.to_pickle('sf_energy_df.pkl')
 
 
-    elif len(pickle_filename_clean) == 1 and os.path.exists(pickle_filename_clean):
+    elif len(pickle_filename_clean) == 1 and os.path.exists(pickle_filename_clean[0]):
         if 'sj' in pickle_filename_clean:
-            with open(pickle_filename_clean, 'rb') as f:
+            with open(pickle_filename_clean[0], 'rb') as f:
                 sj_weather_df = pickle.load(f)
         else:
-            with open(pickle_filename_clean, 'rb') as f:
+            with open(pickle_filename_clean[0], 'rb') as f:
                 sf_weather_df = pickle.load(f)
 
     # Weather data - pkl not created
@@ -164,46 +164,46 @@ def clean_data(df, pickle_filename_clean):
         df_monthly_weather.to_pickle(pickle_filename)
 
 def combine_historical_data(df1, df2, df3, df4):
-    # do something
-    return 1
+    # Sort each df by year and month (month is categorical)
 
-repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', 'sj_weather_df.pkl'],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', 'sf_weather_df.pkl']
-}
+    # sj_energy_df: 2013-01 to 2024-06 - 138 records
+    df1.sort_values(by = ['year', 'month'], inplace = True)
+    df1.reset_index(drop = True, inplace = True)
 
-# Fetch and clean the historical data
-for url, pickle_filenames in repo_urls.items():
-    fetch_historical_data(url, pickle_filenames[0], pickle_filenames[1])
+    # sf_energy_df: 2013-01 to 2024-06 - 138 records
+    df2.sort_values(by = ['year', 'month'], inplace = True)
+    df2.reset_index(drop = True, inplace = True)
+
+    # sj_weather_df: 2013-01 to 2024-09 - 144 records
+    df3.sort_values(by = ['year', 'month'], inplace = True)
+    df3.reset_index(drop = True, inplace = True)
+
+    # sf_weather_df: 2013-08 to 2024-09 - 134 records
+    df4.sort_values(by = ['year', 'month'], inplace = True)
+    df4.reset_index(drop = True, inplace = True)
+
+    
+    # Combine sj energy and weather dfs - drop redundant columns and rename
+    sj_combined = pd.merge(df1, df3, on = ['year', 'month'], how = 'inner')
+    sj_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
+    sj_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
+
+    # Combine sf energy and weather dfs - drop redundant columns and rename
+    sf_combined = pd.merge(df2, df4, on = ['year', 'month'], how = 'inner')
+    sf_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
+    sf_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
+
+    sj_combined.to_pickle('sj_combined.pkl')
+    sf_combined.to_pickle('sf_combined.pkl')
+
+    # print(sj_combined)
+
+    # print("\n\n", sf_combined)
 
 
-# Combine the historical data
-if os.path.exists('sj_energy_df.pkl') and os.path.exists('sf_energy_df.pkl') and os.path.exists('sj_weather_df.pkl') and os.path.exists('sf_weather_df.pkl'):
-    df1 = ''
-    df2 = ''
-    df3 = ''
-    df4 = ''
-
-    with open('sj_energy_df.pkl', 'rb') as f:
-            df1 = pickle.load(f)
-    with open('sf_energy_df.pkl', 'rb') as f:
-            df2 = pickle.load(f)
-    with open('sj_weather_df.pkl', 'rb') as f:
-            df3 = pickle.load(f)
-    with open('sf_weather_df.pkl', 'rb') as f:
-            df4 = pickle.load(f)
-
-    if len(df1) != 0 and len(df2) != 0 and len(df3) != 0 and len(df4) != 0:
-        combine_historical_data(df1, df2, df3, df4)
-    else:
-        print('Some error occurred while loading clean data')
     
 
 
-#### THIS WILL REPLACE LOAD_AND_PREPROCESS_DATA ####
-def load_cleaned_data():
-    return 1
 
 def load_and_preprocess_data():
     # Load the data from github
@@ -320,3 +320,37 @@ def combine_regions(df1, df2):
     )
 
     return combined_df
+
+
+### Code to fetch, process, and save the historical data ###
+repo_urls = {
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', ['sj_weather_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', ['sf_weather_df.pkl']]
+}
+
+# Fetch and clean the historical data
+for url, pickle_filenames in repo_urls.items():
+    fetch_historical_data(url, pickle_filenames[0], pickle_filenames[1])
+
+
+# Combine the historical data
+if os.path.exists('sj_energy_df.pkl') and os.path.exists('sf_energy_df.pkl') and os.path.exists('sj_weather_df.pkl') and os.path.exists('sf_weather_df.pkl'):
+    df1 = ''
+    df2 = ''
+    df3 = ''
+    df4 = ''
+
+    with open('sj_energy_df.pkl', 'rb') as f:
+            df1 = pickle.load(f)
+    with open('sf_energy_df.pkl', 'rb') as f:
+            df2 = pickle.load(f)
+    with open('sj_weather_df.pkl', 'rb') as f:
+            df3 = pickle.load(f)
+    with open('sf_weather_df.pkl', 'rb') as f:
+            df4 = pickle.load(f)
+
+    if len(df1) != 0 and len(df2) != 0 and len(df3) != 0 and len(df4) != 0:
+        combine_historical_data(df1, df2, df3, df4)
+    else:
+        print('Some error occurred while loading clean data')

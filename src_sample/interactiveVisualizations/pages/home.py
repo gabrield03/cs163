@@ -9,7 +9,9 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-from utils.data_pipeline import load_and_preprocess_data, find_regional_diff
+from utils.data_pipeline import find_regional_diff
+import os
+import pickle
 
 home_header = html.Div(
     [
@@ -194,8 +196,18 @@ animated_plot_1 = html.Div(
 )
 
 ### Load Data ###
-sj_df, sf_df = load_and_preprocess_data()
+sj_df = ''
+sf_df = ''
+if os.path.exists('sj_combined.pkl'):
+    with open('sj_combined.pkl', 'rb') as f:
+        sj_df = pickle.load(f)
+
+if os.path.exists('sf_combined.pkl'):
+    with open('sf_combined.pkl', 'rb') as f:
+        sf_df = pickle.load(f)
+
 region_avgkwhdiff = find_regional_diff(sj_df, sf_df, 'averagekwh', 'averagekwhdiff')
+
 
 
 ### Plot Descriptions ###
