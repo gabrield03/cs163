@@ -9,7 +9,7 @@ from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-from utils.data_preprocessing import load_and_preprocess_data
+from utils.data_pipeline import load_and_preprocess_data
 
 #### Load Data ###
 sj_df, sf_df = load_and_preprocess_data()

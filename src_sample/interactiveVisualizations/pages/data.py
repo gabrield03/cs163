@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 
 import pandas as pd
 
-from utils.data_preprocessing import load_and_preprocess_data, combine_regions
+from utils.data_pipeline import load_and_preprocess_data, combine_regions
 
 # Import data
 sj_df, sf_df = load_and_preprocess_data()
