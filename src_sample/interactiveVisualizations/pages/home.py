@@ -206,10 +206,6 @@ if os.path.exists('sf_combined.pkl'):
     with open('sf_combined.pkl', 'rb') as f:
         sf_df = pickle.load(f)
 
-region_avgkwhdiff = find_regional_diff(sj_df, sf_df, 'averagekwh', 'averagekwhdiff')
-
-
-
 ### Plot Descriptions ###
 comb_energy_jan = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of January."])
 comb_energy_feb = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This animated plot shows the average energy usage in both SJ and SF regions for the month of February."])
@@ -274,6 +270,16 @@ def update_energy_line_plot(selected_month):
     # Filter data for the selected month
     sf_filtered = sf_df[sf_df['month'] == selected_month]
     sj_filtered = sj_df[sj_df['month'] == selected_month]
+
+    # Remove Jan - Jul for sj_filtered if year is 2013
+    sj_filtered = sj_filtered.loc[~((sj_filtered['year'] == 2013) & (sj_filtered['month-numeric'].between(1, 7)))]
+
+    # Reset the index after dropping rows
+    sj_filtered = sj_filtered.reset_index(drop=True)
+
+    # Find the regional differences in averagekwh
+    region_avgkwhdiff = find_regional_diff(sj_filtered, sf_filtered, 'averagekwh', 'averagekwhdiff')
+
     region_filtered = region_avgkwhdiff[region_avgkwhdiff['month'] == selected_month]
 
     fig = go.Figure()
@@ -347,147 +353,53 @@ def update_energy_line_plot(selected_month):
     frames = []
     max_len = min(len(sf_filtered), len(sj_filtered))
 
-    if '2013' not in sf_filtered['year-month'].values[0]:
-        for i in range(0, max_len+1):
-            if i == 0:
-                frame_data = [
-                    # Keep the lines static
-                    go.Scatter(
-                        x=sf_filtered['year-month'],
-                        y=sf_filtered['averagekwh'],
-                        mode="lines",
-                        line=dict(color="blue"),
-                    ),
+    for i in range(0, max_len):
+        frame_data = [
+            # Keep the lines static
+            go.Scatter(
+                x=sf_filtered['year-month'],
+                y=sf_filtered['averagekwh'],
+                mode="lines",
+                line=dict(color="blue"),
+            ),
 
-                    go.Scatter(
-                        x=sj_filtered['year-month'],
-                        y=sj_filtered['averagekwh'],
-                        mode="lines",
-                        line=dict(color="green"),
-                    ),
+            go.Scatter(
+                x=sj_filtered['year-month'],
+                y=sj_filtered['averagekwh'],
+                mode="lines",
+                line=dict(color="green"),
+            ),
 
-                    go.Scatter(
-                        x=region_filtered['year-month'],
-                        y=region_filtered['averagekwhdiff'],
-                        mode="lines",
-                        line=dict(color="red"),
-                    ),
-                    
-                    go.Scatter(
-                        x=[sf_filtered['year-month'].values[i]],
-                        y=[sf_filtered['averagekwh'].values[i]],
-                        mode="markers",
-                        marker=dict(color="blue", size=10),
-                    ),
+            go.Scatter(
+                x=region_filtered['year-month'],
+                y=region_filtered['averagekwhdiff'],
+                mode="lines",
+                line=dict(color="red"),
+            ),
 
-                    go.Scatter(
-                        x=[sj_filtered['year-month'].values[i]],
-                        y=[sj_filtered['averagekwh'].values[i]],
-                        mode="markers",
-                        marker=dict(color="green", size=10),
-                    ),
-                
-                    go.Scatter(
-                        x=[region_filtered['year-month'].values[i]],
-                        y=[region_filtered['averagekwhdiff'].values[i]],
-                        mode="markers",
-                        marker=dict(color="red", size=10),
-                    ),
-                ]
-                frames.append(go.Frame(data=frame_data, name=str(i)))
-            else:
-                frame_data = [
-                    go.Scatter(
-                        x=sf_filtered['year-month'],
-                            y=sf_filtered['averagekwh'],
-                            mode="lines",
-                            line=dict(color="blue"),
-                        ),
+            # Update the position of the moving dots for both regions
+            go.Scatter(
+                x=[sf_filtered['year-month'].values[i]],
+                y=[sf_filtered['averagekwh'].values[i]],
+                mode="markers",
+                marker=dict(color="blue", size=10),
+            ),
 
-                    go.Scatter(
-                        x=sj_filtered['year-month'],
-                        y=sj_filtered['averagekwh'],
-                        mode="lines",
-                        line=dict(color="green"),
-                    ),
+            go.Scatter(
+                x=[sj_filtered['year-month'].values[i]],
+                y=[sj_filtered['averagekwh'].values[i]],
+                mode="markers",
+                marker=dict(color="green", size=10),
+            ),
 
-                    go.Scatter(
-                        x=region_filtered['year-month'],
-                        y=region_filtered['averagekwhdiff'],
-                        mode="lines",
-                        line=dict(color="red"),
-                    ),
-                    
-                    go.Scatter(
-                        x=[sf_filtered['year-month'].values[i-1]],
-                        y=[sf_filtered['averagekwh'].values[i-1]],
-                        mode="markers",
-                        marker=dict(color="blue", size=10),
-                    ),
-
-                    go.Scatter(
-                        x=[sj_filtered['year-month'].values[i]],
-                        y=[sj_filtered['averagekwh'].values[i]],
-                        mode="markers",
-                        marker=dict(color="green", size=10),
-                    ),
-                
-                    go.Scatter(
-                        x=[region_filtered['year-month'].values[i]],
-                        y=[region_filtered['averagekwhdiff'].values[i]],
-                        mode="markers",
-                        marker=dict(color="red", size=10),
-                    ),
-                ]
-                frames.append(go.Frame(data=frame_data, name=str(i)))
-    else:
-        for i in range(0, max_len):
-            frame_data = [
-                # Keep the lines static
-                go.Scatter(
-                    x=sf_filtered['year-month'],
-                    y=sf_filtered['averagekwh'],
-                    mode="lines",
-                    line=dict(color="blue"),
-                ),
-
-                go.Scatter(
-                    x=sj_filtered['year-month'],
-                    y=sj_filtered['averagekwh'],
-                    mode="lines",
-                    line=dict(color="green"),
-                ),
-
-                go.Scatter(
-                    x=region_filtered['year-month'],
-                    y=region_filtered['averagekwhdiff'],
-                    mode="lines",
-                    line=dict(color="red"),
-                ),
-
-                # Update the position of the moving dots for both regions
-                go.Scatter(
-                    x=[sf_filtered['year-month'].values[i]],
-                    y=[sf_filtered['averagekwh'].values[i]],
-                    mode="markers",
-                    marker=dict(color="blue", size=10),
-                ),
-
-                go.Scatter(
-                    x=[sj_filtered['year-month'].values[i]],
-                    y=[sj_filtered['averagekwh'].values[i]],
-                    mode="markers",
-                    marker=dict(color="green", size=10),
-                ),
-
-                go.Scatter(
-                    x=[region_filtered['year-month'].values[i]],
-                    y=[region_filtered['averagekwhdiff'].values[i]],
-                    mode="markers",
-                    marker=dict(color="red", size=10),
-                ),
-            ]
-            frames.append(go.Frame(data=frame_data, name=str(i)))
+            go.Scatter(
+                x=[region_filtered['year-month'].values[i]],
+                y=[region_filtered['averagekwhdiff'].values[i]],
+                mode="markers",
+                marker=dict(color="red", size=10),
+            ),
+        ]
+        frames.append(go.Frame(data=frame_data, name=str(i)))
 
     fig.update(frames=frames)
 

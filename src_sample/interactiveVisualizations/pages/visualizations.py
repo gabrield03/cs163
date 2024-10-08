@@ -9,10 +9,19 @@ from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
-from utils.data_pipeline import load_and_preprocess_data
+import os
+import pickle
 
-#### Load Data ###
-sj_df, sf_df = load_and_preprocess_data()
+### Load Data ###
+sj_df = ''
+sf_df = ''
+if os.path.exists('sj_combined.pkl'):
+    with open('sj_combined.pkl', 'rb') as f:
+        sj_df = pickle.load(f)
+
+if os.path.exists('sf_combined.pkl'):
+    with open('sf_combined.pkl', 'rb') as f:
+        sf_df = pickle.load(f)
 
 # Descriptions for each plot
 sj_averagekwh = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
@@ -28,9 +37,6 @@ sf_max_min_temp = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), 
 sj_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F)."])
 sf_max_temp_heat = html.P([html.Br(), html.Br(), "Plot Description:", html.Br(), html.Br(), "This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F)."])
 
-
-
-### End preprocessing data ###
 
 # # Layout of the Dash app
 visualizations_header = html.Div(
@@ -581,7 +587,7 @@ def update_sf_graph(option_selected):
         )
 
         # Calculate tmax KDE
-        tmax_kde = gaussian_kde(['tmax'].dropna())
+        tmax_kde = gaussian_kde(sf_df['tmax'].dropna())
         tmax_range = np.linspace(sf_df['tmax'].min(), sf_df['tmax'].max(), 100)
 
         # Add tmax KDE line
@@ -650,6 +656,7 @@ def update_sf_graph(option_selected):
 def update_heatmap(selected_tab):
     color_scale = 'Aggrnyl'
     container = ''
+    df = ''
 
     # Choose dataset based on clicked tab
     if selected_tab == 'sj_avgkwh':
@@ -682,8 +689,9 @@ def update_heatmap(selected_tab):
     heatmap_data = df.pivot_table(
         values = value_column, 
         index = 'year', 
-        columns = 'month_numeric',
-        aggfunc = 'mean'
+        columns = 'month',
+        aggfunc = 'mean',
+        observed = False
     )
 
     # Generate the heatmap
@@ -695,7 +703,7 @@ def update_heatmap(selected_tab):
             color = value_column
         ),
         x = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        y = sorted(df['year'].unique(), reverse = True),
+        y = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
         color_continuous_scale = color_scale
     )
 

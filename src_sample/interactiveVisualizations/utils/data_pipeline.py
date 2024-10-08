@@ -81,10 +81,7 @@ def clean_data(df, pickle_filename_clean):
         sj_energy_df['region'] = 'San Jose'
         sf_energy_df['region'] = 'San Francisco'
 
-    
-        # We have NaN values from 2024-07 to 2024-12
-        # May need to make them 0
-
+        # Pickle the data
         sj_energy_df.to_pickle('sj_energy_df.pkl')
         sf_energy_df.to_pickle('sf_energy_df.pkl')
 
@@ -161,6 +158,7 @@ def clean_data(df, pickle_filename_clean):
         # Convert month to categorical
         df_monthly_weather['month'] = pd.Categorical(df_monthly_weather['month'], categories=ordered_months, ordered=True)
 
+        # Pickle the data
         df_monthly_weather.to_pickle(pickle_filename)
 
 def combine_historical_data(df1, df2, df3, df4):
@@ -196,43 +194,7 @@ def combine_historical_data(df1, df2, df3, df4):
     sj_combined.to_pickle('sj_combined.pkl')
     sf_combined.to_pickle('sf_combined.pkl')
 
-    # print(sj_combined)
 
-    # print("\n\n", sf_combined)
-
-
-    
-
-
-
-def load_and_preprocess_data():
-    # Load the data from github
-    sj_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SJ_Combined.csv')
-    sf_df = pd.read_csv('https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/SF_Combined.csv')
-
-    # Drop missing and NA values
-    sj_dff = sj_df.dropna()
-    sf_dff = sf_df.dropna()
-
-    # Add the region columns
-    sj_dff['region'] = 'San Jose'
-    sf_dff['region'] = 'San Francisco'
-
-
-    # Add month-numeric to each dataset
-    sj_dff['month_numeric'] = sj_dff['month'].map({
-        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
-        'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
-        'Nov': 11, 'Dec': 12
-    })
-
-    sf_dff['month_numeric'] = sf_dff['month'].map({
-        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
-        'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
-        'Nov': 11, 'Dec': 12
-    })
-
-    return sj_dff, sf_dff
 
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     dff = sj_df.copy()
@@ -255,71 +217,7 @@ def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     return dff
 
 
-def combine_regions(df1, df2):
-    # Reshape sj_df to include temperature and energy columns
-    df1_melted_temp = pd.melt(
-        df1,
-        id_vars = [
-            'zipcode', 'month', 'year', 'customerclass', 
-            'combined', 'totalcustomers', 'totalkwh', 
-            'averagekwh', 'year-month',
-            'awnd', 'prcp', 'wdf2', 'wdf5', 'wsf2', 'wsf5', 'region'
-        ],
-        value_vars = ['tmax', 'tmin'], 
-        var_name = 'temp_type', 
-        value_name = 'temp'
-    )
 
-    df1_melted_energy = pd.melt(
-        df1_melted_temp,
-        id_vars = [
-            'zipcode', 'month', 'year', 'customerclass', 
-            'combined', 'totalcustomers', 'year-month', 
-            'awnd', 'prcp', 'wdf2', 'wdf5',
-            'wsf2', 'wsf5', 'region', 'temp_type', 'temp'
-        ],
-        value_vars = ['totalkwh', 'averagekwh'], 
-        var_name = 'energy_type', 
-        value_name = 'energy'
-    )
-
-    # Reshape sf_df to include temperature and energy columns
-    df2_melted_temp = pd.melt(
-        df2,
-        id_vars = [
-            'zipcode', 'month', 'year', 'customerclass', 
-            'combined', 'totalcustomers', 'totalkwh',
-            'averagekwh', 'year-month', 'prcp', 'region'
-        ],
-        value_vars = ['tmax', 'tmin'], 
-        var_name = 'temp_type', 
-        value_name = 'temp'
-    )
-
-    df2_melted_energy = pd.melt(
-        df2_melted_temp,
-        id_vars = [
-            'zipcode', 'month', 'year', 'customerclass', 
-            'combined', 'totalcustomers', 'year-month',
-            'prcp', 'region', 'temp_type', 'temp'
-        ],
-        value_vars = ['totalkwh', 'averagekwh'], 
-        var_name = 'energy_type', 
-        value_name = 'energy'
-    )
-
-    # Combine both dataframes
-    combined_df = pd.concat([df1_melted_energy, df2_melted_energy], ignore_index = True)
-
-    combined_df['month_numeric'] = combined_df['month'].map(
-        {
-        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 
-        'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 
-        'Nov': 11, 'Dec': 12
-        }
-    )
-
-    return combined_df
 
 
 ### Code to fetch, process, and save the historical data ###
