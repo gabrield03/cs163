@@ -307,13 +307,22 @@ def update_sj_graph(option_selected):
             container = sj_totalkwh
 
         # Create histogram
-        fig = px.histogram(
-            sj_df,
-            x = column,
-            nbins = 40,
-            title = plot_title,
-            color_discrete_sequence = [color],
-        )
+        try:
+            fig = px.histogram(
+                sj_df,
+                x = column,
+                nbins = 40,
+                title = plot_title,
+                color_discrete_sequence = [color],
+            )
+        except:
+            fig = px.histogram(
+                sj_df,
+                x = column,
+                nbins = 40,
+                title = plot_title,
+                color_discrete_sequence = [color],
+            )
 
         # Update the figure to set white outlines for the bars
         fig.update_traces(
