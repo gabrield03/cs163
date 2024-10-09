@@ -116,6 +116,7 @@ intro_content = html.Div(
             },
         ),
     ],
+    className = 'mb-5',
 )
 
 # Home page animated line plot by month
@@ -461,7 +462,7 @@ def update_energy_line_plot(selected_month):
     
     # Set layout properties for the plot
     fig.update_layout(
-        title = f'Average Energy Usage (kWh) for {selected_month} (Animated)',
+        title = f'Average Energy Usage for {selected_month}',
         xaxis_title = 'Year-Month',
         yaxis_title = 'Avg Energy Usage (kWh)',
         xaxis_range = ['2012', '2025'],

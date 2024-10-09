@@ -45,7 +45,7 @@ data_table1 = html.Div(
                     html.H3(
                         'San Jose Data'
                     ),
-                    width = 10,
+                    width = 12,
                     className = 'mb-2 text-center',
                 ),
             ],
@@ -68,7 +68,7 @@ data_table1 = html.Div(
                             },
                         ),
                     ],
-                    width = 10,
+                    width = 12,
                 ),
             ],
             style = {'marginBottom': '30px'}, 
@@ -84,7 +84,7 @@ data_table2 = html.Div(
                     html.H3(
                         'San Francisco Data'
                     ),
-                    width = 10,
+                    width = 12,
                     className = 'mb-2 text-center',
                 ),
             ],
@@ -107,7 +107,7 @@ data_table2 = html.Div(
                             },
                         ),
                     ],
-                    width = 10,
+                    width = 12,
                 ),
             ],
             style = {'marginBottom': '30px'}, 
