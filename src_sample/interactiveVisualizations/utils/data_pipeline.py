@@ -4,6 +4,7 @@ import requests
 from io import StringIO
 import os
 import pickle
+from dash.dash_table.Format import Format, Scheme
 
 # Fetch the historical data
 def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
@@ -215,6 +216,25 @@ def find_regional_diff(sj_df, sf_df, diffCol, newCol):
     dff = dff.reset_index(drop=True)
 
     return dff
+
+# Function to auto-format numerical columns
+def format_columns(df):
+    exclude_columns = ['zipcode', 'year', 'totalcustomers', 'averagekwh', 'month-numeric', 'totalkwh']
+    columns = []
+
+    for col in df.columns:
+        if pd.api.types.is_numeric_dtype(df[col]) and col not in exclude_columns:
+            columns.append({
+                'name': col,
+                'id': col,
+                'type': 'numeric',
+                'format': Format(precision = 3, scheme = Scheme.fixed)
+            })
+        else:
+            columns.append({'name': col, 'id': col})
+
+    return columns
+
 
 
 

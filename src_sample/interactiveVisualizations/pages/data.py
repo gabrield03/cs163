@@ -3,6 +3,7 @@ from dash import html, dash_table, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 
 import pandas as pd
+from utils.data_pipeline import format_columns
 
 import os
 import pickle
@@ -57,7 +58,7 @@ data_table1 = html.Div(
                     [
                         dash_table.DataTable(
                             sj_df.to_dict('records'),
-                            [{'name': i, 'id': i} for i in sj_df.columns],
+                            columns = format_columns(sj_df),
                             page_size = PAGE_SIZE,
                             style_table = {'overflowX': 'auto'},
                             style_data = {'backgroundColor': '#ecf0f1'},
@@ -96,7 +97,7 @@ data_table2 = html.Div(
                     [
                         dash_table.DataTable(
                             sf_df.to_dict('records'),
-                            [{'name': i, 'id': i} for i in sf_df.columns],
+                            columns = format_columns(sf_df),
                             page_size = PAGE_SIZE,
                             style_table = {'overflowX': 'auto'},
                             style_data = {'backgroundColor': '#ecf0f1'},

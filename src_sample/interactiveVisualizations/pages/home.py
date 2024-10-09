@@ -326,6 +326,12 @@ animated_plot_1 = html.Div(
     className = 'mb-5',
 )
 
+# loop_interval = dcc.Interval(
+#     id = 'interval-component',
+#     interval = 13750,
+#     n_intervals = 22,
+# )
+
 table_content = html.Div(id = 'table-content')
 
 # Add the contents to the layout
@@ -336,6 +342,7 @@ layout = dbc.Container(
         intro_text,
         intro_content,
         animated_plot_1,
+        # loop_interval,
     ],
     fluid = True
 )
@@ -347,10 +354,14 @@ layout = dbc.Container(
         Output('animated_output_container', 'children'),
         Output('combined_energy_line_by_mo', 'figure')
     ],
-    Input('animated-plot-tabs', 'value')
+    [
+        Input('animated-plot-tabs', 'value'),
+        # Input('interval-component', 'n_intervals')
+    ]
 )
 # Animated plot function
 def update_energy_line_plot(selected_month):
+# def update_energy_line_plot(selected_month, n):
     container = ''
 
     # Dictionary mapping months to corresponding containers
@@ -471,19 +482,45 @@ def update_energy_line_plot(selected_month):
                 type = 'buttons',
                 buttons = [
                     dict(
-                        label = 'Play',
+                        label = 'Play the animation',
                         method = 'animate',
                         args = [
                             None,
                             {
-                                'frame': {'duration': 500, 'redraw': False},
+                                'frame': {
+                                    'duration': 500,
+                                    'redraw': False,
+                                },
+                                'mode': 'immediate',
                                 'fromcurrent': True,
-                                'transition': {'duration': 750},
-                                'loop': True,
+                                'transition': {'duration': 500},
+                            },
+                        ],
+                    ),
+                    dict(
+                        label = 'Pause the animation',
+                        method = 'animate',
+                        args = [
+                            None,
+                            {
+                                'frame': {
+                                    'duration': 0,
+                                    'redraw': True
+                                },
+                                'mode': 'immediate',
+                                'fromcurrent': True,
+                                'transition': {'duration': 0},
                             },
                         ],
                     ),
                 ],
+                direction = 'left',
+                pad = {'r': 50, 't': 50},
+                showactive = False,
+                x = 0.31,
+                xanchor = 'right',
+                y = 0,
+                yanchor = 'top',
             ),
         ],
         paper_bgcolor='#ecf0f1',  # Outside the plot area background
