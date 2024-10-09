@@ -41,9 +41,14 @@ data_table1 = html.Div(
     [
         dbc.Row(
             [
-                html.H3('SJ Data Table'),
+                dbc.Col(
+                    html.H3(
+                        'San Jose Data'
+                    ),
+                    width = 10,
+                    className = 'mb-2 text-center',
+                ),
             ],
-            className = 'mb-2 text-center',
         ),
 
         dbc.Row(
@@ -52,9 +57,15 @@ data_table1 = html.Div(
                     [
                         dash_table.DataTable(
                             sj_df.to_dict('records'),
-                            [{"name": i, "id": i} for i in sj_df.columns],
+                            [{'name': i, 'id': i} for i in sj_df.columns],
                             page_size = PAGE_SIZE,
                             style_table = {'overflowX': 'auto'},
+                            style_data = {'backgroundColor': '#ecf0f1'},
+                            style_header = {
+                                'backgroundColor': '#bdc3c7',
+                                'fontWeight': 'bold',
+                                'textAlign': 'center',
+                            },
                         ),
                     ],
                     width = 10,
@@ -69,9 +80,14 @@ data_table2 = html.Div(
     [
         dbc.Row(
             [
-                html.H3('SF Data Table'),
+                dbc.Col(
+                    html.H3(
+                        'San Francisco Data'
+                    ),
+                    width = 10,
+                    className = 'mb-2 text-center',
+                ),
             ],
-            className = 'mb-2 text-center',
         ),
 
         dbc.Row(
@@ -80,9 +96,15 @@ data_table2 = html.Div(
                     [
                         dash_table.DataTable(
                             sf_df.to_dict('records'),
-                            [{"name": i, "id": i} for i in sf_df.columns],
+                            [{'name': i, 'id': i} for i in sf_df.columns],
                             page_size = PAGE_SIZE,
                             style_table = {'overflowX': 'auto'},
+                            style_data = {'backgroundColor': '#ecf0f1'},
+                            style_header = {
+                                'backgroundColor': '#bdc3c7',
+                                'fontWeight': 'bold',
+                                'textAlign': 'center',
+                            },
                         ),
                     ],
                     width = 10,
@@ -99,5 +121,5 @@ layout = dbc.Container(
         data_table1,
         data_table2,
     ],
-    fluid = True
+    fluid = True,
 )

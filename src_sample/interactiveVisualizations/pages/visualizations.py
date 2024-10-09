@@ -24,18 +24,18 @@ if os.path.exists('sf_combined.pkl'):
         sf_df = pickle.load(f)
 
 # Descriptions for each plot
-sj_averagekwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
-sf_averagekwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
-sj_averagekwh_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
-sf_averagekwh_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
+sj_averagekwh = html.P(['Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
+sf_averagekwh = html.P(['Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
+sj_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
+sf_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
 
-sj_totalkwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Jose over the months (kWh).'])
-sf_totalkwh = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Francisco over the months (kWh).'])
+sj_totalkwh = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Jose over the months (kWh).'])
+sf_totalkwh = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Francisco over the months (kWh).'])
 
-sj_max_min_temp = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F).'])
-sf_max_min_temp = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F).'])
-sj_max_temp_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F).'])
-sf_max_temp_heat = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F).'])
+sj_max_min_temp = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F).'])
+sf_max_min_temp = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F).'])
+sj_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F).'])
+sf_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F).'])
 
 
 #### Define the Container Partitions ####

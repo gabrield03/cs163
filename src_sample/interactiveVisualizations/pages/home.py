@@ -27,18 +27,18 @@ if os.path.exists('sf_combined.pkl'):
 
 
 # Animated plot descriptions
-comb_energy_jan = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of January.'])
-comb_energy_feb = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of February.'])
-comb_energy_mar = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of March.'])
-comb_energy_apr = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of April.'])
-comb_energy_may = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of May.'])
-comb_energy_jun = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of June.'])
-comb_energy_jul = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of July.'])
-comb_energy_aug = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of August.'])
-comb_energy_sep = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of September.'])
-comb_energy_oct = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of October.'])
-comb_energy_nov = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of November.'])
-comb_energy_dec = html.P([html.Br(), html.Br(), 'Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of December.'])
+comb_energy_jan = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of January.'])
+comb_energy_feb = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of February.'])
+comb_energy_mar = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of March.'])
+comb_energy_apr = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of April.'])
+comb_energy_may = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of May.'])
+comb_energy_jun = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of June.'])
+comb_energy_jul = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of July.'])
+comb_energy_aug = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of August.'])
+comb_energy_sep = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of September.'])
+comb_energy_oct = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of October.'])
+comb_energy_nov = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of November.'])
+comb_energy_dec = html.P(['Plot Description:', html.Br(), html.Br(), 'This animated plot shows the average energy usage in both SJ and SF regions for the month of December.'])
 
 
 #### Define the Container Partitions ####
