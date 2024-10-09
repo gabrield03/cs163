@@ -47,49 +47,50 @@ home_header = html.Div(
     [
         html.H1(
             'Effects of Weather on Energy Consumption in the Bay Area',
-            className = 'text-center mt-5',
+            className = 'text-center mt-5 mb-5',
         ),
     ],
 )
 
-home_picture = html.Div(
-    [
-        html.Div(
-            style = {
-                'maxWidth': '800px',
-                'margin': '0 auto'
-            },
-            children = [
-                html.Div(
-                    style = {
-                        'textAlign': 'center',
-                        'margin': '20px'
-                    },
-                    children = [
-                        html.Img(
-                            src = '/assets/bayareascenic.jpg',
-                            style = {
-                                'width': '100%',
-                                'maxWidth': '800px',
-                                'height': 'auto',
-                                'borderRadius': '10px',
-                            },
-                        ),
-                    ],
-                ),
-            ],
-        ),
-    ],
-)
+# home_picture = html.Div(
+#     [
+#         html.Div(
+#             style = {
+#                 'maxWidth': '800px',
+#                 'margin': '0 auto'
+#             },
+#             children = [
+#                 html.Div(
+#                     style = {
+#                         'textAlign': 'center',
+#                         'margin': '20px'
+#                     },
+#                     children = [
+#                         html.Img(
+#                             src = '/assets/bayareascenic.jpg',
+#                             style = {
+#                                 'width': '100%',
+#                                 'maxWidth': '800px',
+#                                 'height': 'auto',
+#                                 'borderRadius': '10px',
+#                             },
+#                         ),
+#                     ],
+#                 ),
+#             ],
+#         ),
+#     ],
+# )
 
 # Home page introduction title
 intro_text = html.Div(
     [
-        html.H2(
+        html.H3(
             "Introduction",
             style = {
                 'text-align': 'center'
             },
+            className = 'mt-5',
         ),
     ],
 )
@@ -298,10 +299,10 @@ animated_plot_1 = html.Div(
                         dcc.Graph(
                             id = 'combined_energy_line_by_mo',
                             figure = {},
-                            style = {
-                                'width': '70vh',
-                                'height': '50vh'
-                            },
+                            # style = {
+                            #     'width': '70vh',
+                            #     'height': '50vh'
+                            # },
                         ),
                     ],
                     width = 7,
@@ -330,7 +331,7 @@ table_content = html.Div(id = 'table-content')
 layout = dbc.Container(
     [
         home_header,
-        home_picture,
+        # home_picture,
         intro_text,
         intro_content,
         animated_plot_1,

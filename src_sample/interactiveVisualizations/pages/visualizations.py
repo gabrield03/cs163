@@ -98,11 +98,11 @@ sj_histplots_1 = html.Div(
                         dcc.Graph(
                             id = 'sj_data',
                             figure = {},
-                            style = {
-                                # 'width': '95vh',
-                                'width': '70vh',
-                                'height': '50vh'
-                            },
+                            # style = {
+                            #     # 'width': '95vh',
+                            #     'width': '70vh',
+                            #     'height': '50vh'
+                            # },
                         ),
                     ],
                     width = 7,
@@ -166,11 +166,11 @@ sf_histplots_1 = html.Div(
                         dcc.Graph(
                             id = 'sf_data',
                             figure = {},
-                            style = {
-                                # 'width': '95vh',
-                                'width': '70vh',
-                                'height': '50vh'
-                            },
+                            # style = {
+                            #     # 'width': '95vh',
+                            #     'width': '70vh',
+                            #     'height': '50vh'
+                            # },
                         ),
                     ],
                     width = 7,
@@ -277,11 +277,11 @@ comb_heatmaps = html.Div(
                         dcc.Graph(
                             id = 'heatmap',
                             figure = {},
-                            style = {
-                                # 'width': '95vh',
-                                'width': '70vh',
-                                'height': '50vh'
-                            },
+                            # style = {
+                            #     # 'width': '95vh',
+                            #     'width': '70vh',
+                            #     'height': '50vh'
+                            # },
                         ),
                     ],
                     width = 7,

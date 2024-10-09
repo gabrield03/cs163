@@ -24,7 +24,8 @@ sidebar_header = dbc.Row(
     [
         dbc.Col(
             html.H2(
-                'Navigation',
+                # 'Navigation',
+                'Explore',
                 style = {'color': '#ecf0f1'},
             )
         ),
@@ -61,13 +62,13 @@ sidebar_header = dbc.Row(
 sidebar = html.Div(
     [
         sidebar_header,
-        html.Div(
-            [
-                html.Hr(),
-                html.P('Explore the project\'s pages!', className = 'lead'),
-            ],
-            id = 'blurb',
-        ),
+        # html.Div(
+        #     [
+        #         html.Hr(),
+        #         html.P('Explore the project\'s pages!', className = 'lead'),
+        #     ],
+        #     id = 'blurb',
+        # ),
         dbc.Collapse(
             dbc.Nav(
                 [
@@ -122,7 +123,7 @@ app.layout = html.Div(
     [
         dcc.Location(id = 'url'),
         sidebar,
-        content
+        content,
     ]
 )
 
