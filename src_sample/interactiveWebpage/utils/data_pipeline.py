@@ -5,6 +5,10 @@ from io import StringIO
 import os
 import pickle
 from dash.dash_table.Format import Format, Scheme
+from dash import html
+import plotly.graph_objects as go
+import base64
+from io import BytesIO
 
 # Fetch the historical data
 def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
@@ -217,7 +221,7 @@ def find_regional_diff(sj_df, sf_df, diffCol, newCol):
 
     return dff
 
-# Function to auto-format numerical columns
+# Format numerical columns
 def format_columns(df):
     exclude_columns = ['zipcode', 'year', 'totalcustomers', 'averagekwh', 'month-numeric', 'totalkwh']
     columns = []
@@ -234,6 +238,104 @@ def format_columns(df):
             columns.append({'name': col, 'id': col})
 
     return columns
+
+
+# Create table headers
+def create_table_header(df):
+    headers = [html.Th('INDEX')]
+
+    for col in df.columns:
+        headers.append(html.Th(col))
+    
+    return html.Tr(headers)
+
+# Function to create mini histograms for each numeric column
+def create_histogram_image(df, column):
+    fig = go.Figure()
+
+    # Create a histogram for the column
+    fig.add_trace(
+        go.Histogram(
+            x = df[column],
+            marker = dict(
+                color = '#154c79',
+                line = dict(
+                    color = '#ffffff',
+                    width = 1.5,
+                )
+            )
+        )
+    )
+
+    # Remove unnecessary plot elements
+    fig.update_layout(
+        xaxis = dict(
+            showgrid = False,
+            zeroline = False,
+            visible = False,
+        ),
+        yaxis = dict(
+            showgrid = False,
+            zeroline = False,
+            visible = False,
+        ),
+        margin = dict(
+            l = 0,
+            r = 0,
+            t = 0,
+            b = 0
+        ),
+        paper_bgcolor = 'rgba(0, 0, 0, 0)',
+        plot_bgcolor = 'rgba(0, 0, 0, 0)',
+    )
+
+    # Convert the plot to an image that can be embedded into the table
+    buffer = BytesIO()
+    fig.write_image(
+        buffer,
+        format = 'png')
+    buffer.seek(0)
+    img_data = base64.b64encode(buffer.read()).decode('utf-8')
+
+    return f'data:image/png;base64,{img_data}'
+
+# Function to create summary statistics row (with mini histograms)
+def create_table_summary_statistics(df):
+    stats_row = [html.Td('Summary Stats')]
+
+    for col in df.columns:
+        if pd.api.types.is_numeric_dtype(df[col]):
+            # Generate mini histogram image for each numeric column
+            hist_img = create_histogram_image(df, col)
+
+            stats_row.append(
+                html.Td(
+                    html.Img(
+                        src = hist_img,
+                        style = {'height': '50px'}
+                    )
+                )
+            ) 
+        
+        # For non-numeric columns
+        else:  
+            # summary = create_nonnumerical_summary(df, col) 
+            # summary_html = html.Ul([html.Li(item) for item in summary])
+            stats_row.append(html.Td('N/A', style = {'textAlign': 'center'}))
+
+    return html.Tr(stats_row, className = 'summary-stats-row')
+
+# Create table row data
+def create_table_rows(df):
+    rows = []
+
+    for idx, row in df.iterrows():
+        row_data = [html.Th(idx)] 
+        for col in df.columns:
+            row_data.append(html.Td(row[col]))
+        rows.append(html.Tr(row_data))
+
+    return rows
 
 
 

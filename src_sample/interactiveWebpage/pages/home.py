@@ -131,7 +131,7 @@ animated_plot_1 = html.Div(
                             value = 'Jan',
                             children = [
                                 dcc.Tab(
-                                    label = 'January',
+                                    label = 'Jan',
                                     value = 'Jan',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -144,7 +144,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'February',
+                                    label = 'Feb',
                                     value = 'Feb',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -157,7 +157,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'March',
+                                    label = 'Mar',
                                     value = 'Mar',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -170,7 +170,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'April',
+                                    label = 'Apr',
                                     value = 'Apr',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -196,7 +196,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'June',
+                                    label = 'Jun',
                                     value = 'Jun',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -209,7 +209,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'July',
+                                    label = 'Jul',
                                     value = 'Jul',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -222,7 +222,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'August',
+                                    label = 'Aug',
                                     value = 'Aug',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -235,7 +235,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'September',
+                                    label = 'Sep',
                                     value = 'Sep',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -248,7 +248,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'October',
+                                    label = 'Oct',
                                     value = 'Oct',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -261,7 +261,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'November',
+                                    label = 'Nov',
                                     value = 'Nov',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -274,7 +274,7 @@ animated_plot_1 = html.Div(
                                 ),
                                 
                                 dcc.Tab(
-                                    label = 'December',
+                                    label = 'Dec',
                                     value = 'Dec',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
@@ -524,6 +524,7 @@ def update_energy_line_plot(selected_month):
             ),
         ],
         paper_bgcolor='#ecf0f1',  # Outside the plot area background
+        autosize = True,
     )
 
     # Create frames for the animation

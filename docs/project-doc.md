@@ -255,6 +255,24 @@ The following sections should be used for the analysis planning. These are not r
 ## Data Analysis and Algorithms
 <!--- List and describe what types of (advanced) analysis you plan to conduct. This section should be tied back to the expected major findings. (If needed, you can update the findings section.) When selecting algorithms to obtain the analysis results, provide a brief explanation of the algorithmic properties and logic. You should clearly define the inputs and outputs of each algorithm. -->
 
+- The advanced analysis methods I will employ include a Random Forest regressor to identify critical weather variables influencing energy demand and a Long Short-Term Memory (LSTM) model for forecasting future energy consumption patterns based on historical data.
+
+	- Random Forest for Identifying Key Weather Variables Impacting Energy Usage:
+		- Random Forest regressors are ensemble methods that train multiple decision trees and aggregate their results. By combining several base estimators within a given learning algorithm, Random Forests improve the generalizability of a single estimator. This method is particularly suitable for assessing the impact of climate variables (such as maximum and minimum temperature, precipitation, wind speed, etc.) as it captures non-linear relationships, enabling it to model the complex interactions inherent in weather patterns.
+
+		- Interpretability:
+			- While a single decision tree within a Random Forest is straightforward to interpret, ensemble methods complicate the interpretability of the model. To address this, I will utilize feature importance scores to highlight which weather variables exert the greatest (and least) influence on energy consumption.
+
+			- To identify significant weather variables affecting energy consumption, I will train separate models for each region (San Francisco and San Jose). Each model will calculate and rank the feature importances of weather variables. After determining the feature importances for each region, I will compare them to assess whether specific weather variables are more influential in one region than the other. Currently, the variables of interest include maximum and minimum temperatures, precipitation, and seasonality. Results will determine whether these preliminary assumptions were correct.
+
+			- To assist the model's explainability, I will incorporate Local Interpretable Model-Agnostic Explanations (LIME). LIME functions by inputting variations of the original data into the model and observing the resulting changes in outputs. This process assigns weights to new data points based on their proximity to the original data point, allowing LIME to explain individual predictions made by the model.
+
+	- Long-Short Term Memory (LSTM) to Predict Future Energy Demand:
+		- LSTMs are a type of Recurrent Neural Network (RNN) designed to remember information over time and apply that information to future calculations. They excel at capturing long-term dependencies in time-series data, making them ideal for predicting future energy usage by recognizing patterns in historical weather and seasonal data.
+
+		- I will use historical energy consumption data (average monthly energy usage) along with weather data as inputs for this model. Initially, the output of the model will be predictions of future energy usage on a monthly basis. I also aim to implement daily predictions; however, due to the current format of the energy data (monthly records), the model may not generalize well. If I can obtain daily records, the focus will shift toward daily predictions.
+
+		- Training the LSTM model on the historical data will enable it to learn the relationships between past weather conditions and energy usage. The goal is to develop a model that accurately predicts both short-term and long-term energy consumption. I will evaluate the model's effectiveness through cross-validation and by calculating performance metrics such as root mean squared error (RMSE) and R². RMSE will be used to assess the average prediction error of the model which is a good indicator of its accuracy. R² will measure how well the model explains the variance in energy consumption.
 
 
 
