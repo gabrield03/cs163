@@ -22,8 +22,6 @@ if os.path.exists('sf_combined.pkl'):
     with open('sf_combined.pkl', 'rb') as f:
         sf_df = pickle.load(f)
 
-PAGE_SIZE = 5
-
 data_header = html.Div(
     [
         dbc.Row(
@@ -46,80 +44,49 @@ data_table1 = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H3(
-                        'San Jose Data'
-                    ),
+                    html.H3('San Jose Data'),
                     width = 12,
                     className = 'mb-2 text-center',
                 ),
             ],
         ),
-
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        dash_table.DataTable(
-                            sj_df.to_dict('records'),
-                            columns = format_columns(sj_df),
-                            page_size = PAGE_SIZE,
-                            style_table = {'overflowX': 'auto'},
-                            style_data = {'backgroundColor': '#ecf0f1'},
-                            style_header = {
-                                'backgroundColor': '#bdc3c7',
-                                'fontWeight': 'bold',
-                                'textAlign': 'center',
-                            },
+                        html.Div(
+                            dbc.Table(
+                                [
+                                    html.Thead(
+                                        create_table_header(sj_df),
+                                    ),
+                                    html.Tbody(
+                                        [
+                                            create_table_summary_statistics(sj_df),
+                                            *create_table_rows(sj_df),
+                                        ],
+                                    ),
+                                ],
+                                
+                                bordered = True,
+                                striped = True,
+                                hover = True,
+                                responsive = True,
+                                className = 'table-light',
+                            ),
+                            style = {'maxHeight': '500px', 'overflow': 'auto'},
                         ),
                     ],
-                    width = 12,
+                    width=12,
                 ),
             ],
-            style = {'marginBottom': '30px'}, 
+            style = {'marginBottom': '30px'},
         ),
     ],
+    className = 'mb-5',
 )
 
 data_table2 = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.H3(
-                        'San Francisco Data'
-                    ),
-                    width = 12,
-                    className = 'mb-2 text-center',
-                ),
-            ],
-        ),
-
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dash_table.DataTable(
-                            sf_df.to_dict('records'),
-                            columns = format_columns(sf_df),
-                            page_size = PAGE_SIZE,
-                            style_table = {'overflowX': 'auto'},
-                            style_data = {'backgroundColor': '#ecf0f1'},
-                            style_header = {
-                                'backgroundColor': '#bdc3c7',
-                                'fontWeight': 'bold',
-                                'textAlign': 'center',
-                            },
-                        ),
-                    ],
-                    width = 12,
-                ),
-            ],
-            style = {'marginBottom': '30px'}, 
-        ),
-    ],
-)
-
-data_table = html.Div(
     [
         dbc.Row(
             [
@@ -134,24 +101,27 @@ data_table = html.Div(
             [
                 dbc.Col(
                     [
-                        dbc.Table(
-                            [
-                                html.Thead(
-                                    create_table_header(sf_df),
-                                ),
-                                html.Tbody(
-                                    [
-                                        create_table_summary_statistics(sf_df),
-                                        *create_table_rows(sf_df),
-                                    ],
-                                ),
-                            ],
-                            
-                            bordered = True,
-                            striped = True,
-                            hover = True,
-                            responsive = True,
-                            className = 'table-light',
+                        html.Div(
+                            dbc.Table(
+                                [
+                                    html.Thead(
+                                        create_table_header(sf_df),
+                                    ),
+                                    html.Tbody(
+                                        [
+                                            create_table_summary_statistics(sf_df),
+                                            *create_table_rows(sf_df),
+                                        ],
+                                    ),
+                                ],
+                                
+                                bordered = True,
+                                striped = True,
+                                hover = True,
+                                responsive = True,
+                                className = 'table-light',
+                            ),
+                            style = {'maxHeight': '500px', 'overflow': 'auto'},
                         ),
                     ],
                     width=12,
@@ -168,7 +138,6 @@ layout = dbc.Container(
         data_header,
         data_table1,
         data_table2,
-        data_table,
     ],
     fluid = True,
 )

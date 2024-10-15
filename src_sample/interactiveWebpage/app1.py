@@ -62,13 +62,6 @@ sidebar_header = dbc.Row(
 sidebar = html.Div(
     [
         sidebar_header,
-        # html.Div(
-        #     [
-        #         html.Hr(),
-        #         html.P('Explore the project\'s pages!', className = 'lead'),
-        #     ],
-        #     id = 'blurb',
-        # ),
         dbc.Collapse(
             dbc.Nav(
                 [

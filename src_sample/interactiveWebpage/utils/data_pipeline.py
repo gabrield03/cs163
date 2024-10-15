@@ -83,8 +83,8 @@ def clean_data(df, pickle_filename_clean):
         sj_energy_df = sj_energy_df.drop_duplicates(subset='year-month', keep='first')
         sf_energy_df = sf_energy_df.drop_duplicates(subset='year-month', keep='first')
 
-        sj_energy_df['region'] = 'San Jose'
-        sf_energy_df['region'] = 'San Francisco'
+        sj_energy_df['region'] = 'SJ'
+        sf_energy_df['region'] = 'SF'
 
         # Pickle the data
         sj_energy_df.to_pickle('sj_energy_df.pkl')
@@ -107,10 +107,10 @@ def clean_data(df, pickle_filename_clean):
 
         # Add region
         if 'USW00023293' == df['station'].iloc[0]:  # SJ Station
-            df['region'] = 'San Jose'
+            df['region'] = 'SJ'
             pickle_filename = 'sj_weather_df.pkl'
         else:                               # SF Station
-            df['region'] = 'San Francisco'
+            df['region'] = 'SF'
             pickle_filename = 'sf_weather_df.pkl'
 
         # Drop station and name
@@ -327,13 +327,18 @@ def create_table_summary_statistics(df):
 
 # Create table row data
 def create_table_rows(df):
+    exclude_columns = ['zipcode', 'year', 'totalcustomers', 'averagekwh', 'month-numeric', 'totalkwh']
+
     rows = []
 
     for idx, row in df.iterrows():
         row_data = [html.Th(idx)] 
         for col in df.columns:
-            row_data.append(html.Td(row[col]))
-        rows.append(html.Tr(row_data))
+            if pd.api.types.is_numeric_dtype(df[col]) and col not in exclude_columns:
+                row_data.append(html.Td(f'{row[col]:.3f}'))
+            else:
+                row_data.append(html.Td(row[col]))
+        rows.append(html.Tr(row_data, style = {'height': '25px'}))
 
     return rows
 
@@ -342,9 +347,9 @@ def create_table_rows(df):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveVisualizations/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', ['sj_weather_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveVisualizations/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', ['sf_weather_df.pkl']]
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', ['sj_weather_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', ['sf_weather_df.pkl']]
 }
 
 # Fetch and clean the historical data
