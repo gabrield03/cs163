@@ -421,9 +421,9 @@ def processing_pipeline(df):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/data/Energy/Combined_Energy_Data.csv': ['pickled_data/energy_data.pkl', ['pickled_data/sj_energy_df.pkl', 'pickled_data/sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/Weather/SJ_95110_SJAirport.csv': ['pickled_data/sj_weather_data.pkl', ['pickled_data/sj_weather_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/Weather/SF_94102_DowntownSF.csv': ['pickled_data/sf_weather_data.pkl', ['pickled_data/sf_weather_df.pkl']]
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/Data/Energy/Combined_Energy_Data.csv': ['pickled_data/energy_data.pkl', ['pickled_data/sj_energy_df.pkl', 'pickled_data/sf_energy_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SJ_95110_SJAirport.csv': ['pickled_data/sj_weather_data.pkl', ['pickled_data/sj_weather_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SF_94102_DowntownSF.csv': ['pickled_data/sf_weather_data.pkl', ['pickled_data/sf_weather_df.pkl']]
 }
 
 # Fetch and clean the historical data
