@@ -1,10 +1,23 @@
 import dash
 from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.express as px
 
-import utils.data_pipeline
+from  utils.data_pipeline import processing_pipeline
 import os
 import pickle
+
+### Load Data ###
+sj_df = ''
+sf_df = ''
+if os.path.exists('sj_combined.pkl'):
+    with open('sj_combined.pkl', 'rb') as f:
+        sj_df = pickle.load(f)
+
+if os.path.exists('sf_combined.pkl'):
+    with open('sf_combined.pkl', 'rb') as f:
+        sf_df = pickle.load(f)
 
 analytics_header = html.Div(
     [
@@ -84,17 +97,42 @@ analytics_objective_1 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dbc.Graph(
-
-        #                 ),
-        #             ],
-        #         ),
-        #     ],
-        # ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Dropdown(
+                            id = 'region_option',
+                            options = [
+                                {'label': 'San Jose Dataset', 'value': 'sj_df'},
+                                {'label': 'San Francisco Dataset', 'value': 'sf_df'},
+                            ],
+                            multi = False,
+                            value = 'sj_df',
+                            style = {
+                                'backgroundColor': '#bdc3c7',
+                                'color': '#2c3e50'
+                            }, 
+                        ),
+                    ],
+                    width = 7,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'sj_feature_importances',
+                            figure = {},
+                        ),
+                    ],
+                    width = 7,
+                ),
+            ],
+        ),
     ],
     className = 'mb-5',
 )
@@ -136,7 +174,7 @@ analytics_objective_2 = html.Div(
         #     [
         #         dbc.Col(
         #             [
-        #                 dbc.Graph(
+        #                 dcc.Graph(
 
         #                 ),
         #             ],
@@ -156,3 +194,39 @@ layout = dbc.Container(
     ],
     fluid = True,
 )
+
+# Callback for Feature Importances
+@callback(
+    [
+        Output('sj_feature_importances', 'figure')
+    ],
+    [
+        Input('region_option', 'value'),
+    ]
+)
+# Animated plot function
+def update_sj_feature_importances(selected_region):
+
+    df = pd.DataFrame()
+    if selected_region == 'sj_df':
+        df = sj_df
+    elif selected_region == 'sf_df':
+        df = sf_df
+
+    feature_importances = processing_pipeline(df)
+    
+    # Need to add title and expand the actual axis
+    fig = px.scatter(
+        feature_importances,
+        x = 'feature',
+        y = 'importances',
+        #title = 'Feature Importances',
+    )
+
+    fig.update_layout(
+        xaxis_title = 'Features',
+        yaxis_title = 'Importances',
+        xaxis_tickangle = -45,
+    )
+
+    return [fig]

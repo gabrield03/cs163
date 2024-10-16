@@ -57,11 +57,6 @@ home_header = html.Div(
                 ),
             ],
         ),
-
-        # html.H1(
-        #     'Effects of Weather on Energy Consumption in the Bay Area',
-        #     className = 'text-center mb-5',
-        # ),
     ],
     className = 'mb-5',
 )
@@ -283,10 +278,6 @@ animated_plot_1 = html.Div(
                         dcc.Graph(
                             id = 'combined_energy_line_by_mo',
                             figure = {},
-                            # style = {
-                            #     'width': '70vh',
-                            #     'height': '50vh'
-                            # },
                         ),
                     ],
                     width = 7,

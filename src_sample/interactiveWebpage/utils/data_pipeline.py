@@ -41,6 +41,8 @@ def clean_data(df, pickle_filename_clean):
         10: 'Oct', 11: 'Nov', 12: 'Dec'
     }
 
+    
+
     ordered_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     sj_energy_df = ''
@@ -83,8 +85,21 @@ def clean_data(df, pickle_filename_clean):
         sj_energy_df = sj_energy_df.drop_duplicates(subset='year-month', keep='first')
         sf_energy_df = sf_energy_df.drop_duplicates(subset='year-month', keep='first')
 
+        # Add columns - region
         sj_energy_df['region'] = 'SJ'
         sf_energy_df['region'] = 'SF'
+
+        # Add columns - season
+        conditions = [
+            (sj_energy_df['month-numeric'].between(3, 5)),
+            (sj_energy_df['month-numeric'].between(6, 8)),
+            (sj_energy_df['month-numeric'].between(9, 11)),
+            ((sj_energy_df['month-numeric'].between(1, 2)) | (sj_energy_df['month-numeric'] == 12))
+        ]
+        values = ['Spring', 'Summer', 'Fall', 'Winter']
+
+        sj_energy_df['season'] = np.select(conditions, values)
+        sf_energy_df['season'] = np.select(conditions, values)
 
         # Pickle the data
         sj_energy_df.to_pickle('sj_energy_df.pkl')
@@ -341,6 +356,65 @@ def create_table_rows(df):
         rows.append(html.Tr(row_data, style = {'height': '25px'}))
 
     return rows
+
+# Processing pipeline
+def processing_pipeline(df):
+    from sklearn.model_selection import train_test_split
+
+    drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month']
+
+    for col in drop_list:
+        if col in df.columns:
+            df.drop(columns = [col], inplace = True)
+
+    X = df.drop(columns = ['averagekwh'])
+    y = df['averagekwh']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42)
+    
+    # Split numerical and categorical data for scaling and encoding
+    cat_col_list = ['year', 'month', 'season']
+
+    X_num = X_train
+    X_cat = X_train[['year', 'month', 'season']]
+
+    for col in cat_col_list:
+        if col in X_train:
+            X_num.drop(columns = [col], inplace = True)
+            #X_cat[col] = X_train[col]
+
+
+    from sklearn.preprocessing import StandardScaler
+    sj_num_sc = StandardScaler().fit_transform(X_num)
+
+    from sklearn.preprocessing import OrdinalEncoder
+    sj_cat_ord_enc = OrdinalEncoder().fit_transform(X_cat)
+
+    X_train_sj_cat_enc = sj_cat_ord_enc.reshape(-1, 3)
+
+    X_train_proc = np.concatenate([sj_num_sc, X_train_sj_cat_enc], axis = 1)
+
+    num_cols = X_num.columns
+    all_cols = list(num_cols) + cat_col_list
+
+    scaled_df = pd.DataFrame(X_train_proc, columns = all_cols)
+
+    from sklearn.ensemble import RandomForestRegressor
+    rf = RandomForestRegressor().fit(scaled_df, y_train)
+
+    rf_importances = rf.feature_importances_
+    names = scaled_df.columns
+
+    importances_df = pd.DataFrame(data = rf_importances, index = names, columns = ['importances'])
+
+    importances_df.reset_index(inplace = True)
+    importances_df.columns = ['feature', 'importances']
+
+    return importances_df
+
+
+
+
 
 
 
