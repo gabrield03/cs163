@@ -45,42 +45,26 @@ comb_energy_dec = html.P(['Plot Description:', html.Br(), html.Br(), 'This anima
 # Home page header
 home_header = html.Div(
     [
-        html.H1(
-            'Effects of Weather on Energy Consumption in the Bay Area',
-            className = 'text-center mt-5 mb-5',
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.H1(
+                        'Effects of Weather on Energy Consumption in the Bay Area',
+                        className = 'text-center mb-5',
+                    ),
+                    width = 12,
+                    style = {'height': '100%'}
+                ),
+            ],
         ),
-    ],
-)
 
-# home_picture = html.Div(
-#     [
-#         html.Div(
-#             style = {
-#                 'maxWidth': '800px',
-#                 'margin': '0 auto'
-#             },
-#             children = [
-#                 html.Div(
-#                     style = {
-#                         'textAlign': 'center',
-#                         'margin': '20px'
-#                     },
-#                     children = [
-#                         html.Img(
-#                             src = '/assets/bayareascenic.jpg',
-#                             style = {
-#                                 'width': '100%',
-#                                 'maxWidth': '800px',
-#                                 'height': 'auto',
-#                                 'borderRadius': '10px',
-#                             },
-#                         ),
-#                     ],
-#                 ),
-#             ],
-#         ),
-#     ],
-# )
+        # html.H1(
+        #     'Effects of Weather on Energy Consumption in the Bay Area',
+        #     className = 'text-center mb-5',
+        # ),
+    ],
+    className = 'mb-5',
+)
 
 # Home page introduction title
 intro_text = html.Div(
@@ -90,7 +74,6 @@ intro_text = html.Div(
             style = {
                 'text-align': 'center'
             },
-            className = 'mt-5',
         ),
     ],
 )
@@ -326,11 +309,7 @@ animated_plot_1 = html.Div(
     className = 'mb-5',
 )
 
-# loop_interval = dcc.Interval(
-#     id = 'interval-component',
-#     interval = 13750,
-#     n_intervals = 22,
-# )
+
 
 table_content = html.Div(id = 'table-content')
 
@@ -338,11 +317,9 @@ table_content = html.Div(id = 'table-content')
 layout = dbc.Container(
     [
         home_header,
-        # home_picture,
         intro_text,
         intro_content,
         animated_plot_1,
-        # loop_interval,
     ],
     fluid = True
 )
@@ -356,12 +333,10 @@ layout = dbc.Container(
     ],
     [
         Input('animated-plot-tabs', 'value'),
-        # Input('interval-component', 'n_intervals')
     ]
 )
 # Animated plot function
 def update_energy_line_plot(selected_month):
-# def update_energy_line_plot(selected_month, n):
     container = ''
 
     # Dictionary mapping months to corresponding containers

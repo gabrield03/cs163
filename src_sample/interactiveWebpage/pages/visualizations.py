@@ -54,7 +54,8 @@ visualizations_header = html.Div(
                 ),
             ],
         ),
-    ]
+    ],
+    className = 'mb-5',
 )
 
 # Histogram plots - SJ

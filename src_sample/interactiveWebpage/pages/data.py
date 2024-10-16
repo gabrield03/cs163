@@ -28,15 +28,16 @@ data_header = html.Div(
             [
                 dbc.Col(
                     html.H1(
-                        'Passage about the data used:',
+                        'Data',
+                        className = 'mb-5 text-center',
                     ),
-                    className = 'text-center mb-5',
                     width = 12,
                     style = {'height': '100%'}
                 ),
             ],
         ),
-    ]
+    ],
+    className = 'mb-5',
 )
 
 data_table1 = html.Div(
