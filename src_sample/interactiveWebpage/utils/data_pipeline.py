@@ -102,8 +102,8 @@ def clean_data(df, pickle_filename_clean):
         sf_energy_df['season'] = np.select(conditions, values)
 
         # Pickle the data
-        sj_energy_df.to_pickle('sj_energy_df.pkl')
-        sf_energy_df.to_pickle('sf_energy_df.pkl')
+        sj_energy_df.to_pickle('pickled_data/sj_energy_df.pkl')
+        sf_energy_df.to_pickle('pickled_data/sf_energy_df.pkl')
 
 
     elif len(pickle_filename_clean) == 1 and os.path.exists(pickle_filename_clean[0]):
@@ -123,10 +123,10 @@ def clean_data(df, pickle_filename_clean):
         # Add region
         if 'USW00023293' == df['station'].iloc[0]:  # SJ Station
             df['region'] = 'SJ'
-            pickle_filename = 'sj_weather_df.pkl'
+            pickle_filename = 'pickled_data/sj_weather_df.pkl'
         else:                               # SF Station
             df['region'] = 'SF'
-            pickle_filename = 'sf_weather_df.pkl'
+            pickle_filename = 'pickled_data/sf_weather_df.pkl'
 
         # Drop station and name
         if 'station' in df.columns:
@@ -212,8 +212,8 @@ def combine_historical_data(df1, df2, df3, df4):
     sf_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
     sf_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
 
-    sj_combined.to_pickle('sj_combined.pkl')
-    sf_combined.to_pickle('sf_combined.pkl')
+    sj_combined.to_pickle('pickled_data/sj_combined.pkl')
+    sf_combined.to_pickle('pickled_data/sf_combined.pkl')
 
 # Find the differences between a column between dataframes
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
@@ -421,9 +421,9 @@ def processing_pipeline(df):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', ['sj_weather_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', ['sf_weather_df.pkl']]
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/data/Energy/Combined_Energy_Data.csv': ['pickled_data/energy_data.pkl', ['pickled_data/sj_energy_df.pkl', 'pickled_data/sf_energy_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/Weather/SJ_95110_SJAirport.csv': ['pickled_data/sj_weather_data.pkl', ['pickled_data/sj_weather_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/Weather/SF_94102_DowntownSF.csv': ['pickled_data/sf_weather_data.pkl', ['pickled_data/sf_weather_df.pkl']]
 }
 
 # Fetch and clean the historical data
@@ -432,19 +432,19 @@ for url, pickle_filenames in repo_urls.items():
 
 
 # Combine the historical data
-if os.path.exists('sj_energy_df.pkl') and os.path.exists('sf_energy_df.pkl') and os.path.exists('sj_weather_df.pkl') and os.path.exists('sf_weather_df.pkl'):
+if os.path.exists('pickled_data/sj_energy_df.pkl') and os.path.exists('pickled_data/sf_energy_df.pkl') and os.path.exists('pickled_data/sj_weather_df.pkl') and os.path.exists('pickled_data/sf_weather_df.pkl'):
     df1 = ''
     df2 = ''
     df3 = ''
     df4 = ''
 
-    with open('sj_energy_df.pkl', 'rb') as f:
+    with open('pickled_data/sj_energy_df.pkl', 'rb') as f:
             df1 = pickle.load(f)
-    with open('sf_energy_df.pkl', 'rb') as f:
+    with open('pickled_data/sf_energy_df.pkl', 'rb') as f:
             df2 = pickle.load(f)
-    with open('sj_weather_df.pkl', 'rb') as f:
+    with open('pickled_data/sj_weather_df.pkl', 'rb') as f:
             df3 = pickle.load(f)
-    with open('sf_weather_df.pkl', 'rb') as f:
+    with open('pickled_data/sf_weather_df.pkl', 'rb') as f:
             df4 = pickle.load(f)
 
     if len(df1) != 0 and len(df2) != 0 and len(df3) != 0 and len(df4) != 0:

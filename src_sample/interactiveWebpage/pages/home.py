@@ -17,12 +17,12 @@ import pickle
 sj_df = ''
 sf_df = ''
 
-if os.path.exists('sj_combined.pkl'):
-    with open('sj_combined.pkl', 'rb') as f:
+if os.path.exists('pickled_data/sj_combined.pkl'):
+    with open('pickled_data/sj_combined.pkl', 'rb') as f:
         sj_df = pickle.load(f)
 
-if os.path.exists('sf_combined.pkl'):
-    with open('sf_combined.pkl', 'rb') as f:
+if os.path.exists('pickled_data/sf_combined.pkl'):
+    with open('pickled_data/sf_combined.pkl', 'rb') as f:
         sf_df = pickle.load(f)
 
 
