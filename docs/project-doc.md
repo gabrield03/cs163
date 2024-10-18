@@ -255,24 +255,38 @@ The following sections should be used for the analysis planning. These are not r
 ## Data Analysis and Algorithms
 <!--- List and describe what types of (advanced) analysis you plan to conduct. This section should be tied back to the expected major findings. (If needed, you can update the findings section.) When selecting algorithms to obtain the analysis results, provide a brief explanation of the algorithmic properties and logic. You should clearly define the inputs and outputs of each algorithm. -->
 
-- The advanced analysis methods I will employ include a Random Forest regressor to identify critical weather variables influencing energy demand and a Long Short-Term Memory (LSTM) model for forecasting future energy consumption patterns based on historical data.
+- The advanced analysis in this project will be approached using two primary methods:
+	1. Regression Analysis:
+		- This analysis will focus on understanding the influence of historical weather data on energy consumption in San Francisco and San Jose. The goal is to identify which weather variables (e.g., temperature, precipitation, wind speed) have a significant impact on energy consumption and whether these impacts differ between the two regions. This will help reveal any disproportionate effects of weather conditions on energy demand in each area.
 
-	- Random Forest for Identifying Key Weather Variables Impacting Energy Usage:
-		- Random Forest regressors are ensemble methods that train multiple decision trees and aggregate their results. By combining several base estimators within a given learning algorithm, Random Forests improve the generalizability of a single estimator. This method is particularly suitable for assessing the impact of climate variables (such as maximum and minimum temperature, precipitation, wind speed, etc.) as it captures non-linear relationships, enabling it to model the complex interactions inherent in weather patterns.
+	2. Time-Series Analysis:
+		- To forecast future energy consumption, I will use time-series models such as Long-Short Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim is to create accurate predictions based on historical weather data, which will help energy providers and the public prepare for fluctuations in energy demand.
 
-		- Interpretability:
-			- While a single decision tree within a Random Forest is straightforward to interpret, ensemble methods complicate the interpretability of the model. To address this, I will utilize feature importance scores to highlight which weather variables exert the greatest (and least) influence on energy consumption.
 
-			- To identify significant weather variables affecting energy consumption, I will train separate models for each region (San Francisco and San Jose). Each model will calculate and rank the feature importances of weather variables. After determining the feature importances for each region, I will compare them to assess whether specific weather variables are more influential in one region than the other. Currently, the variables of interest include maximum and minimum temperatures, precipitation, and seasonality. Results will determine whether these preliminary assumptions were correct.
+- Regression Analysis with Random Forests to Analyze Key Weather Variables:
+	- Random Forest regressors are ensemble methods that train multiple decision trees and aggregate their results. By combining several base estimators within a given learning algorithm, Random Forests improve the generalizability of a single estimator. This method is particularly suitable for assessing the impact of climate variables (such as maximum and minimum temperature, precipitation, wind speed, etc.) as it captures non-linear relationships, enabling it to model the complex interactions inherent in weather patterns.
+	
+	- Interpretability with SHapley Additive exPlanations (SHAP):
+		- While Random Forest models can be complex to interpret, SHAP will be used to provide insights into feature importance. SHAP values assign each feature an importance score based on its contribution to the prediction, offering a clear way to compare which weather variables are driving energy consumption in each region.
 
-			- To assist the model's explainability, I will incorporate Local Interpretable Model-Agnostic Explanations (LIME). LIME functions by inputting variations of the original data into the model and observing the resulting changes in outputs. This process assigns weights to new data points based on their proximity to the original data point, allowing LIME to explain individual predictions made by the model.
+    - Partial Dependence Plots (PDP):
+		- PDPs may also be incorporated to visualize how changes in individual weather variables impact energy consumption, helping to clarify relationships that SHAP scores identify.
 
-	- Long-Short Term Memory (LSTM) to Predict Future Energy Demand:
-		- LSTMs are a type of Recurrent Neural Network (RNN) designed to remember information over time and apply that information to future calculations. They excel at capturing long-term dependencies in time-series data, making them ideal for predicting future energy usage by recognizing patterns in historical weather and seasonal data.
+	- Regional Comparison:
+		- Two models—one for San Francisco and one for San Jose—will be trained. By comparing feature importance between the models, I will analyze whether specific weather variables have a greater impact in one region than in the other. The preliminary focus will be on variables like maximum and minimum temperatures, precipitation, and seasonality. Results will guide further analysis on regional differences.
 
-		- I will use historical energy consumption data (average monthly energy usage) along with weather data as inputs for this model. Initially, the output of the model will be predictions of future energy usage on a monthly basis. I also aim to implement daily predictions; however, due to the current format of the energy data (monthly records), the model may not generalize well. If I can obtain daily records, the focus will shift toward daily predictions.
+- Forecasting Energy Demand with Historical Data:
+	- Time-Series Analysis:
+		- Long-Short Term Memory (LSTM):
+			- LSTM networks are designed to handle time-series data by retaining information over time, making them effective for capturing long-term dependencies in weather and energy usage data. I will use LSTM to predict future energy consumption based on historical weather data. The model will initially produce monthly energy predictions, with the possibility of transitioning to daily forecasts if daily energy records become available or if the current data (daily weather records and monthly energy data) is proves to be sufficient in predicting daily energy consumption.
 
-		- Training the LSTM model on the historical data will enable it to learn the relationships between past weather conditions and energy usage. The goal is to develop a model that accurately predicts both short-term and long-term energy consumption. I will evaluate the model's effectiveness through cross-validation and by calculating performance metrics such as root mean squared error (RMSE) and R². RMSE will be used to assess the average prediction error of the model which is a good indicator of its accuracy. R² will measure how well the model explains the variance in energy consumption.
+		- Autoregressive Integrated Moving Average (ARIMA) and Error Trend and Seasonality (ETS):
+			- Seasonal ARIMA will be used to test time-series forecasting when dealing with smaller datasets or where simpler modeling is appropriate. ARIMA works by creating a linear equation that describes and forecasts the time-series data. It can provide some baseline predictions for energy consumption.
+
+		- Model Evaluation (RMSE & R²):
+			- I will evaluate the performance of both models using metrics like Root Mean Squared Error (RMSE) and R². RMSE measures the average prediction error, providing a sense of the model's accuracy. R² evaluates how well the model explains the variance in energy consumption, indicating its overall effectiveness.
+
+	- I will also test some gradient boosting methods such as XGBoost, LightGBM, and CatBoost.
 
 
 
