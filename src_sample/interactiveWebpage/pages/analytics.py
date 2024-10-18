@@ -9,14 +9,15 @@ import os
 import pickle
 
 ### Load Data ###
-sj_df = ''
-sf_df = ''
-if os.path.exists('sj_combined.pkl'):
-    with open('sj_combined.pkl', 'rb') as f:
+sj_df = pd.DataFrame()
+sf_df = pd.DataFrame()
+
+if os.path.exists('pickle_files/sj_combined.pkl'):
+    with open('pickle_files/sj_combined.pkl', 'rb') as f:
         sj_df = pickle.load(f)
 
-if os.path.exists('sf_combined.pkl'):
-    with open('sf_combined.pkl', 'rb') as f:
+if os.path.exists('pickle_files/sf_combined.pkl'):
+    with open('pickle_files/sf_combined.pkl', 'rb') as f:
         sf_df = pickle.load(f)
 
 analytics_header = html.Div(

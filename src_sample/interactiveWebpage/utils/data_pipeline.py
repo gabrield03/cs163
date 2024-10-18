@@ -41,14 +41,12 @@ def clean_data(df, pickle_filename_clean):
         10: 'Oct', 11: 'Nov', 12: 'Dec'
     }
 
-    
-
     ordered_months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-    sj_energy_df = ''
-    sf_energy_df = ''
-    sj_weather_df = ''
-    sf_weather_df = ''
+    sj_energy_df = pd.DataFrame()
+    sf_energy_df = pd.DataFrame()
+    sj_weather_df = pd.DataFrame()
+    sf_weather_df = pd.DataFrame()
 
     if len(pickle_filename_clean) == 2 and os.path.exists(pickle_filename_clean[0]) and os.path.exists(pickle_filename_clean[1]):
         with open(pickle_filename_clean[0], 'rb') as f:
@@ -102,8 +100,11 @@ def clean_data(df, pickle_filename_clean):
         sf_energy_df['season'] = np.select(conditions, values)
 
         # Pickle the data
-        sj_energy_df.to_pickle('sj_energy_df.pkl')
-        sf_energy_df.to_pickle('sf_energy_df.pkl')
+        # sj_energy_df.to_pickle('sj_energy_df.pkl')
+        # sf_energy_df.to_pickle('sf_energy_df.pkl')
+
+        sj_energy_df.to_pickle('pickle_files/sj_energy_df.pkl')
+        sf_energy_df.to_pickle('pickle_files/sf_energy_df.pkl')
 
 
     elif len(pickle_filename_clean) == 1 and os.path.exists(pickle_filename_clean[0]):
@@ -123,10 +124,10 @@ def clean_data(df, pickle_filename_clean):
         # Add region
         if 'USW00023293' == df['station'].iloc[0]:  # SJ Station
             df['region'] = 'SJ'
-            pickle_filename = 'sj_weather_df.pkl'
+            pickle_filename = 'pickle_files/sj_weather_df.pkl'
         else:                               # SF Station
             df['region'] = 'SF'
-            pickle_filename = 'sf_weather_df.pkl'
+            pickle_filename = 'pickle_files/sf_weather_df.pkl'
 
         # Drop station and name
         if 'station' in df.columns:
@@ -212,8 +213,8 @@ def combine_historical_data(df1, df2, df3, df4):
     sf_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
     sf_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
 
-    sj_combined.to_pickle('sj_combined.pkl')
-    sf_combined.to_pickle('sf_combined.pkl')
+    sj_combined.to_pickle('pickle_files/sj_combined.pkl')
+    sf_combined.to_pickle('pickle_files/sf_combined.pkl')
 
 # Find the differences between a column between dataframes
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
@@ -421,9 +422,9 @@ def processing_pipeline(df):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/Data/Energy/Combined_Energy_Data.csv': ['energy_data.pkl', ['sj_energy_df.pkl', 'sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SJ_95110_SJAirport.csv': ['sj_weather_data.pkl', ['sj_weather_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SF_94102_DowntownSF.csv': ['sf_weather_data.pkl', ['sf_weather_df.pkl']]
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/Data/Energy/Combined_Energy_Data.csv': ['pickle_files/energy_data.pkl', ['pickle_files/sj_energy_df.pkl', 'pickle_files/sf_energy_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SJ_95110_SJAirport.csv': ['pickle_files/sj_weather_data.pkl', ['pickle_files/sj_weather_df.pkl']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/Data/Weather/SF_94102_DowntownSF.csv': ['pickle_files/sf_weather_data.pkl', ['pickle_files/sf_weather_df.pkl']]
 }
 
 # Fetch and clean the historical data
@@ -432,19 +433,19 @@ for url, pickle_filenames in repo_urls.items():
 
 
 # Combine the historical data
-if os.path.exists('sj_energy_df.pkl') and os.path.exists('sf_energy_df.pkl') and os.path.exists('sj_weather_df.pkl') and os.path.exists('sf_weather_df.pkl'):
+if os.path.exists('pickle_files/sj_energy_df.pkl') and os.path.exists('pickle_files/sf_energy_df.pkl') and os.path.exists('pickle_files/sj_weather_df.pkl') and os.path.exists('pickle_files/sf_weather_df.pkl'):
     df1 = pd.DataFrame()
     df2 = pd.DataFrame()
     df3 = pd.DataFrame()
     df4 = pd.DataFrame()
 
-    with open('sj_energy_df.pkl', 'rb') as f:
+    with open('pickle_files/sj_energy_df.pkl', 'rb') as f:
             df1 = pickle.load(f)
-    with open('sf_energy_df.pkl', 'rb') as f:
+    with open('pickle_files/sf_energy_df.pkl', 'rb') as f:
             df2 = pickle.load(f)
-    with open('sj_weather_df.pkl', 'rb') as f:
+    with open('pickle_files/sj_weather_df.pkl', 'rb') as f:
             df3 = pickle.load(f)
-    with open('sf_weather_df.pkl', 'rb') as f:
+    with open('pickle_files/sf_weather_df.pkl', 'rb') as f:
             df4 = pickle.load(f)
 
     if len(df1) != 0 and len(df2) != 0 and len(df3) != 0 and len(df4) != 0:
