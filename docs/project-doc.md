@@ -1,5 +1,4 @@
 # Proposal: Effects of Weather on Energy Consumption in the Bay Area
-test branch
 
 ## Project Summary
 <!--- Write a summary of your project including the project goals, broader impacts, and data sources -->
