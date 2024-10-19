@@ -10,11 +10,6 @@ import plotly.graph_objects as go
 import base64
 from io import BytesIO
 
-
-# DEBUG
-import os
-print(f'CURRENT WORKING DIRECTORY: {os.getcwd()}')
-
 # Fetch the historical data
 def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
 

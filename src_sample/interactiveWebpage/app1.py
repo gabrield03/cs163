@@ -18,10 +18,6 @@ app = dash.Dash(
     suppress_callback_exceptions = True
 )
 
-# DEBUG
-import os
-print(f'CURRENT WORKING DIRECTORY: {os.getcwd()}')
-
 #### Define the Container Partitions ####
 # Sidebar header
 sidebar_header = dbc.Row(
