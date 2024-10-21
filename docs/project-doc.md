@@ -286,7 +286,7 @@ The following sections should be used for the analysis planning. These are not r
 		- Model Evaluation (RMSE & R²):
 			- I will evaluate the performance of both models using metrics like Root Mean Squared Error (RMSE) and R². RMSE measures the average prediction error, providing a sense of the model's accuracy. R² evaluates how well the model explains the variance in energy consumption, indicating its overall effectiveness.
 
-	- I will also test some gradient boosting methods such as XGBoost, LightGBM, and CatBoost.
+	- I will also predict energy usage with models: Support Vector Machine, Random Forest, and XGBoost (possibly more).
 
 
 
