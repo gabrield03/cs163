@@ -283,9 +283,6 @@ The following sections should be used for the analysis planning. These are not r
 		- Autoregressive Integrated Moving Average (ARIMA) and Error Trend and Seasonality (ETS):
 			- Seasonal ARIMA will be used to test time-series forecasting when dealing with smaller datasets or where simpler modeling is appropriate. ARIMA works by creating a linear equation that describes and forecasts the time-series data. It can provide some baseline predictions for energy consumption.
 
-		- Model Evaluation (RMSE & R²):
-			- I will evaluate the performance of both models using metrics like Root Mean Squared Error (RMSE) and R². RMSE measures the average prediction error, providing a sense of the model's accuracy. R² evaluates how well the model explains the variance in energy consumption, indicating its overall effectiveness.
-
 
 
 <!--- 
