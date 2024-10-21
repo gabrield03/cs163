@@ -256,14 +256,14 @@ The following sections should be used for the analysis planning. These are not r
 <!--- List and describe what types of (advanced) analysis you plan to conduct. This section should be tied back to the expected major findings. (If needed, you can update the findings section.) When selecting algorithms to obtain the analysis results, provide a brief explanation of the algorithmic properties and logic. You should clearly define the inputs and outputs of each algorithm. -->
 
 - The advanced analysis in this project will be approached using two primary methods:
-	1. Regression Analysis:
+	1. Feature Analysis:
 		- This analysis will focus on understanding the influence of historical weather data on energy consumption in San Francisco and San Jose. The goal is to identify which weather variables (e.g., temperature, precipitation, wind speed) have a significant impact on energy consumption and whether these impacts differ between the two regions. This will help reveal any disproportionate effects of weather conditions on energy demand in each area.
 
 	2. Time-Series Analysis:
 		- To forecast future energy consumption, I will use time-series models such as Long-Short Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim is to create accurate predictions based on historical weather data, which will help energy providers and the public prepare for fluctuations in energy demand.
 
 
-- Regression Analysis with Random Forests to Analyze Key Weather Variables:
+- Feature Analysis with Random Forests to Analyze Key Weather Variables:
 	- Random Forest regressors are ensemble methods that train multiple decision trees and aggregate their results. By combining several base estimators within a given learning algorithm, Random Forests improve the generalizability of a single estimator. This method is particularly suitable for assessing the impact of climate variables (such as maximum and minimum temperature, precipitation, wind speed, etc.) as it captures non-linear relationships, enabling it to model the complex interactions inherent in weather patterns.
 	
 	- Interpretability with SHapley Additive exPlanations (SHAP):
