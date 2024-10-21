@@ -61,7 +61,7 @@ h1, h2, h3, h4, h5, h6, p {
 }
   
 #page-content {
-    padding: 2rem 0.5rem 1rem 1rem;
+    padding: 2rem 0.5rem 1rem 0rem;
     font-family: "sans-serif";
     min-height: 100vh;
     background-attachment: fixed;
@@ -114,7 +114,7 @@ h1, h2, h3, h4, h5, h6, p {
     /* move all contents of navbar other than header (containing toggle) further
        off-screen */
     #sidebar.collapsed > *:not(:first-child) {
-        margin-left: -6rem;
+        margin-left: 0rem;
         margin-right: 6rem;
     }
   
@@ -134,7 +134,7 @@ h1, h2, h3, h4, h5, h6, p {
   
     /* set margins of the main content so that it doesn't overlap the sidebar */
     #page-content {
-        margin-left: 22rem;
+        margin-left: 18rem;
         margin-right: 2rem;
         transition: margin-left 0.3s ease-in-out;
     }
