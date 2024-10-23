@@ -618,24 +618,22 @@ def update_sj_feature_importances(selected_region):
 
 
 @callback(
-    Output('sj_shap', 'children'),
+    Output('sj_shap', 'figure'),
     [Input('sj_shap_interval', 'n_intervals')],
 )
 def update_sj_shap(n_intervals):
-    shap_plot = calc_shap('SJ')
-
-    return [shap_plot]
+    shap_plot = calc_shap('sj')
+    return shap_plot
 
 
 @callback(
-    Output('sf_shap', 'children'),
+    Output('sf_shap', 'figure'),
     [Input('sf_shap_interval', 'n_intervals')],
 )
 def update_sj_shap(n_intervals):
-    shap_plot = calc_shap('SF')
-
-    return [shap_plot]
-
+    shap_plot = calc_shap('sf')
+    
+    return shap_plot
 
 @callback(
     [Output('lstm-scores', 'children'),

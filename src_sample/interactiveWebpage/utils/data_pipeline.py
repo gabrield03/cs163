@@ -9,6 +9,7 @@ from dash import html
 import plotly.graph_objects as go
 import base64
 from io import BytesIO
+import shap
 
 # ML libraries
 from sklearn.compose import ColumnTransformer
@@ -378,6 +379,7 @@ def processing_pipeline(df):
     pickle_filename_X_test = 'pickle_files/'
     pickle_filename_y_train = 'pickle_files/'
     pickle_filename_y_test = 'pickle_files/'
+    pickle_filename_X_train_processed_df = 'pickle_files/'
 
     # pickle as sj
     if 'awnd' in df.columns:
@@ -387,6 +389,7 @@ def processing_pipeline(df):
         pickle_filename_X_test += 'sj_X_test.pkl'
         pickle_filename_y_train += 'sj_y_train.pkl'
         pickle_filename_y_test += 'sj_y_test.pkl'
+        pickle_filename_X_train_processed_df += 'sj_X_train_processed_df.pkl'
     else:
         pickle_filename_model += 'sf_rf.pkl'
         pickle_filename_df += 'sf_df_processed.pkl'
@@ -394,6 +397,8 @@ def processing_pipeline(df):
         pickle_filename_X_test += 'sf_X_test.pkl'
         pickle_filename_y_train += 'sf_y_train.pkl'
         pickle_filename_y_test += 'sf_y_test.pkl'
+        pickle_filename_X_train_processed_df += 'sf_X_train_processed_df.pkl'
+
 
 
     # Class for pipeline
@@ -433,6 +438,19 @@ def processing_pipeline(df):
     
     # Fit the preprocessor on training data and transform it
     X_train_processed = preprocessor.fit_transform(X_train)
+
+
+    ####using this for shap! another pickle file####
+    num_col_names = num_col_list  # Names for numerical features
+    cat_col_names = preprocessor.named_transformers_['cat'].named_steps['encode'].get_feature_names_out(cat_col_list)  # Categorical feature names
+    all_col_names = list(num_col_names) + list(cat_col_names)
+    X_train_processed_df = pd.DataFrame(X_train_processed, columns=all_col_names)
+
+    with open(pickle_filename_X_train_processed_df, 'wb') as f:
+        pickle.dump(X_train_processed_df, f)
+    #print(X_train_processed_df)
+
+
 
     # Optionally, transform X_test as well
     X_test_processed = preprocessor.transform(X_test)
@@ -494,8 +512,50 @@ def processing_pipeline(df):
     return importances_df
 
 def calc_shap(loc):
+    pickle_filename_X_train = f'pickle_files/{loc}_X_train_processed_df.pkl'
+    pickle_filename_model = f'pickle_files/{loc}_rf.pkl'
 
-    return 1
+    X_train = None
+    model = None
+    
+    with open(pickle_filename_X_train, 'rb') as f:
+        X_train = pickle.load(f)
+    
+    with open(pickle_filename_model, 'rb') as f:
+        model = pickle.load(f)
+
+    explainer = shap.Explainer(model)
+    shap_values = explainer(X_train)
+
+    shap_values_array = shap_values.values
+    # Get feature names from the DataFrame
+    feature_names = X_train.columns
+    
+    shap_df = pd.DataFrame(shap_values_array, columns=feature_names)
+
+    # Compute the mean absolute SHAP values for each feature
+    shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
+
+    # Convert to a DataFrame for plotting
+    shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
+    shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
+
+    # Create the Plotly figure for visualization
+    fig = {
+        'data': [{
+            'x': shap_plot_df['Feature'],
+            'y': shap_plot_df['Mean SHAP Value'],
+            'type': 'bar',
+            'marker': {'color': 'blue'},
+        }],
+        'layout': {
+            'title': f'Mean SHAP Values for {loc}',
+            'xaxis': {'title': 'Features'},
+            'yaxis': {'title': 'Mean SHAP Value'},
+        }
+    }
+
+    return fig
 
 def calc_lstm(loc, request_new_pickle, pickle_specifier):
     X_train = None
