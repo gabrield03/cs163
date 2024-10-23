@@ -277,17 +277,25 @@ analytics_objective_1_2 = html.Div(
                 ),
             ],
         ),
-        dcc.Interval(
-            id="sj_shap_interval", 
-            n_intervals=0, 
-            max_intervals=0,
-            interval=1
+        # dcc.Interval(
+        #     id="sj_shap_interval", 
+        #     n_intervals=0, 
+        #     max_intervals=0,
+        #     interval=1
+        # ),
+        # dcc.Interval(
+        #     id="sf_shap_interval", 
+        #     n_intervals=0, 
+        #     max_intervals=0,
+        #     interval=1
+        # ),
+        dcc.Store(
+            id = 'sj_shap_data',
+            storage_type = 'memory'
         ),
-        dcc.Interval(
-            id="sf_shap_interval", 
-            n_intervals=0, 
-            max_intervals=0,
-            interval=1
+        dcc.Store(
+            id = 'sf_shap_data',
+            storage_type = 'memory'
         ),
         dbc.Row(
             [
@@ -616,24 +624,55 @@ def update_sj_feature_importances(selected_region):
 
     return [fig]
 
-
+# SJ SHAP
 @callback(
-    Output('sj_shap', 'figure'),
-    [Input('sj_shap_interval', 'n_intervals')],
+        Output('sj_shap_data', 'data'),
+        Input('url', 'pathname')
 )
-def update_sj_shap(n_intervals):
+def load_sj_shap(pathname):
     shap_plot = calc_shap('sj')
     return shap_plot
 
+@callback(
+        Output('sj_shap', 'figure'),
+        Input('sj_shap_data', 'data')
+)
+def update_sj_shap(shap_plot_data):
+    return shap_plot_data
+
+# SF SHAP
+@callback(
+        Output('sf_shap_data', 'data'),
+        Input('url', 'pathname')
+)
+def load_sf_shap(pathname):
+    shap_plot = calc_shap('sf')
+    return shap_plot
 
 @callback(
-    Output('sf_shap', 'figure'),
-    [Input('sf_shap_interval', 'n_intervals')],
+        Output('sf_shap', 'figure'),
+        Input('sf_shap_data', 'data')
 )
-def update_sj_shap(n_intervals):
-    shap_plot = calc_shap('sf')
+def update_sf_shap(shap_plot_data):
+    return shap_plot_data
+
+# @callback(
+#     Output('sj_shap', 'figure'),
+#     [Input('sj_shap_interval', 'n_intervals')],
+# )
+# def update_sj_shap(n_intervals):
+#     shap_plot = calc_shap('sj')
+#     return shap_plot
+
+
+# @callback(
+#     Output('sf_shap', 'figure'),
+#     [Input('sf_shap_interval', 'n_intervals')],
+# )
+# def update_sj_shap(n_intervals):
+#     shap_plot = calc_shap('sf')
     
-    return shap_plot
+#     return shap_plot
 
 @callback(
     [Output('lstm-scores', 'children'),
