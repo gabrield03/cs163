@@ -289,36 +289,29 @@ analytics_objective_1_2 = html.Div(
         #     max_intervals=0,
         #     interval=1
         # ),
-        dcc.Store(
-            id = 'sj_shap_data',
-            storage_type = 'memory'
-        ),
-        dcc.Store(
-            id = 'sf_shap_data',
-            storage_type = 'memory'
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                                id = 'sj_shap',
-                                figure = {},
-                        ),
-                    ],
-                    width = 6,
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                                id = 'sf_shap',
-                                figure = {},
-                        ),
-                    ],
-                    width = 6,
-                ),
-            ],
-        ),
+
+        # dbc.Row(
+        #     [
+        #         dbc.Col(
+        #             [
+        #                 dcc.Graph(
+        #                         id = 'sj_shap',
+        #                         figure = {},
+        #                 ),
+        #             ],
+        #             width = 6,
+        #         ),
+        #         dbc.Col(
+        #             [
+        #                 dcc.Graph(
+        #                         id = 'sf_shap',
+        #                         figure = {},
+        #                 ),
+        #             ],
+        #             width = 6,
+        #         ),
+        #     ],
+        # ),
     ],
     className = 'mb-5',
 )
@@ -624,38 +617,7 @@ def update_sj_feature_importances(selected_region):
 
     return [fig]
 
-# SJ SHAP
-@callback(
-        Output('sj_shap_data', 'data'),
-        Input('url', 'pathname')
-)
-def load_sj_shap(pathname):
-    shap_plot = calc_shap('sj')
-    return shap_plot
-
-@callback(
-        Output('sj_shap', 'figure'),
-        Input('sj_shap_data', 'data')
-)
-def update_sj_shap(shap_plot_data):
-    return shap_plot_data
-
-# SF SHAP
-@callback(
-        Output('sf_shap_data', 'data'),
-        Input('url', 'pathname')
-)
-def load_sf_shap(pathname):
-    shap_plot = calc_shap('sf')
-    return shap_plot
-
-@callback(
-        Output('sf_shap', 'figure'),
-        Input('sf_shap_data', 'data')
-)
-def update_sf_shap(shap_plot_data):
-    return shap_plot_data
-
+# # SJ SHAP Callback
 # @callback(
 #     Output('sj_shap', 'figure'),
 #     [Input('sj_shap_interval', 'n_intervals')],
@@ -664,7 +626,7 @@ def update_sf_shap(shap_plot_data):
 #     shap_plot = calc_shap('sj')
 #     return shap_plot
 
-
+# # SF SHAP Callback
 # @callback(
 #     Output('sf_shap', 'figure'),
 #     [Input('sf_shap_interval', 'n_intervals')],
@@ -674,6 +636,7 @@ def update_sf_shap(shap_plot_data):
     
 #     return shap_plot
 
+# LSTM Analysis callback
 @callback(
     [Output('lstm-scores', 'children'),
      Output('lstm-plot', 'figure')],
