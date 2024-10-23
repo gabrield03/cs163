@@ -267,7 +267,7 @@ The following sections should be used for the analysis planning. These are not r
 	- Random Forest regressors are ensemble methods that train multiple decision trees and aggregate their results. By combining several base estimators within a given learning algorithm, Random Forests improve the generalizability of a single estimator. This method is particularly suitable for assessing the impact of climate variables (such as maximum and minimum temperature, precipitation, wind speed, etc.) as it captures non-linear relationships, enabling it to model the complex interactions inherent in weather patterns.
 	
 	- Interpretability with SHapley Additive exPlanations (SHAP):
-		- While Random Forest models can be complex to interpret, SHAP will be used to provide insights into feature importance. SHAP values assign each feature an importance score based on its contribution to the prediction, offering a clear way to compare which weather variables are driving energy consumption in each region.
+		- While Random Forest models can be complex to interpret, SHAP will be used to provide explanations of individual features as they contribute to the model's predictions. SHAP values assign each feature an importance score based on its contribution to the prediction, offering a clear way to compare which weather variables are driving energy consumption in each region. I will implement SHAP on a trained Random Forest Regressor model. SHAP results for a single feature will consider all possible combinations of feature coalitions and average the feature's marginal contribution across the coalitions. Essentially, th SHAP value measures how much a feature's value contributes to the difference between the model's predicted output and the average model output.
 
     - Partial Dependence Plots (PDP):
 		- PDPs may also be incorporated to visualize how changes in individual weather variables impact energy consumption, helping to clarify relationships that SHAP scores identify.
@@ -280,7 +280,7 @@ The following sections should be used for the analysis planning. These are not r
 		- Long-Short Term Memory (LSTM):
 			- LSTM networks are designed to handle time-series data by retaining information over time, making them effective for capturing long-term dependencies in weather and energy usage data. I will use LSTM to predict future energy consumption based on historical weather data. The model will initially produce monthly energy predictions, with the possibility of transitioning to daily forecasts if daily energy records become available or if the current data (daily weather records and monthly energy data) is proves to be sufficient in predicting daily energy consumption.
 
-		- Autoregressive Integrated Moving Average (ARIMA) and Error Trend and Seasonality (ETS):
+		- Autoregressive Integrated Moving Average (ARIMA):
 			- Seasonal ARIMA will be used to test time-series forecasting when dealing with smaller datasets or where simpler modeling is appropriate. ARIMA works by creating a linear equation that describes and forecasts the time-series data. It can provide some baseline predictions for energy consumption.
 
 
