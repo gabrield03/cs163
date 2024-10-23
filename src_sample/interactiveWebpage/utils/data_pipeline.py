@@ -227,8 +227,9 @@ def combine_historical_data(df1, df2, df3, df4):
     sf_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
     sf_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
 
-    sj_combined.to_pickle('pickle_files/sj_combined.pkl')
-    sf_combined.to_pickle('pickle_files/sf_combined.pkl')
+    if not os.path.exists('pickle_files/sj_combined.pkl') or not os.path.exists('pickle_files/sf_combined.pkl'):
+        sj_combined.to_pickle('pickle_files/sj_combined.pkl')
+        sf_combined.to_pickle('pickle_files/sf_combined.pkl')
 
 # Find the differences between a column between dataframes
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
