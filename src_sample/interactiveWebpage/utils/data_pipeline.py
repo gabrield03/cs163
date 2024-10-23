@@ -486,26 +486,29 @@ def processing_pipeline(df):
 
 
     # Pickle the processed training and test data
-    with open(pickle_filename_X_train, 'wb') as f:
-        pickle.dump(X_train_processed, f)
-    
-    with open(pickle_filename_X_test, 'wb') as f:
-        pickle.dump(X_test_processed, f)
-    
-    with open(pickle_filename_y_train, 'wb') as f:
-        pickle.dump(y_train, f)
-    
-    with open(pickle_filename_y_test, 'wb') as f:
-        pickle.dump(y_test, f)
+    if not os.path.exists(pickle_filename_X_train) or not os.path.exists(pickle_filename_X_test) or not os.path.exists(pickle_filename_y_train) or not os.path.exists(pickle_filename_y_test):
+        with open(pickle_filename_X_train, 'wb') as f:
+            pickle.dump(X_train_processed, f)
+        
+        with open(pickle_filename_X_test, 'wb') as f:
+            pickle.dump(X_test_processed, f)
+        
+        with open(pickle_filename_y_train, 'wb') as f:
+            pickle.dump(y_train, f)
+        
+        with open(pickle_filename_y_test, 'wb') as f:
+            pickle.dump(y_test, f)
 
 
     # Pickle the rf model
-    with open(pickle_filename_model, 'wb') as f:
-        pickle.dump(rf, f)
+    if not os.path.exists(pickle_filename_model):
+        with open(pickle_filename_model, 'wb') as f:
+            pickle.dump(rf, f)
 
     # Pickle the rf importances
     pickle_filename_importances = 'pickle_files/importances_df.pkl'
-    importances_df.to_pickle(pickle_filename_importances)
+    if not os.path.exists(pickle_filename_importances):
+        importances_df.to_pickle(pickle_filename_importances)
 
 
 

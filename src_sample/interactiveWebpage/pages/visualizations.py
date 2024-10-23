@@ -526,14 +526,24 @@ def update_sf_graph(option_selected):
 
             container = sf_totalkwh
 
-        # Create histogram
-        fig = px.histogram(
-            sf_df,
-            x = column,
-            nbins = 40,
-            title = plot_title,
-            color_discrete_sequence = [color],
-        )
+
+        # Create histogram - using try except because of strange non-rendering error
+        try:
+            fig = px.histogram(
+                sf_df,
+                x = column,
+                nbins = 40,
+                title = plot_title,
+                color_discrete_sequence = [color],
+            )
+        except:
+                fig = px.histogram(
+                sf_df,
+                x = column,
+                nbins = 40,
+                title = plot_title,
+                color_discrete_sequence = [color],
+            )
 
         # Update the figure to set white outlines for the bars
         fig.update_traces(
