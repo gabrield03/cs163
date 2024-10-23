@@ -3,6 +3,7 @@ import numpy as np
 import requests
 from io import StringIO
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pickle
 from dash.dash_table.Format import Format, Scheme
 from dash import html
@@ -389,7 +390,7 @@ def processing_pipeline(df):
         pickle_filename_X_test += 'sj_X_test.pkl'
         pickle_filename_y_train += 'sj_y_train.pkl'
         pickle_filename_y_test += 'sj_y_test.pkl'
-        pickle_filename_X_train_processed_df += 'sj_X_train_processed_df.pkl'
+        pickle_filename_X_train_processed_df += 'sj_X_train_processed_df.joblib'
     else:
         pickle_filename_model += 'sf_rf.pkl'
         pickle_filename_df += 'sf_df_processed.pkl'
@@ -397,7 +398,7 @@ def processing_pipeline(df):
         pickle_filename_X_test += 'sf_X_test.pkl'
         pickle_filename_y_train += 'sf_y_train.pkl'
         pickle_filename_y_test += 'sf_y_test.pkl'
-        pickle_filename_X_train_processed_df += 'sf_X_train_processed_df.pkl'
+        pickle_filename_X_train_processed_df += 'sf_X_train_processed_df.joblib'
 
 
 
@@ -446,9 +447,13 @@ def processing_pipeline(df):
     all_col_names = list(num_col_names) + list(cat_col_names)
     X_train_processed_df = pd.DataFrame(X_train_processed, columns=all_col_names)
 
-    with open(pickle_filename_X_train_processed_df, 'wb') as f:
-        pickle.dump(X_train_processed_df, f)
-    #print(X_train_processed_df)
+
+    if not os.path.exists(pickle_filename_X_train_processed_df):
+        from joblib import dump
+        dump(X_train_processed_df, pickle_filename_X_train_processed_df)
+        # with open(pickle_filename_X_train_processed_df, 'wb') as f:
+        #     pickle.dump(X_train_processed_df, f)
+        # print(X_train_processed_df)
 
 
 
@@ -515,14 +520,16 @@ def processing_pipeline(df):
     return importances_df
 
 def calc_shap(loc):
-    pickle_filename_X_train = f'pickle_files/{loc}_X_train_processed_df.pkl'
+    pickle_filename_X_train = f'pickle_files/{loc}_X_train_processed_df.joblib'
     pickle_filename_model = f'pickle_files/{loc}_rf.pkl'
 
     X_train = None
     model = None
     
-    with open(pickle_filename_X_train, 'rb') as f:
-        X_train = pickle.load(f)
+    from joblib import load
+    X_train = load(pickle_filename_X_train)
+    # with open(pickle_filename_X_train, 'rb') as f:
+    #     X_train = pickle.load(f)
     
     with open(pickle_filename_model, 'rb') as f:
         model = pickle.load(f)
