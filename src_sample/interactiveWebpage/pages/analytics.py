@@ -1,10 +1,15 @@
 import dash
-from dash import html, dcc, callback, Input, Output
+from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objs as go
 
-from  utils.data_pipeline import processing_pipeline
+from  utils.data_pipeline import (
+    processing_pipeline,
+    calc_shap, calc_lstm,
+    lstm_predict
+)
 import os
 import pickle
 
@@ -196,7 +201,8 @@ analytics_objective_1_1 = html.Div(
                             }, 
                         ),
                     ],
-                    width = 7,
+                    width = 10,
+                    align = 'center',
                 ),
             ],
             className = 'mb-3',
@@ -210,7 +216,8 @@ analytics_objective_1_1 = html.Div(
                             figure = {},
                         ),
                     ],
-                    width = 7,
+                    width = 10,
+                    align = 'center'
                 ),
             ],
         ),
@@ -248,42 +255,62 @@ analytics_objective_1_2 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Dropdown(
-        #                     id = 'region_option',
-        #                     options = [
-        #                         {'label': 'San Jose Dataset', 'value': 'sj_df'},
-        #                         {'label': 'San Francisco Dataset', 'value': 'sf_df'},
-        #                     ],
-        #                     multi = False,
-        #                     value = 'sj_df',
-        #                     style = {
-        #                         'backgroundColor': '#bdc3c7',
-        #                         'color': '#2c3e50'
-        #                     }, 
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        #     className = 'mb-3',
-        # ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-        #                     id = 'sj_feature_importances',
-        #                     figure = {},
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        # ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H4(
+                            'San Jose Features',
+                        ),
+                    ],
+                    width = 6,
+                    align = 'center',
+                ),
+                dbc.Col(
+                    [
+                        html.H4(
+                            'San Francisco Features',
+                        ),
+                    ],
+                    width = 6,
+                    align = 'center',
+                ),
+            ],
+        ),
+        dcc.Interval(
+            id="sj_shap_interval", 
+            n_intervals=0, 
+            max_intervals=0,
+            interval=1
+        ),
+        dcc.Interval(
+            id="sf_shap_interval", 
+            n_intervals=0, 
+            max_intervals=0,
+            interval=1
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                                id = 'sj_shap',
+                                figure = {},
+                        ),
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                                id = 'sf_shap',
+                                figure = {},
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+        ),
     ],
     className = 'mb-5',
 )
@@ -317,42 +344,6 @@ analytics_objective_1_3 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Dropdown(
-        #                     id = 'region_option',
-        #                     options = [
-        #                         {'label': 'San Jose Dataset', 'value': 'sj_df'},
-        #                         {'label': 'San Francisco Dataset', 'value': 'sf_df'},
-        #                     ],
-        #                     multi = False,
-        #                     value = 'sj_df',
-        #                     style = {
-        #                         'backgroundColor': '#bdc3c7',
-        #                         'color': '#2c3e50'
-        #                     }, 
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        #     className = 'mb-3',
-        # ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-        #                     id = 'sj_feature_importances',
-        #                     figure = {},
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        # ),
     ],
     className = 'mb-5',
 )
@@ -388,42 +379,6 @@ analytics_objective_1_4 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Dropdown(
-        #                     id = 'region_option',
-        #                     options = [
-        #                         {'label': 'San Jose Dataset', 'value': 'sj_df'},
-        #                         {'label': 'San Francisco Dataset', 'value': 'sf_df'},
-        #                     ],
-        #                     multi = False,
-        #                     value = 'sj_df',
-        #                     style = {
-        #                         'backgroundColor': '#bdc3c7',
-        #                         'color': '#2c3e50'
-        #                     }, 
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        #     className = 'mb-3',
-        # ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-        #                     id = 'sj_feature_importances',
-        #                     figure = {},
-        #                 ),
-        #             ],
-        #             width = 7,
-        #         ),
-        #     ],
-        # ),
     ],
     className = 'mb-5',
 )
@@ -464,17 +419,115 @@ analytics_objective_2_1 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2('LSTM Results'),
+                    ],
+                    width = 12,
+                    align = 'center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Dropdown to select the region
+                        dcc.Dropdown(
+                            id='region-select',
+                            options=[
+                                {'label': 'San Jose', 'value': 'sj'},
+                                {'label': 'San Francisco', 'value': 'sf'},
+                            ],
+                            value='sj',
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Div to display LSTM plot
+                        dcc.Graph(id='lstm-plot'),
+                    ],
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Div to display LSTM scores
+                        html.Div(id='lstm-scores', style={'marginTop': 20}),
+                    ],
+                ),
+            ],
+            className = 'mb-5',
+        ),
 
-        #                 ),
-        #             ],
-        #         ),
-        #     ],
-        # ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2('LSTM Predictions'),
+                    ],
+                    width = 12,
+                    align = 'center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Dropdown to select the region
+                        dcc.Dropdown(
+                            id='region-dropdown',
+                            options=[
+                                {'label': 'San Jose', 'value': 'sj'},
+                                {'label': 'San Francisco', 'value': 'sf'},
+                            ],
+                            value='sj',
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Button('Predict Future', id='predict-button'),
+                    ],
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(id='future-prediction-graph'),
+                    ],
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                       html.Div(id='prediction-output')
+                    ],
+                ),
+            ],
+        ),
     ],
     className = 'mb-5',
 )
@@ -509,17 +562,6 @@ analytics_objective_2_2 = html.Div(
                 ),
             ],
         ),
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-
-        #                 ),
-        #             ],
-        #         ),
-        #     ],
-        # ),
     ],
     className = 'mb-5',
 )
@@ -573,3 +615,141 @@ def update_sj_feature_importances(selected_region):
     )
 
     return [fig]
+
+
+@callback(
+    Output('sj_shap', 'children'),
+    [Input('sj_shap_interval', 'n_intervals')],
+)
+def update_sj_shap(n_intervals):
+    shap_plot = calc_shap('SJ')
+
+    return [shap_plot]
+
+
+@callback(
+    Output('sf_shap', 'children'),
+    [Input('sf_shap_interval', 'n_intervals')],
+)
+def update_sj_shap(n_intervals):
+    shap_plot = calc_shap('SF')
+
+    return [shap_plot]
+
+
+@callback(
+    [Output('lstm-scores', 'children'),
+     Output('lstm-plot', 'figure')],
+    [Input('region-select', 'value')]
+)
+def update_lstm_analysis(region):
+    request_new_pickle = False
+    specifier = 1
+
+    plot_title = region
+    if region == 'sj':
+        plot_title = 'San Jose'
+    else:
+        plot_title = 'San Francisco'
+
+    lstm_scores = None
+    actual_data = None
+    lstm_predictions = None
+
+    if request_new_pickle:
+        # Call the LSTM calculation function
+        lstm_scores, actual_data, lstm_predictions = calc_lstm(region, request_new_pickle, specifier)
+    else:
+        pickle_filename = f'pickle_files/{region}_lstm_results_{specifier}.pkl'
+        if os.path.exists(pickle_filename):
+            with open(pickle_filename, 'rb') as f:
+                res = pickle.load(f)
+                lstm_scores = res['scores']
+                actual_data = res['actual_data']
+                lstm_predictions = res['predictions']
+
+    # Display LSTM scores
+    scores_report = [
+        html.H4("LSTM Scores"),
+        html.P(f"MAE: {lstm_scores['mae']}"),
+        html.P(f"MSE: {lstm_scores['mse']}"),
+    ]
+
+    # Create the plot
+    fig = go.Figure()
+    
+    # Plot actual data
+    fig.add_trace(go.Scatter(
+        x=actual_data['time'], y=actual_data['values'],
+        mode='lines', name='Actual'
+    ))
+    
+    # Plot LSTM predictions
+    fig.add_trace(go.Scatter(
+        x=lstm_predictions['time'], y=lstm_predictions['values'],
+        mode='lines', name='Predicted'
+    ))
+    
+    # Update layout of the plot
+    fig.update_layout(
+        title=f"LSTM Predictions for {plot_title}",
+        xaxis_title="Index?",
+        yaxis_title="Energy Consumption",
+        template="plotly_white"
+    )
+    
+    return scores_report, fig
+
+# Work in progress
+# LSTM Future Predictions callback
+@callback(
+    Output('future-prediction-graph', 'figure'),
+    Output('prediction-output', 'children'),
+    Input('predict-button', 'n_clicks'),
+    State('region-dropdown', 'value')
+)
+def update_future_prediction(n_clicks, region):
+    fig = go.Figure()
+    return fig, []
+
+    # skip for now
+    if n_clicks is None:
+        return dash.no_update
+
+    # Load  model
+    with open('pickle_files/lstm_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+
+    # Load data
+    X_test = None
+    y_test = None
+
+    pickle_filename_X_test = f'pickle_files/{region}_X_test_step.pkl'
+    pickle_filename_y_test = f'pickle_files/{region}_y_test.pkl'
+
+    with open(pickle_filename_X_test, 'rb') as f:
+        X_test = pickle.load(f)
+    with open(pickle_filename_y_test, 'rb') as f:
+        y_test = pickle.load(f)
+
+    # Prepare the last known input data point
+    last_known_data = X_test[-1][-5:]  # Last 10 sequences from X_test
+    
+    last_known_data = last_known_data.reshape((1, last_known_data.shape[0], last_known_data.shape[1]))  # Now (1, 5, 1)
+
+    # Make future predictions
+    future_steps = 2  # Predicting 2 months ahead
+    predictions = lstm_predict(model, last_known_data, future_steps)
+
+    # Prepare the plot
+    future_dates = pd.date_range(start='2024-07', periods=future_steps, freq='ME')
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=future_dates,
+        y=predictions,
+        mode='lines',
+        name='Predicted Future'))
+
+    # Return the updated figure and output text
+    return fig, f"Predicted Values: {predictions}"

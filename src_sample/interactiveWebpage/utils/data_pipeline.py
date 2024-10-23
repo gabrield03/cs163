@@ -10,6 +10,18 @@ import plotly.graph_objects as go
 import base64
 from io import BytesIO
 
+# ML libraries
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+from keras import Sequential
+from keras import layers
+
 # Fetch the historical data
 def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
 
@@ -360,7 +372,39 @@ def create_table_rows(df):
 
 # Processing pipeline
 def processing_pipeline(df):
-    from sklearn.model_selection import train_test_split
+    pickle_filename_model = 'pickle_files/'
+    pickle_filename_df = 'pickle_files/'
+    pickle_filename_X_train = 'pickle_files/'
+    pickle_filename_X_test = 'pickle_files/'
+    pickle_filename_y_train = 'pickle_files/'
+    pickle_filename_y_test = 'pickle_files/'
+
+    # pickle as sj
+    if 'awnd' in df.columns:
+        pickle_filename_model += 'sj_rf.pkl'
+        pickle_filename_df += 'sj_df_processed.pkl'
+        pickle_filename_X_train += 'sj_X_train.pkl'
+        pickle_filename_X_test += 'sj_X_test.pkl'
+        pickle_filename_y_train += 'sj_y_train.pkl'
+        pickle_filename_y_test += 'sj_y_test.pkl'
+    else:
+        pickle_filename_model += 'sf_rf.pkl'
+        pickle_filename_df += 'sf_df_processed.pkl'
+        pickle_filename_X_train += 'sf_X_train.pkl'
+        pickle_filename_X_test += 'sf_X_test.pkl'
+        pickle_filename_y_train += 'sf_y_train.pkl'
+        pickle_filename_y_test += 'sf_y_test.pkl'
+
+
+    # Class for pipeline
+    class ReshapeTransformer(BaseEstimator, TransformerMixin):
+        def fit(self, X, y=None):
+            return self
+
+        def transform(self, X, y=None):
+            return X.reshape(-1, 3)
+
+
 
     drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month']
 
@@ -372,50 +416,205 @@ def processing_pipeline(df):
     y = df['averagekwh']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42)
-    
-    # Split numerical and categorical data for scaling and encoding
+
+    # Categorical and numerical features for pipeline
     cat_col_list = ['year', 'month', 'season']
+    num_col_list = [col for col in X.columns if col not in cat_col_list]
 
-    X_num = X_train
-    X_cat = X_train[['year', 'month', 'season']]
+    # Create pipeline for numerical and categorical preprocessing
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', StandardScaler(), num_col_list),
+            ('cat', Pipeline(steps=[('encode', OrdinalEncoder()), ('reshape', ReshapeTransformer())]), cat_col_list)
+        ]
+    )
+    global preprocessor_gl
+    preprocessor_gl = preprocessor # fix later
+    
+    # Fit the preprocessor on training data and transform it
+    X_train_processed = preprocessor.fit_transform(X_train)
 
-    for col in cat_col_list:
-        if col in X_train:
-            X_num.drop(columns = [col], inplace = True)
-            #X_cat[col] = X_train[col]
+    # Optionally, transform X_test as well
+    X_test_processed = preprocessor.transform(X_test)
 
+    # Combine the feature names
+    all_features = num_col_list + cat_col_list
 
-    from sklearn.preprocessing import StandardScaler
-    sj_num_sc = StandardScaler().fit_transform(X_num)
+            # PIPELINE STUFF
+            # # Create a pipeline that includes the preprocessor and a model (RandomForestRegressor in this case)
+            # pipeline = Pipeline(steps=[
+            #     ('preprocessor', preprocessor),
+            #     ('model', RandomForestRegressor())
+            # ])
 
-    from sklearn.preprocessing import OrdinalEncoder
-    sj_cat_ord_enc = OrdinalEncoder().fit_transform(X_cat)
+            # # Fit the pipeline on the training data
+            # pipeline.fit(X_train, y_train)
 
-    X_train_sj_cat_enc = sj_cat_ord_enc.reshape(-1, 3)
+            ## Make predictions on the test data
+            # y_pred = pipeline.predict(X_test)
 
-    X_train_proc = np.concatenate([sj_num_sc, X_train_sj_cat_enc], axis = 1)
+    # Fit the RandomForest model on the preprocessed training data
+    rf = RandomForestRegressor().fit(X_train_processed, y_train)
 
-    num_cols = X_num.columns
-    all_cols = list(num_cols) + cat_col_list
-
-    scaled_df = pd.DataFrame(X_train_proc, columns = all_cols)
-
-    from sklearn.ensemble import RandomForestRegressor
-    rf = RandomForestRegressor().fit(scaled_df, y_train)
-
+    # Get feature importances
     rf_importances = rf.feature_importances_
-    names = scaled_df.columns
 
-    importances_df = pd.DataFrame(data = rf_importances, index = names, columns = ['importances'])
+    # Create a dataframe for feature importances
+    importances_df = pd.DataFrame(data=rf_importances, index = all_features, columns=['importances'])
 
-    importances_df.reset_index(inplace = True)
+    importances_df.reset_index(inplace=True)
     importances_df.columns = ['feature', 'importances']
+    
+
+
+    # Pickle the processed training and test data
+    with open(pickle_filename_X_train, 'wb') as f:
+        pickle.dump(X_train_processed, f)
+    
+    with open(pickle_filename_X_test, 'wb') as f:
+        pickle.dump(X_test_processed, f)
+    
+    with open(pickle_filename_y_train, 'wb') as f:
+        pickle.dump(y_train, f)
+    
+    with open(pickle_filename_y_test, 'wb') as f:
+        pickle.dump(y_test, f)
+
+
+    # Pickle the rf model
+    with open(pickle_filename_model, 'wb') as f:
+        pickle.dump(rf, f)
+
+    # Pickle the rf importances
+    pickle_filename_importances = 'pickle_files/importances_df.pkl'
+    importances_df.to_pickle(pickle_filename_importances)
+
+
 
     return importances_df
 
+def calc_shap(loc):
+
+    return 1
+
+def calc_lstm(loc, request_new_pickle, pickle_specifier):
+    X_train = None
+    X_test = None
+    y_train = None
+    y_test = None
+
+    with open(f'pickle_files/{loc}_X_train.pkl', 'rb') as f:
+        X_train = pickle.load(f)
+    with open(f'pickle_files/{loc}_X_test.pkl', 'rb') as f:
+        X_test = pickle.load(f)
+    with open(f'pickle_files/{loc}_y_train.pkl', 'rb') as f:
+        y_train = pickle.load(f)
+    with open(f'pickle_files/{loc}_y_test.pkl', 'rb') as f:
+        y_test = pickle.load(f)
+
+    ## Note: X_train and X_test are numpy arrays
+    ## Note: y_train and y_test are pandas series
+    
+    # Rescale target variables (y_train, y_test) using MinMaxScaler
+    y_scaler = StandardScaler()
+    y_train_scaled = y_scaler.fit_transform(y_train.values.reshape(-1, 1))
+    y_test_numpy = y_test.values.reshape(-1, 1)
+
+    # Reshape input data for LSTM (samples, time_steps, features)
+    # Think im stuck with 12 for sj and 7 for sf
+    time_steps = 1
+    if loc == 'sj':
+        time_steps = 12
+    else:
+        time_steps = 7
+
+    X_train = X_train.reshape((X_train.shape[0], time_steps, X_train.shape[1] // time_steps))
+    X_test = X_test.reshape((X_test.shape[0], time_steps, X_test.shape[1] // time_steps))
+
+    # Build the LSTM model
+    model = Sequential()
+    model.add(layers.LSTM(50, return_sequences = True, input_shape = (time_steps, X_train.shape[2])))
+    model.add(layers.LSTM(50))
+    model.add(layers.Dense(1))
+
+    model.compile(optimizer = 'adam', loss = 'mean_squared_error')
+
+    # Train the model
+    model.fit(
+        X_train,
+        y_train_scaled,
+        epochs = 10,
+        batch_size = 32,
+        verbose = 1
+    )
+
+    # Make predictions
+    y_pred_scaled = model.predict(X_test)
+    y_pred = y_scaler.inverse_transform(y_pred_scaled)
+
+    # Calculate mse and mae scores
+    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+
+    scores = {'mse': mse, 'mae': mae}
+    
+    actual_data = {'time': list(range(len(y_test_numpy))), 'values': y_test_numpy.flatten()}
+    lstm_predictions = {'time': list(range(len(y_pred))), 'values': y_pred.flatten()}
 
 
+    # pickle the files if it doesnt exist or we are requesting a new one
+    if request_new_pickle:
+        res = {
+            'scores': scores,
+            'actual_data': actual_data,
+            'predictions': lstm_predictions,
+        }
 
+        pickle_filename = f'pickle_files/{loc}_lstm_results_{pickle_specifier}.pkl'
+        with open(pickle_filename, 'wb') as f:
+            pickle.dump(res, f)
+
+        with open('pickle_files/lstm_model.pkl', 'wb') as f:
+            pickle.dump(model, f)
+
+        with open(f'pickle_files/{loc}_X_test_step.pkl', 'wb') as f:
+            pickle.dump(X_test, f)
+
+        with open(f'pickle_files/{loc}_X_train_step.pkl', 'wb') as f:
+            pickle.dump(X_train, f)
+
+
+    # Return scores and predictions
+    return scores, actual_data, lstm_predictions
+
+
+# work in progress
+# LSTM Future Predictions
+def lstm_predict(model, last_known_data, future_steps=4):
+    future_predictions = []
+    
+    # Reshape the last known data for LSTM input
+    input_data = last_known_data#.reshape((1, last_known_data.shape[0], last_known_data.shape[1]))
+    
+    for _ in range(future_steps):
+        # Predict
+        prediction = model.predict(input_data)
+        
+        # Store the predicted value
+        future_predictions.append(prediction[0, 0])
+        
+        prediction_reshaped = prediction.reshape((1, 1, 1))  # Shape it to (1, 1, features)
+
+        # Concatenate along the time axis
+        input_data = np.append(input_data[:, 1:, :], prediction_reshaped, axis=1)
+
+    future_predictions = np.array(future_predictions)
+
+    # Inverse transform the predictions to get them back to the original scale
+    sc = preprocessor_gl.named_transformers_['num']
+    predictions_original_scale = sc.inverse_transform(future_predictions.reshape(-1, 1).repeat(9, axis=1))
+
+    return predictions_original_scale
 
 
 
