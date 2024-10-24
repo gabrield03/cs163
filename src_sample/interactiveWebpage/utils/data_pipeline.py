@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 import base64
 from io import BytesIO
 import shap
+from joblib import dump, load
 
 # ML libraries
 from sklearn.compose import ColumnTransformer
@@ -438,9 +439,8 @@ def processing_pipeline(df):
     global preprocessor_gl
     preprocessor_gl = preprocessor # fix later
 
-    if not os.path.exists('pickle_files/colTrans_preprocessor.pkl'):
-        with open('pickle_files/colTrans_preprocessor.pkl', 'wb') as f:
-            pickle.dump(preprocessor, f)
+    if not os.path.exists('pickle_files/colTrans_preprocessor.joblib'):
+        dump(preprocessor, 'pickle_files/colTrans_preprocessor.joblib')
     
     # Fit the preprocessor on training data and transform it
     X_train_processed = preprocessor.fit_transform(X_train)
@@ -454,7 +454,7 @@ def processing_pipeline(df):
 
 
     if not os.path.exists(pickle_filename_X_train_processed_df):
-        from joblib import dump
+        
         dump(X_train_processed_df, pickle_filename_X_train_processed_df)
         # with open(pickle_filename_X_train_processed_df, 'wb') as f:
         #     pickle.dump(X_train_processed_df, f)
@@ -530,8 +530,7 @@ def calc_shap(loc):
 
     X_train = None
     model = None
-    
-    from joblib import load
+
     X_train = load(pickle_filename_X_train)
     # with open(pickle_filename_X_train, 'rb') as f:
     #     X_train = pickle.load(f)
