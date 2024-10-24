@@ -437,6 +437,10 @@ def processing_pipeline(df):
     )
     global preprocessor_gl
     preprocessor_gl = preprocessor # fix later
+
+    if not os.path.exists('pickle_files/colTrans_preprocessor.pkl'):
+        with open('pickle_files/colTrans_preprocessor.pkl', 'wb') as f:
+            pickle.dump(preprocessor, f)
     
     # Fit the preprocessor on training data and transform it
     X_train_processed = preprocessor.fit_transform(X_train)
