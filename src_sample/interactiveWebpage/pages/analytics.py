@@ -12,18 +12,17 @@ from  utils.data_pipeline import (
 )
 import os
 import pickle
+from joblib import dump, load
 
 ### Load Data ###
 sj_df = pd.DataFrame()
 sf_df = pd.DataFrame()
 
-if os.path.exists('pickle_files/sj_combined.pkl'):
-    with open('pickle_files/sj_combined.pkl', 'rb') as f:
-        sj_df = pickle.load(f)
+if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
+    sj_df = load('joblib_files/base_data/sj_combined.joblib')
 
-if os.path.exists('pickle_files/sf_combined.pkl'):
-    with open('pickle_files/sf_combined.pkl', 'rb') as f:
-        sf_df = pickle.load(f)
+if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
+    sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
 analytics_header = html.Div(
     [
@@ -277,41 +276,41 @@ analytics_objective_1_2 = html.Div(
                 ),
             ],
         ),
-        # dcc.Interval(
-        #     id="sj_shap_interval", 
-        #     n_intervals=0, 
-        #     max_intervals=0,
-        #     interval=1
-        # ),
-        # dcc.Interval(
-        #     id="sf_shap_interval", 
-        #     n_intervals=0, 
-        #     max_intervals=0,
-        #     interval=1
-        # ),
+        dcc.Interval(
+            id="sj_shap_interval", 
+            n_intervals=0, 
+            max_intervals=0,
+            interval=1
+        ),
+        dcc.Interval(
+            id="sf_shap_interval", 
+            n_intervals=0, 
+            max_intervals=0,
+            interval=1
+        ),
 
-        # dbc.Row(
-        #     [
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-        #                         id = 'sj_shap',
-        #                         figure = {},
-        #                 ),
-        #             ],
-        #             width = 6,
-        #         ),
-        #         dbc.Col(
-        #             [
-        #                 dcc.Graph(
-        #                         id = 'sf_shap',
-        #                         figure = {},
-        #                 ),
-        #             ],
-        #             width = 6,
-        #         ),
-        #     ],
-        # ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                                id = 'sj_shap',
+                                figure = {},
+                        ),
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                                id = 'sf_shap',
+                                figure = {},
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+        ),
     ],
     className = 'mb-5',
 )
@@ -617,24 +616,24 @@ def update_sj_feature_importances(selected_region):
 
     return [fig]
 
-# # SJ SHAP Callback
-# @callback(
-#     Output('sj_shap', 'figure'),
-#     [Input('sj_shap_interval', 'n_intervals')],
-# )
-# def update_sj_shap(n_intervals):
-#     shap_plot = calc_shap('sj')
-#     return shap_plot
+# SJ SHAP Callback
+@callback(
+    Output('sj_shap', 'figure'),
+    [Input('sj_shap_interval', 'n_intervals')],
+)
+def update_sj_shap(n_intervals):
+    shap_plot = calc_shap('sj')
+    return shap_plot
 
-# # SF SHAP Callback
-# @callback(
-#     Output('sf_shap', 'figure'),
-#     [Input('sf_shap_interval', 'n_intervals')],
-# )
-# def update_sj_shap(n_intervals):
-#     shap_plot = calc_shap('sf')
+# SF SHAP Callback
+@callback(
+    Output('sf_shap', 'figure'),
+    [Input('sf_shap_interval', 'n_intervals')],
+)
+def update_sj_shap(n_intervals):
+    shap_plot = calc_shap('sf')
     
-#     return shap_plot
+    return shap_plot
 
 # LSTM Analysis callback
 @callback(
@@ -643,8 +642,11 @@ def update_sj_feature_importances(selected_region):
     [Input('region-select', 'value')]
 )
 def update_lstm_analysis(region):
-    request_new_pickle = False
-    specifier = 1
+    request_new_joblib = False
+    file_specifier = 1
+
+    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_{file_specifier}.joblib'
+
 
     plot_title = region
     if region == 'sj':
@@ -656,17 +658,15 @@ def update_lstm_analysis(region):
     actual_data = None
     lstm_predictions = None
 
-    if request_new_pickle:
+    if request_new_joblib:
         # Call the LSTM calculation function
-        lstm_scores, actual_data, lstm_predictions = calc_lstm(region, request_new_pickle, specifier)
+        lstm_scores, actual_data, lstm_predictions = calc_lstm(region, request_new_joblib, file_specifier)
     else:
-        pickle_filename = f'pickle_files/{region}_lstm_results_{specifier}.pkl'
-        if os.path.exists(pickle_filename):
-            with open(pickle_filename, 'rb') as f:
-                res = pickle.load(f)
-                lstm_scores = res['scores']
-                actual_data = res['actual_data']
-                lstm_predictions = res['predictions']
+        if os.path.exists(joblib_filename_lstm_res):
+            res = load(joblib_filename_lstm_res)
+            lstm_scores = res['scores']
+            actual_data = res['actual_data']
+            lstm_predictions = res['predictions']
 
     # Display LSTM scores
     scores_report = [
@@ -708,7 +708,7 @@ def update_lstm_analysis(region):
     Input('predict-button', 'n_clicks'),
     State('region-dropdown', 'value')
 )
-def update_future_prediction(n_clicks, region):
+def update_future_prediction(n_clicks, region): # BASICALLY PASS FOR NOW
     fig = go.Figure()
     return fig, []
 

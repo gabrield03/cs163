@@ -25,14 +25,14 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from keras import Sequential
 from keras import layers
 
-# Fetch the historical data
-def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
 
-    # Check if the data already exists (is pickled)
-    if os.path.exists(pickle_filename):
-        with open(pickle_filename, 'rb') as f:
-            df = pickle.load(f)
-            clean_data(df, pickle_filename_clean)
+# Fetch the historical data
+def fetch_historical_data(file_url, joblib_filename, joblib_filename_clean):
+
+    # Check if the data already exists (is stored)
+    if os.path.exists(joblib_filename):
+        df = load(joblib_filename)
+        clean_data(df, joblib_filename_clean)
 
     else:
         response = requests.get(file_url)
@@ -40,14 +40,14 @@ def fetch_historical_data(file_url, pickle_filename, pickle_filename_clean):
         if response.status_code == 200:
             csv_data = StringIO(response.text)
             df = pd.read_csv(csv_data)
-            df.to_pickle(pickle_filename)
-            clean_data(df, pickle_filename_clean)
+            dump(df, joblib_filename)
+            clean_data(df, joblib_filename_clean)
     
         else:
             print(f'Failed to fetch {file_url}')
 
 # Clean and format the historical data
-def clean_data(df, pickle_filename_clean):
+def clean_data(df, joblib_filename_clean):
     # Month mapping for month-numeric column
     month_dict = {
         1: 'Jan', 2: 'Feb', 3: 'Mar',
@@ -63,14 +63,12 @@ def clean_data(df, pickle_filename_clean):
     sj_weather_df = pd.DataFrame()
     sf_weather_df = pd.DataFrame()
 
-    if len(pickle_filename_clean) == 2 and os.path.exists(pickle_filename_clean[0]) and os.path.exists(pickle_filename_clean[1]):
-        with open(pickle_filename_clean[0], 'rb') as f:
-            sj_energy_df = pickle.load(f)
-        with open(pickle_filename_clean[1], 'rb') as f:
-            sf_energy_df = pickle.load(f)
+    if len(joblib_filename_clean) == 2 and os.path.exists(joblib_filename_clean[0]) and os.path.exists(joblib_filename_clean[1]):
+        sj_energy_df = load(joblib_filename_clean[0])
+        sf_energy_df = load(joblib_filename_clean[1])
     
-    # Energy df - pkl not created - split into sj and sf
-    elif len(pickle_filename_clean) == 2:
+    # Energy df - joblib not created - split into sj and sf
+    elif len(joblib_filename_clean) == 2:
         # Add year-month column YYYY-MM
         df['year-month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
 
@@ -114,35 +112,31 @@ def clean_data(df, pickle_filename_clean):
         sj_energy_df['season'] = np.select(conditions, values)
         sf_energy_df['season'] = np.select(conditions, values)
 
-        # Pickle the data
-        # sj_energy_df.to_pickle('sj_energy_df.pkl')
-        # sf_energy_df.to_pickle('sf_energy_df.pkl')
-
-        sj_energy_df.to_pickle('pickle_files/sj_energy_df.pkl')
-        sf_energy_df.to_pickle('pickle_files/sf_energy_df.pkl')
+        # joblib - dump the data
+        dump(sj_energy_df, 'joblib_files/base_data/sj_energy_df.joblib')
+        dump(sf_energy_df, 'joblib_files/base_data/sf_energy_df.joblib')
 
 
-    elif len(pickle_filename_clean) == 1 and os.path.exists(pickle_filename_clean[0]):
-        if 'sj' in pickle_filename_clean:
-            with open(pickle_filename_clean[0], 'rb') as f:
-                sj_weather_df = pickle.load(f)
+    elif len(joblib_filename_clean) == 1 and os.path.exists(joblib_filename_clean[0]):
+        if 'sj' in joblib_filename_clean:
+            sj_weather_df = load(joblib_filename_clean[0])
         else:
-            with open(pickle_filename_clean[0], 'rb') as f:
-                sf_weather_df = pickle.load(f)
+            sf_weather_df = load(joblib_filename_clean[0])
 
-    # Weather data - pkl not created
+    # Weather data - joblib not created
     else: 
-        pickle_filename = ''
+
+        joblib_filename = None
         # Change col names to lowercase for consistency
         df.columns = df.columns.str.lower()
 
         # Add region
         if 'USW00023293' == df['station'].iloc[0]:  # SJ Station
             df['region'] = 'SJ'
-            pickle_filename = 'pickle_files/sj_weather_df.pkl'
+            joblib_filename = 'joblib_files/base_data/sj_weather_df.joblib'
         else:                               # SF Station
             df['region'] = 'SF'
-            pickle_filename = 'pickle_files/sf_weather_df.pkl'
+            joblib_filename = 'joblib_files/base_data/sf_weather_df.joblib'
 
         # Drop station and name
         if 'station' in df.columns:
@@ -194,11 +188,15 @@ def clean_data(df, pickle_filename_clean):
         # Convert month to categorical
         df_monthly_weather['month'] = pd.Categorical(df_monthly_weather['month'], categories=ordered_months, ordered=True)
 
-        # Pickle the data
-        df_monthly_weather.to_pickle(pickle_filename)
+        # joblib - dump the data
+        dump(df_monthly_weather, joblib_filename)
 
 # Combine the historical dfs
 def combine_historical_data(df1, df2, df3, df4):
+    # joblib filenames
+    joblib_filename_sj_combined = 'joblib_files/base_data/sj_combined.joblib'
+    joblib_filename_sf_combined = 'joblib_files/base_data/sf_combined.joblib'
+
     # Sort each df by year and month (month is categorical)
 
     # sj_energy_df: 2013-01 to 2024-06 - 138 records
@@ -228,9 +226,9 @@ def combine_historical_data(df1, df2, df3, df4):
     sf_combined.drop(columns = ['month-numeric_x', 'year-month_x'], inplace = True)
     sf_combined.rename(columns = {'month-numeric_y': 'month-numeric', 'year-month_y': 'year-month'}, inplace = True)
 
-    if not os.path.exists('pickle_files/sj_combined.pkl') or not os.path.exists('pickle_files/sf_combined.pkl'):
-        sj_combined.to_pickle('pickle_files/sj_combined.pkl')
-        sf_combined.to_pickle('pickle_files/sf_combined.pkl')
+    if not os.path.exists(joblib_filename_sj_combined) or not os.path.exists(joblib_filename_sf_combined):
+        dump(sj_combined, joblib_filename_sj_combined)
+        dump(sf_combined, joblib_filename_sf_combined)
 
 # Find the differences between a column between dataframes
 def find_regional_diff(sj_df, sf_df, diffCol, newCol):
@@ -272,6 +270,7 @@ def format_columns(df):
     return columns
 
 
+#### START functions for data.py tables ####
 # Create table headers
 def create_table_header(df):
     headers = [html.Th('INDEX')]
@@ -374,43 +373,32 @@ def create_table_rows(df):
 
     return rows
 
+#### END functions for data.py tables ####
+
+
 # Processing pipeline
 def processing_pipeline(df):
-    pickle_filename_model = 'pickle_files/'
-    pickle_filename_df = 'pickle_files/'
-    pickle_filename_X_train = 'pickle_files/'
-    pickle_filename_X_test = 'pickle_files/'
-    pickle_filename_y_train = 'pickle_files/'
-    pickle_filename_y_test = 'pickle_files/'
-    pickle_filename_X_train_processed_df = 'pickle_files/'
-
-    # pickle as sj
-    if 'awnd' in df.columns:
-        pickle_filename_model += 'sj_rf.pkl'
-        pickle_filename_df += 'sj_df_processed.pkl'
-        pickle_filename_X_train += 'sj_X_train.pkl'
-        pickle_filename_X_test += 'sj_X_test.pkl'
-        pickle_filename_y_train += 'sj_y_train.pkl'
-        pickle_filename_y_test += 'sj_y_test.pkl'
-        pickle_filename_X_train_processed_df += 'sj_X_train_processed_df.joblib'
-    else:
-        pickle_filename_model += 'sf_rf.pkl'
-        pickle_filename_df += 'sf_df_processed.pkl'
-        pickle_filename_X_train += 'sf_X_train.pkl'
-        pickle_filename_X_test += 'sf_X_test.pkl'
-        pickle_filename_y_train += 'sf_y_train.pkl'
-        pickle_filename_y_test += 'sf_y_test.pkl'
-        pickle_filename_X_train_processed_df += 'sf_X_train_processed_df.joblib'
-
-
-
-    # Class for pipeline
+    # Transformer class for pipeline
     class ReshapeTransformer(BaseEstimator, TransformerMixin):
         def fit(self, X, y=None):
             return self
 
         def transform(self, X, y=None):
             return X.reshape(-1, 3)
+        
+    loc = 'sf'
+    if 'awnd' in df.columns:
+        loc = 'sj'
+    
+    joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
+    #joblib_filename_df = f'joblib_files/processed_data/{loc}_df_processed.joblib'
+    joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train.joblib'
+    joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test.joblib'
+    joblib_filename_y_train = f'joblib_files/processed_data/{loc}_y_train.joblib'
+    joblib_filename_y_test = f'joblib_files/processed_data/{loc}_y_test.joblib'
+    joblib_filename_X_train_processed_df = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
+    joblib_filename_preprocessor = f'joblib_files/processed_data/{loc}_preprocessor.joblib'
+    joblib_filename_importances = f'joblib_files/processed_data/{loc}_importances_df.joblib'
 
 
 
@@ -436,33 +424,21 @@ def processing_pipeline(df):
             ('cat', Pipeline(steps=[('encode', OrdinalEncoder()), ('reshape', ReshapeTransformer())]), cat_col_list)
         ]
     )
-    global preprocessor_gl
-    preprocessor_gl = preprocessor # fix later
+    #global preprocessor_gl
+    #preprocessor_gl = preprocessor # fix later
 
-    if not os.path.exists('pickle_files/colTrans_preprocessor.joblib'):
-        dump(preprocessor, 'pickle_files/colTrans_preprocessor.joblib')
+    
     
     # Fit the preprocessor on training data and transform it
     X_train_processed = preprocessor.fit_transform(X_train)
 
 
-    ####using this for shap! another pickle file####
+    ####using this for shap! another joblib file####
     num_col_names = num_col_list  # Names for numerical features
     cat_col_names = preprocessor.named_transformers_['cat'].named_steps['encode'].get_feature_names_out(cat_col_list)  # Categorical feature names
     all_col_names = list(num_col_names) + list(cat_col_names)
+
     X_train_processed_df = pd.DataFrame(X_train_processed, columns=all_col_names)
-
-
-    if not os.path.exists(pickle_filename_X_train_processed_df):
-        
-        dump(X_train_processed_df, pickle_filename_X_train_processed_df)
-        # with open(pickle_filename_X_train_processed_df, 'wb') as f:
-        #     pickle.dump(X_train_processed_df, f)
-        # print(X_train_processed_df)
-
-
-
-    # Optionally, transform X_test as well
     X_test_processed = preprocessor.transform(X_test)
 
     # Combine the feature names
@@ -494,49 +470,41 @@ def processing_pipeline(df):
     importances_df.columns = ['feature', 'importances']
     
 
-
-    # Pickle the processed training and test data
-    if not os.path.exists(pickle_filename_X_train) or not os.path.exists(pickle_filename_X_test) or not os.path.exists(pickle_filename_y_train) or not os.path.exists(pickle_filename_y_test):
-        with open(pickle_filename_X_train, 'wb') as f:
-            pickle.dump(X_train_processed, f)
-        
-        with open(pickle_filename_X_test, 'wb') as f:
-            pickle.dump(X_test_processed, f)
-        
-        with open(pickle_filename_y_train, 'wb') as f:
-            pickle.dump(y_train, f)
-        
-        with open(pickle_filename_y_test, 'wb') as f:
-            pickle.dump(y_test, f)
+    # joblib - dump all the data
+    # Processed training and test data
+    if not os.path.exists(joblib_filename_X_train) or not os.path.exists(joblib_filename_X_test) or not os.path.exists(joblib_filename_y_train) or not os.path.exists(joblib_filename_y_test):
+        dump(X_train_processed, joblib_filename_X_train)
+        dump(X_test_processed, joblib_filename_X_test)
+        dump(y_train, joblib_filename_y_train)
+        dump(y_test, joblib_filename_y_test)
 
 
-    # Pickle the rf model
-    if not os.path.exists(pickle_filename_model):
-        with open(pickle_filename_model, 'wb') as f:
-            pickle.dump(rf, f)
+    if not os.path.exists(joblib_filename_X_train_processed_df):
+        dump(X_train_processed_df, joblib_filename_X_train_processed_df)
 
-    # Pickle the rf importances
-    pickle_filename_importances = 'pickle_files/importances_df.pkl'
-    if not os.path.exists(pickle_filename_importances):
-        importances_df.to_pickle(pickle_filename_importances)
+    # rf model
+    if not os.path.exists(joblib_filename_model):
+        dump(rf, joblib_filename_model)
 
+    # rf importances
+    if not os.path.exists(joblib_filename_importances):
+        dump(importances_df, joblib_filename_importances)
+
+    if not os.path.exists(joblib_filename_preprocessor):
+        dump(preprocessor, joblib_filename_preprocessor)
 
 
     return importances_df
 
 def calc_shap(loc):
-    pickle_filename_X_train = f'pickle_files/{loc}_X_train_processed_df.joblib'
-    pickle_filename_model = f'pickle_files/{loc}_rf.pkl'
+    joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
+    joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
 
     X_train = None
     model = None
 
-    X_train = load(pickle_filename_X_train)
-    # with open(pickle_filename_X_train, 'rb') as f:
-    #     X_train = pickle.load(f)
-    
-    with open(pickle_filename_model, 'rb') as f:
-        model = pickle.load(f)
+    X_train = load(joblib_filename_X_train)
+    model = load(joblib_filename_model)
 
     explainer = shap.Explainer(model)
     shap_values = explainer(X_train)
@@ -571,24 +539,19 @@ def calc_shap(loc):
 
     return fig
 
-def calc_lstm(loc, request_new_pickle, pickle_specifier):
-    X_train = None
-    X_test = None
-    y_train = None
-    y_test = None
-
-    with open(f'pickle_files/{loc}_X_train.pkl', 'rb') as f:
-        X_train = pickle.load(f)
-    with open(f'pickle_files/{loc}_X_test.pkl', 'rb') as f:
-        X_test = pickle.load(f)
-    with open(f'pickle_files/{loc}_y_train.pkl', 'rb') as f:
-        y_train = pickle.load(f)
-    with open(f'pickle_files/{loc}_y_test.pkl', 'rb') as f:
-        y_test = pickle.load(f)
+def calc_lstm(loc, request_new_joblib, file_specifier):
+    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_{file_specifier}.joblib'
+    joblib_filename_lstm_model = f'joblib_files/lstm/{loc}_lstm_model_{file_specifier}.joblib'
+    joblib_filename_X_test_step = f'joblib_files/lstm/{loc}_X_test_step_{file_specifier}.joblib'
+    joblib_filename_X_train_step = f'joblib_files/lstm/{loc}_X_train_step_{file_specifier}.joblib'
 
     ## Note: X_train and X_test are numpy arrays
     ## Note: y_train and y_test are pandas series
-    
+    X_train = load(f'joblib_files/processed_data/{loc}_X_train.joblib')
+    X_test = load(f'joblib_files/processed_data/{loc}_X_test.joblib')
+    y_train = load(f'joblib_files/processed_data/{loc}_y_train.joblib')
+    y_test = load(f'joblib_files/processed_data/{loc}_y_test.joblib')
+
     # Rescale target variables (y_train, y_test) using MinMaxScaler
     y_scaler = StandardScaler()
     y_train_scaled = y_scaler.fit_transform(y_train.values.reshape(-1, 1))
@@ -636,27 +599,18 @@ def calc_lstm(loc, request_new_pickle, pickle_specifier):
     lstm_predictions = {'time': list(range(len(y_pred))), 'values': y_pred.flatten()}
 
 
-    # pickle the files if it doesnt exist or we are requesting a new one
-    if request_new_pickle:
+    # joblib dump the files if it doesnt exist or we are requesting a new one
+    if request_new_joblib:
         res = {
             'scores': scores,
             'actual_data': actual_data,
             'predictions': lstm_predictions,
         }
 
-        pickle_filename = f'pickle_files/{loc}_lstm_results_{pickle_specifier}.pkl'
-        with open(pickle_filename, 'wb') as f:
-            pickle.dump(res, f)
-
-        with open('pickle_files/lstm_model.pkl', 'wb') as f:
-            pickle.dump(model, f)
-
-        with open(f'pickle_files/{loc}_X_test_step.pkl', 'wb') as f:
-            pickle.dump(X_test, f)
-
-        with open(f'pickle_files/{loc}_X_train_step.pkl', 'wb') as f:
-            pickle.dump(X_train, f)
-
+        dump(res, joblib_filename_lstm_res)
+        dump(model, joblib_filename_lstm_model)
+        dump(X_test, joblib_filename_X_test_step)
+        dump(X_train, joblib_filename_X_train_step)
 
     # Return scores and predictions
     return scores, actual_data, lstm_predictions
@@ -664,7 +618,8 @@ def calc_lstm(loc, request_new_pickle, pickle_specifier):
 
 # work in progress
 # LSTM Future Predictions
-def lstm_predict(model, last_known_data, future_steps=4):
+def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR NOW
+    return 1
     future_predictions = []
     
     # Reshape the last known data for LSTM input
@@ -685,7 +640,7 @@ def lstm_predict(model, last_known_data, future_steps=4):
     future_predictions = np.array(future_predictions)
 
     # Inverse transform the predictions to get them back to the original scale
-    sc = preprocessor_gl.named_transformers_['num']
+    #sc = preprocessor_gl.named_transformers_['num']
     predictions_original_scale = sc.inverse_transform(future_predictions.reshape(-1, 1).repeat(9, axis=1))
 
     return predictions_original_scale
@@ -695,31 +650,22 @@ def lstm_predict(model, last_known_data, future_steps=4):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/data/energy/Combined_Energy_Data.csv': ['pickle_files/energy_data.pkl', ['pickle_files/sj_energy_df.pkl', 'pickle_files/sf_energy_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SJ_95110_SJAirport.csv': ['pickle_files/sj_weather_data.pkl', ['pickle_files/sj_weather_df.pkl']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SF_94102_DowntownSF.csv': ['pickle_files/sf_weather_data.pkl', ['pickle_files/sf_weather_df.pkl']]
+    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/data/energy/Combined_Energy_Data.csv': ['joblib_files/base_data/energy_data.joblib', ['joblib_files/base_data/sj_energy_df.joblib', 'joblib_files/base_data/sf_energy_df.joblib']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SJ_95110_SJAirport.csv': ['joblib_files/base_data/sj_weather_data.joblib', ['joblib_files/base_data/sj_weather_df.joblib']],
+    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SF_94102_DowntownSF.csv': ['joblib_files/base_data/sf_weather_data.joblib', ['joblib_files/base_data/sf_weather_df.joblib']]
 }
 
 # Fetch and clean the historical data
-for url, pickle_filenames in repo_urls.items():
-    fetch_historical_data(url, pickle_filenames[0], pickle_filenames[1])
+for url, joblib_filenames in repo_urls.items():
+    fetch_historical_data(url, joblib_filenames[0], joblib_filenames[1])
 
 
 # Combine the historical data
-if os.path.exists('pickle_files/sj_energy_df.pkl') and os.path.exists('pickle_files/sf_energy_df.pkl') and os.path.exists('pickle_files/sj_weather_df.pkl') and os.path.exists('pickle_files/sf_weather_df.pkl'):
-    df1 = pd.DataFrame()
-    df2 = pd.DataFrame()
-    df3 = pd.DataFrame()
-    df4 = pd.DataFrame()
-
-    with open('pickle_files/sj_energy_df.pkl', 'rb') as f:
-            df1 = pickle.load(f)
-    with open('pickle_files/sf_energy_df.pkl', 'rb') as f:
-            df2 = pickle.load(f)
-    with open('pickle_files/sj_weather_df.pkl', 'rb') as f:
-            df3 = pickle.load(f)
-    with open('pickle_files/sf_weather_df.pkl', 'rb') as f:
-            df4 = pickle.load(f)
+if os.path.exists('joblib_files/base_data/sj_energy_df.joblib') and os.path.exists('joblib_files/base_data/sf_energy_df.joblib') and os.path.exists('joblib_files/base_data/sj_weather_df.joblib') and os.path.exists('joblib_files/base_data/sf_weather_df.joblib'):
+    df1 = load('joblib_files/base_data/sj_energy_df.joblib')
+    df2 = load('joblib_files/base_data/sf_energy_df.joblib')
+    df3 = load('joblib_files/base_data/sj_weather_df.joblib')
+    df4 = load('joblib_files/base_data/sf_weather_df.joblib')
 
     if len(df1) != 0 and len(df2) != 0 and len(df3) != 0 and len(df4) != 0:
         combine_historical_data(df1, df2, df3, df4)

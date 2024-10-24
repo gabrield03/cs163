@@ -12,18 +12,17 @@ import numpy as np
 from utils.data_pipeline import find_regional_diff
 import os
 import pickle
+from joblib import dump, load
 
 ##### Load Data #####
 sj_df = pd.DataFrame()
 sf_df = pd.DataFrame()
 
-if os.path.exists('pickle_files/sj_combined.pkl'):
-    with open('pickle_files/sj_combined.pkl', 'rb') as f:
-        sj_df = pickle.load(f)
+if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
+    sj_df = load('joblib_files/base_data/sj_combined.joblib')
 
-if os.path.exists('pickle_files/sf_combined.pkl'):
-    with open('pickle_files/sf_combined.pkl', 'rb') as f:
-        sf_df = pickle.load(f)
+if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
+    sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
 
 # Animated plot descriptions

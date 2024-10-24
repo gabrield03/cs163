@@ -9,6 +9,18 @@ from dash import Dash, dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
+import os
+from joblib import dump, load
+
+# sj_df = pd.DataFrame()
+# df_df = pd.DataFrame()
+
+# if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
+#     sj_df = load('joblib_files/base_data/sj_combined.joblib')
+
+# if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
+#     sf_df = load('joblib_files/base_data/sf_combined.joblib')
+
 layout = dbc.Container([
     dbc.Row([
         html.H1('Passage about real-time data analysis:',
