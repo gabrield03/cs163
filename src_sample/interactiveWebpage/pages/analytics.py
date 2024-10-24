@@ -589,7 +589,12 @@ def update_sj_feature_importances(selected_region):
     elif selected_region == 'sf_df':
         df = sf_df
 
-    feature_importances = processing_pipeline(df)
+    importances_fn = f'joblib_files/processed_data/{selected_region}_importances_df.joblib'
+    feature_importances = None
+    if os.path.exists(importances_fn):
+        feature_importances = load(importances_fn)
+    else:
+        feature_importances = processing_pipeline(df)
     
     # Need to add title and expand the actual axis
     fig = px.scatter(
@@ -613,10 +618,19 @@ def update_sj_feature_importances(selected_region):
     [Input('regional_shap_option', 'value')],
 )
 def update_sj_shap(loc):
-    shap_plot_df = calc_shap(loc)
+    shap_plot_df = None
+
+    joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
+    if not os.path.exists(joblib_filename_shap):
+        shap_plot_df = calc_shap(loc)
+    else:
+        shap_plot_df = load(joblib_filename_shap)
+
+
     region = 'San Jose'
     if loc == 'sf':
         region = 'San Francisco'
+
 
     # Create the Plotly figure for visualization
     fig = {

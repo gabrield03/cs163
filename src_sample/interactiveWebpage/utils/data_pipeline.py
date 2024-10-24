@@ -501,6 +501,7 @@ def processing_pipeline(df):
 def calc_shap(loc):
     joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
+    joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
 
     X_train = None
     model = None
@@ -524,6 +525,9 @@ def calc_shap(loc):
     # Convert to a DataFrame for plotting
     shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
     shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
+
+    if not os.path.exists(joblib_filename_shap):
+        dump(shap_plot_df, joblib_filename_shap)
 
     return shap_plot_df
 
