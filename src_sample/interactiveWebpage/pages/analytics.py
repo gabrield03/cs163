@@ -258,35 +258,25 @@ analytics_objective_1_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H4(
-                            'San Jose Features',
+                        dcc.RadioItems(
+                            id = 'regional_shap_option',
+                            options = [
+                                {
+                                    'label': html.Div(['San Jose'], style = {'color': '#ffffff', 'font-size': 20, 'margin-right': '50px'}),
+                                    'value': 'sj',
+                                },
+                                {
+                                    'label': html.Div(['San Francisco'], style = {'color': '#ffffff', 'font-size': 20}),
+                                    'value': 'sf',
+                                },
+                            ],
+                            value = 'sj'
                         ),
                     ],
-                    width = 6,
-                    align = 'center',
-                ),
-                dbc.Col(
-                    [
-                        html.H4(
-                            'San Francisco Features',
-                        ),
-                    ],
-                    width = 6,
-                    align = 'center',
+                    
                 ),
             ],
-        ),
-        dcc.Interval(
-            id="sj_shap_interval", 
-            n_intervals=0, 
-            max_intervals=0,
-            interval=1
-        ),
-        dcc.Interval(
-            id="sf_shap_interval", 
-            n_intervals=0, 
-            max_intervals=0,
-            interval=1
+            className = 'mb-3',
         ),
 
         dbc.Row(
@@ -294,21 +284,22 @@ analytics_objective_1_2 = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                                id = 'sj_shap',
+                                id = 'regional_shap',
                                 figure = {},
                         ),
                     ],
-                    width = 6,
+                    width = 10,
+                    align = 'center',
                 ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                                id = 'sf_shap',
-                                figure = {},
-                        ),
-                    ],
-                    width = 6,
-                ),
+                # dbc.Col(
+                #     [
+                #         dcc.Graph(
+                #                 id = 'sf_shap',
+                #                 figure = {},
+                #         ),
+                #     ],
+                #     width = 6,
+                # ),
             ],
         ),
     ],
@@ -616,26 +607,37 @@ def update_sj_feature_importances(selected_region):
 
     return [fig]
 
-# SJ SHAP Callback
+# SHAP Callback and Functions
 @callback(
-    Output('sj_shap', 'figure'),
-    [Input('sj_shap_interval', 'n_intervals')],
+    Output('regional_shap', 'figure'),
+    [Input('regional_shap_option', 'value')],
 )
-def update_sj_shap(n_intervals):
-    shap_plot = calc_shap('sj')
-    return shap_plot
+def update_sj_shap(loc):
+    shap_plot_df = calc_shap(loc)
+    region = 'San Jose'
+    if loc == 'sf':
+        region = 'San Francisco'
 
-# SF SHAP Callback
-@callback(
-    Output('sf_shap', 'figure'),
-    [Input('sf_shap_interval', 'n_intervals')],
-)
-def update_sj_shap(n_intervals):
-    shap_plot = calc_shap('sf')
-    
-    return shap_plot
+    # Create the Plotly figure for visualization
+    fig = {
+        'data': [
+            {
+                'x': shap_plot_df['Feature'],
+                'y': shap_plot_df['Mean SHAP Value'],
+                'type': 'bar',
+                'marker': {'color': 'blue'},
+            }
+        ],
+        'layout': {
+            'title': f'Mean SHAP Values for {region}',
+            'xaxis': {'title': 'Features'},
+            'yaxis': {'title': 'Mean SHAP Value'},
+        }
+    }
 
-# LSTM Analysis callback
+    return fig
+
+# LSTM 
 @callback(
     [Output('lstm-scores', 'children'),
      Output('lstm-plot', 'figure')],

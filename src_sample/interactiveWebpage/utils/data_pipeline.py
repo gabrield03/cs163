@@ -380,10 +380,10 @@ def create_table_rows(df):
 def processing_pipeline(df):
     # Transformer class for pipeline
     class ReshapeTransformer(BaseEstimator, TransformerMixin):
-        def fit(self, X, y=None):
+        def fit(self, X, y = None):
             return self
 
-        def transform(self, X, y=None):
+        def transform(self, X, y = None):
             return X.reshape(-1, 3)
         
     loc = 'sf'
@@ -403,6 +403,12 @@ def processing_pipeline(df):
 
 
     drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month']
+
+    # test making regions have the same columns
+    drop_list2 = ['wdf5', 'wsf5', 'awnd', 'wdf2', 'wsf2']
+    drop_list.extend(drop_list2)
+
+
 
     for col in drop_list:
         if col in df.columns:
@@ -424,18 +430,13 @@ def processing_pipeline(df):
             ('cat', Pipeline(steps=[('encode', OrdinalEncoder()), ('reshape', ReshapeTransformer())]), cat_col_list)
         ]
     )
-    #global preprocessor_gl
-    #preprocessor_gl = preprocessor # fix later
-
-    
     
     # Fit the preprocessor on training data and transform it
     X_train_processed = preprocessor.fit_transform(X_train)
 
-
     ####using this for shap! another joblib file####
     num_col_names = num_col_list  # Names for numerical features
-    cat_col_names = preprocessor.named_transformers_['cat'].named_steps['encode'].get_feature_names_out(cat_col_list)  # Categorical feature names
+    cat_col_names = preprocessor.named_transformers_['cat'].named_steps['encode'].get_feature_names_out(cat_col_list)
     all_col_names = list(num_col_names) + list(cat_col_names)
 
     X_train_processed_df = pd.DataFrame(X_train_processed, columns=all_col_names)
@@ -464,9 +465,9 @@ def processing_pipeline(df):
     rf_importances = rf.feature_importances_
 
     # Create a dataframe for feature importances
-    importances_df = pd.DataFrame(data=rf_importances, index = all_features, columns=['importances'])
+    importances_df = pd.DataFrame(data = rf_importances, index = all_features, columns = ['importances'])
 
-    importances_df.reset_index(inplace=True)
+    importances_df.reset_index(inplace = True)
     importances_df.columns = ['feature', 'importances']
     
 
@@ -477,7 +478,6 @@ def processing_pipeline(df):
         dump(X_test_processed, joblib_filename_X_test)
         dump(y_train, joblib_filename_y_train)
         dump(y_test, joblib_filename_y_test)
-
 
     if not os.path.exists(joblib_filename_X_train_processed_df):
         dump(X_train_processed_df, joblib_filename_X_train_processed_df)
@@ -490,12 +490,14 @@ def processing_pipeline(df):
     if not os.path.exists(joblib_filename_importances):
         dump(importances_df, joblib_filename_importances)
 
-    if not os.path.exists(joblib_filename_preprocessor):
-        dump(preprocessor, joblib_filename_preprocessor)
+    # Need to figure out how to save the preprocessor for each model - giving an error during runtime
+    # if not os.path.exists(joblib_filename_preprocessor):
+    #     dump(preprocessor, joblib_filename_preprocessor)
 
 
     return importances_df
 
+# Calculate SHAP values for plotting
 def calc_shap(loc):
     joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
@@ -513,7 +515,8 @@ def calc_shap(loc):
     # Get feature names from the DataFrame
     feature_names = X_train.columns
     
-    shap_df = pd.DataFrame(shap_values_array, columns=feature_names)
+    shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
+
 
     # Compute the mean absolute SHAP values for each feature
     shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
@@ -522,22 +525,7 @@ def calc_shap(loc):
     shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
     shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
 
-    # Create the Plotly figure for visualization
-    fig = {
-        'data': [{
-            'x': shap_plot_df['Feature'],
-            'y': shap_plot_df['Mean SHAP Value'],
-            'type': 'bar',
-            'marker': {'color': 'blue'},
-        }],
-        'layout': {
-            'title': f'Mean SHAP Values for {loc}',
-            'xaxis': {'title': 'Features'},
-            'yaxis': {'title': 'Mean SHAP Value'},
-        }
-    }
-
-    return fig
+    return shap_plot_df
 
 def calc_lstm(loc, request_new_joblib, file_specifier):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_{file_specifier}.joblib'
@@ -561,7 +549,7 @@ def calc_lstm(loc, request_new_joblib, file_specifier):
     # Think im stuck with 12 for sj and 7 for sf
     time_steps = 1
     if loc == 'sj':
-        time_steps = 12
+        time_steps = 7
     else:
         time_steps = 7
 
@@ -640,7 +628,7 @@ def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR N
     future_predictions = np.array(future_predictions)
 
     # Inverse transform the predictions to get them back to the original scale
-    #sc = preprocessor_gl.named_transformers_['num']
+    #sc = preprocessor_gl.named_transformers_['num'] # need to load from joblib
     predictions_original_scale = sc.inverse_transform(future_predictions.reshape(-1, 1).repeat(9, axis=1))
 
     return predictions_original_scale
