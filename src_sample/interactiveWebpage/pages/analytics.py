@@ -29,12 +29,16 @@ analytics_header = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H1(
+                    html.P(
                         'Analytics',
                     ),
                     className = 'text-center mb-5',
                     width = 12,
-                    style = {'height': '100%'},
+                    style = {
+                        'font-size': '50px',
+                        'height': '100%',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
                 ),
             ],
         ),
@@ -54,22 +58,10 @@ analytics_info = html.Div(
                             'Feature Analysis and Time-Series Analysis',
                         ],
                         style = {
-                            'font-size': '20px',
+                            'font-size': '25px',
                             'word-break': 'keep-all',
                         },
                     )
-                    # html.P(
-                    #     [
-                    #         'The analytic techniques and algorithms conducted for this project include a '
-                    #         'Random Forest regressor to identify critical weather variables influencing '
-                    #         'energy demand and a Long Short-Term Memory (LSTM) model for forecasting future '
-                    #         'energy consumption patterns based on historical data.',
-                    #     ],
-                    #     style = {
-                    #         'font-size': '20px',
-                    #         'word-break': 'keep-all',
-                    #     },
-                    # ),
                 ),
             ],
             className = 'mb-3',
@@ -83,8 +75,9 @@ analytics_info = html.Div(
                         ],
                     ),
                     style = {
-                        'font-size': '20px',
+                        'font-size': '25px',
                         'word-break': 'keep-all',
+                        'text-align': 'center',
                     },
                     width = 3,
                 ),
@@ -98,8 +91,9 @@ analytics_info = html.Div(
                             'reveal any disproportionate effects of weather conditions on energy demand in each area.',
                         ],
                         style = {
-                        'font-size': '16px',
+                        'font-size': '20px',
                         'word-break': 'keep-all',
+                        'font-style': 'italic',
                     },
                     ),
                     width = 9,
@@ -115,8 +109,9 @@ analytics_info = html.Div(
                             'Time-Series Analysis',
                         ],
                         style = {
-                            'font-size': '20px',
+                            'font-size': '25px',
                             'word-break': 'keep-all',
+                            'text-align': 'center',
                         },
                     ),
                     width = 3,
@@ -130,8 +125,9 @@ analytics_info = html.Div(
                             'providers and the public prepare for fluctuations in energy demand.',
                         ],
                         style = {
-                            'font-size': '16px',
+                            'font-size': '20px',
                             'word-break': 'keep-all',
+                            'font-style': 'italic',
                         },
                     ),
                     width = 9,
@@ -150,8 +146,14 @@ analytics_objective_1_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Feature Analysis with Random Forest to Identify Key Weather Variables'
+                        html.P(
+                            'Feature Analysis with Random Forest to Identify Key Weather Variables',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000'
+                            },
                         ),
                         html.P(
                             [
@@ -163,19 +165,22 @@ analytics_objective_1_1 = html.Div(
                                 'captures non-linear relationships, enabling it to model the complex interactions ',
                                 'inherent in weather patterns.',
                                 html.Br(), html.Br(),
-
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
                                 'To identify significant weather variables affecting energy consumption, I trained ',
                                 'separate models for each region (San Francisco and San Jose). Each model calculates and ranks ',
-                                'the feature importances of weather variables. ',
-
-                                # put the following at the bottom after the feature importance methods have been applied
-                                #'After determining the feature importances ',
-                                #'for each region, I compare them to assess whether specific weather variables are more ',
-                                #'influential in one region than the other.',
+                                'the feature importances of weather variables. [explanation of the plot] ',
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
@@ -232,22 +237,57 @@ analytics_objective_1_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Feature Interpretability with SHapley Additive exPlanations (SHAP)'
+                        html.P(
+                            'Feature Interpretability with SHapley Additive exPlanations (SHAP)',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
                         ),
                         html.P(
                             [
-                                'To complement the Random Forest, I am using SHAP to provide further explanation',
+                                'To complement the Random Forest, I am using SHAP to provide further explanation ',
                                 'of each variable in the model. SHAP values assign each feature an importance score ',
                                 'based on its contribution to the prediction, offering a clear way to compare which ',
                                 'weather variables are driving energy consumption in each region.',
                                 html.Br(), html.Br(),
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'Toggling between the two options show the mean SHAP values for each region. Several ',
+                                'features from the San Jose data have been omitted so that each region has the their ',
+                                'SHAP values calculated based on the same features.',
+                                
+                                html.Br(),
+                                'The most important feature for the San Jose region is ',
+                                html.Span('season ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
+                                'with a SHAP value of 20.88. Season is twice as important to the overall model predictions ',
+                                'than the second and third most important features (tmin and tmax). ',
 
-                                '[explanation of plot that will be below]'
+                                'On the other hand, the most important feature for the San Francisco region is ',
+                                html.Span('tmax ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
+                                'with a SHAP value of 14.5. Similarly to the San Jose region, tmax is almost twice ',
+                                'as important to the model\'s predictions as the next two most important features (tmin and totalcustomers). ',
+                                'Here, totalcustomers  represents the number of residents serviced in the area (the region\'s zipcode). ',
+                                
+                                html.Br(), html.Br(),
+                                'These results seem to indicate that the weather impacts each region differently - namely ',
+                                'that energy consumption in the San Jose region is more affected by season-specific weather ',
+                                'than San Francisco. We can see that the overall (maximum and minimum) temperatures ',
+                                'in San Francisco play a more important role than the time of the year (the season).'
+                                
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
@@ -291,15 +331,6 @@ analytics_objective_1_2 = html.Div(
                     width = 10,
                     align = 'center',
                 ),
-                # dbc.Col(
-                #     [
-                #         dcc.Graph(
-                #                 id = 'sf_shap',
-                #                 figure = {},
-                #         ),
-                #     ],
-                #     width = 6,
-                # ),
             ],
         ),
     ],
@@ -314,21 +345,37 @@ analytics_objective_1_3 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Partial Dependence Plots (PDP)'
+                        html.P(
+                            'Partial Dependence Plots (PDP)',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+
                         ),
                         html.P(
                             [
                                 'PDPs may also be incorporated to visualize how changes in individual weather ',
                                 'variables impact energy consumption, helping to clarify relationships that SHAP ',
                                 'scores identify.',
-                                html.Br(), html.Br(),
 
+                                html.Br(), html.Br(),
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
                                 '[explanation of plot that will be below]'
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
@@ -347,8 +394,14 @@ analytics_objective_1_4 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Comparing Feature Importances Between Regions'
+                        html.P(
+                            'Comparing Feature Importances Between Regions',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
                         ),
                         html.P(
                             [
@@ -357,13 +410,22 @@ analytics_objective_1_4 = html.Div(
                                 'specific weather variables have a greater impact in one region than in the other. ',
                                 'The preliminary focus will be on variables like maximum and minimum temperatures, ',
                                 'precipitation, and seasonality.',
-                                html.Br(), html.Br(),
 
+                                html.Br(), html.Br(),
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
                                 '[explanation of plot that will be below]'
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
@@ -382,8 +444,14 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Time-Series Analysis to Forecast Energy Demand with LSTM and SARIMA'
+                        html.P(
+                            'Time-Series Analysis to Forecast Energy Demand with LSTM and SARIMA',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
                         ),
                         html.P(
                             [
@@ -393,8 +461,16 @@ analytics_objective_2_1 = html.Div(
                                 'model will initially produce monthly energy predictions, with the possibility of transitioning ',
                                 'to daily forecasts if daily energy records become available or if the current data (daily ',
                                 'weather records and monthly energy data) is proves to be sufficient in predicting daily energy consumption.',
+                                
                                 html.Br(), html.Br(),
-
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
                                 'I use historical energy consumption data (average monthly energy usage) along with weather ',
                                 'data as inputs for this model. Currently, the output of the model are predictions of future ',
                                 'energy usage on a monthly basis. I also aim to implement daily predictions; however, due to ',
@@ -404,6 +480,7 @@ analytics_objective_2_1 = html.Div(
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
@@ -414,7 +491,15 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H2('LSTM Results'),
+                        html.P(
+                            'LSTM Results',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
                     ],
                     width = 12,
                     align = 'center',
@@ -466,7 +551,15 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H2('LSTM Predictions'),
+                        html.P(
+                            'LSTM Future Predictions',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
                     ],
                     width = 12,
                     align = 'center',
@@ -531,8 +624,14 @@ analytics_objective_2_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.H3(
-                            'Autoregressive Integrated Moving Average (ARIMA) [ETS?]'
+                        html.P(
+                            'Autoregressive Integrated Moving Average (ARIMA) [ETS?]',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
                         ),
                         html.P(
                             [
@@ -540,13 +639,22 @@ analytics_objective_2_2 = html.Div(
                                 'with smaller datasets or where simpler modeling is appropriate. ARIMA works ',
                                 'by creating a linear equation that describes and forecasts the time-series ',
                                 'data. It can provide some baseline predictions for energy consumption.',
+                                
                                 html.Br(), html.Br(),
-
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
                                 '[explanation of plot below]',
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
+                                'font-style': 'italic',
                             },
                         ),
                     ],
