@@ -377,7 +377,7 @@ def create_table_rows(df):
 
 
 # Processing pipeline
-def processing_pipeline(df):
+def processing_pipeline(df, loc):
     # Transformer class for pipeline
     class ReshapeTransformer(BaseEstimator, TransformerMixin):
         def fit(self, X, y = None):
@@ -386,9 +386,6 @@ def processing_pipeline(df):
         def transform(self, X, y = None):
             return X.reshape(-1, 3)
         
-    loc = 'sf'
-    if 'awnd' in df.columns:
-        loc = 'sj'
     
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
     #joblib_filename_df = f'joblib_files/processed_data/{loc}_df_processed.joblib'

@@ -189,11 +189,11 @@ analytics_objective_1_1 = html.Div(
                         dcc.Dropdown(
                             id = 'region_option',
                             options = [
-                                {'label': 'San Jose Dataset', 'value': 'sj_df'},
-                                {'label': 'San Francisco Dataset', 'value': 'sf_df'},
+                                {'label': 'San Jose Dataset', 'value': 'sj'},
+                                {'label': 'San Francisco Dataset', 'value': 'sf'},
                             ],
                             multi = False,
-                            value = 'sj_df',
+                            value = 'sj',
                             style = {
                                 'backgroundColor': '#bdc3c7',
                                 'color': '#2c3e50'
@@ -581,20 +581,20 @@ layout = dbc.Container(
     ]
 )
 # Animated plot function
-def update_sj_feature_importances(selected_region):
+def update_sj_feature_importances(loc):
+    feature_importances = None
 
     df = pd.DataFrame()
-    if selected_region == 'sj_df':
+    if loc == 'sj':
         df = sj_df
-    elif selected_region == 'sf_df':
+    elif loc == 'sf':
         df = sf_df
 
-    importances_fn = f'joblib_files/processed_data/{selected_region}_importances_df.joblib'
-    feature_importances = None
-    if os.path.exists(importances_fn):
-        feature_importances = load(importances_fn)
+    importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
+    if not os.path.exists(importances_fn):
+        feature_importances = processing_pipeline(df, loc)
     else:
-        feature_importances = processing_pipeline(df)
+        feature_importances = load(importances_fn)
     
     # Need to add title and expand the actual axis
     fig = px.scatter(
