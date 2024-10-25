@@ -90,8 +90,8 @@ analytics_info = html.Div(
                                     html.Img(
                                         src = '/assets/Feature_Analysis_Icon.png',
                                         style = {
-                                            'height': '25px',
-                                            'margin-right': '10px',
+                                            'height': '20px',
+                                            'margin-right': '20px',
                                         },
                                     ),
                                     html.P(
@@ -128,8 +128,8 @@ analytics_info = html.Div(
                                     html.Img(
                                         src = '/assets/Time-Series_Icon2.png',
                                         style = {
-                                            'height': '25px',
-                                            'margin-right': '10px',
+                                            'height': '20px',
+                                            'margin-right': '17px',
                                         },
                                     ),
                                     html.P(
@@ -162,7 +162,6 @@ analytics_info = html.Div(
 # Random forest for feature importances
 analytics_objective_1_1 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
@@ -438,7 +437,6 @@ analytics_objective_1_2 = html.Div(
 # PDP - additional feature interpretability -> looking to change this to permutation models
 analytics_objective_1_3 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
@@ -531,7 +529,7 @@ analytics_objective_1_3 = html.Div(
                     width = 6,
                 ),
             ],
-            className = 'mb-3',
+            className = 'mb-1',
         ),
         dbc.Row(
             [
@@ -541,16 +539,16 @@ analytics_objective_1_3 = html.Div(
                         dbc.Carousel(
                             items=[
                                 {
-                                    "key": "1",
-                                    "src": "/assets/pdp_plots/sj_pdp_season.png",
+                                    'key': '1',
+                                    'src': '/assets/pdp_plots/sj_pdp_season.png',
                                 },
                                 {
-                                    "key": "2",
-                                    "src": "/assets/pdp_plots/sj_pdp_tmax.png",
+                                    'key': '2',
+                                    'src': '/assets/pdp_plots/sj_pdp_tmax.png',
                                 },
                                 {
-                                    "key": "3",
-                                    "src": "/assets/pdp_plots/sj_pdp_tmin.png",
+                                    'key': '3',
+                                    'src': '/assets/pdp_plots/sj_pdp_tmin.png',
                                 },
                             ],
                             controls = True,
@@ -594,7 +592,6 @@ analytics_objective_1_3 = html.Div(
 # Regional Comparisons of feature importances
 analytics_objective_1_4 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
@@ -644,7 +641,6 @@ analytics_objective_1_4 = html.Div(
 # Time-series analysis with LSTM
 analytics_objective_2_1 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
@@ -824,13 +820,12 @@ analytics_objective_2_1 = html.Div(
 # Time-Series Analysis with SARIMA
 analytics_objective_2_2 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
                     [
                         html.P(
-                            'Autoregressive Integrated Moving Average (ARIMA) [ETS?]',
+                            'Seasonal Autoregressive Integrated Moving Average (SARIMA)',
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',

@@ -122,17 +122,39 @@ h1, h2, h3, h4, h5, h6, p {
     }
 }
 
-/* Customize the background color of collapsed (unclicked) tabs */
+/* Custom accordion */
+/* Button not clicked */
 .accordion-button.collapsed {
     background-color: #d3d3d3 !important;
 }
 
-/* Customize the background color of expanded (clicked) tabs */
+/* Button clicked */
 .accordion-button:not(.collapsed) {
     background-color: #a1a1a1 !important;
 }
 
-/* Optional: Adjust the border color and style of the accordion */
+/* Border extra */
 .accordion-item {
-    border: 1px solid #605C3C !important;  /* Border color for all accordion items */
+    border: 1px solid #605C3C !important;
+}
+
+/* Custom carousel */
+/* Controls indicators */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #000000;
+}
+
+/* Indicators */
+.carousel-indicators {
+    bottom: -40px;
+    background-color: #000000;
+}
+
+/* Move Carousel Controls*/
+.carousel-control-prev,
+.carousel-control-next {
+    top: unset;
+    bottom: -32px;
+    width: 5%;
 }
