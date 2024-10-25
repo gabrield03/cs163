@@ -273,8 +273,8 @@ analytics_objective_1_2 = html.Div(
 
                                 'On the other hand, the most important feature for the San Francisco region is ',
                                 html.Span('tmax ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
-                                'with a SHAP value of 14.5. Similarly to the San Jose region, tmax is almost twice ',
-                                'as important to the model\'s predictions as the next two most important features (tmin and totalcustomers). ',
+                                'with a SHAP value of 14.5. The next two most important features (tmin and totalcustomers). ',
+                                'The top two features (tmax and tmin) have much closer scores than in the San Jose region. ',
                                 'Here, totalcustomers  represents the number of residents serviced in the area (the region\'s zipcode). ',
                                 
                                 html.Br(), html.Br(),
@@ -357,9 +357,11 @@ analytics_objective_1_3 = html.Div(
                         ),
                         html.P(
                             [
-                                'PDPs may also be incorporated to visualize how changes in individual weather ',
-                                'variables impact energy consumption, helping to clarify relationships that SHAP ',
-                                'scores identify.',
+                                'PDPs are global model-agnostic methods that show the marginal effect ',
+                                'one or two features have on the predicted outcome of a model. ',
+                                'Agnostic refers to universiality - PDP can be applied to any model (interpretable model or black box model). ',
+                                'Essentially, a PDP plot visualizes the average effect of a feature\'s values by ',
+                                'marginalizing all the other features in a dataset.',
 
                                 html.Br(), html.Br(),
                             ],
@@ -370,7 +372,8 @@ analytics_objective_1_3 = html.Div(
                         ),
                         html.P(
                             [
-                                '[explanation of plot that will be below]'
+                                'The top three more impactful features from each region (calculated by SHAP) are ',
+                                'displayed in the plots below. ',
                             ],
                             style = {
                                 'font-size': '20px',

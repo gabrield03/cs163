@@ -388,14 +388,15 @@ def processing_pipeline(df, loc):
         
     
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
-    #joblib_filename_df = f'joblib_files/processed_data/{loc}_df_processed.joblib'
     joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train.joblib'
     joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test.joblib'
     joblib_filename_y_train = f'joblib_files/processed_data/{loc}_y_train.joblib'
     joblib_filename_y_test = f'joblib_files/processed_data/{loc}_y_test.joblib'
     joblib_filename_X_train_processed_df = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
+    joblib_filename_X_test_processed_df = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
     joblib_filename_preprocessor = f'joblib_files/processed_data/{loc}_preprocessor.joblib'
     joblib_filename_importances = f'joblib_files/processed_data/{loc}_importances_df.joblib'
+    joblib_filename_X_test_unscaled_df = f'joblib_files/processed_data/{loc}_X_test_unscaled_df.joblib'
 
 
 
@@ -436,8 +437,10 @@ def processing_pipeline(df, loc):
     cat_col_names = preprocessor.named_transformers_['cat'].named_steps['encode'].get_feature_names_out(cat_col_list)
     all_col_names = list(num_col_names) + list(cat_col_names)
 
-    X_train_processed_df = pd.DataFrame(X_train_processed, columns=all_col_names)
+    X_train_processed_df = pd.DataFrame(X_train_processed, columns = all_col_names)
+
     X_test_processed = preprocessor.transform(X_test)
+    X_test_processed_df = pd.DataFrame(X_test_processed, columns = all_col_names)
 
     # Combine the feature names
     all_features = num_col_list + cat_col_list
@@ -479,6 +482,12 @@ def processing_pipeline(df, loc):
     if not os.path.exists(joblib_filename_X_train_processed_df):
         dump(X_train_processed_df, joblib_filename_X_train_processed_df)
 
+    if not os.path.exists(joblib_filename_X_test_processed_df):
+        dump(X_test_processed_df, joblib_filename_X_test_processed_df)
+
+    if not os.path.exists(joblib_filename_X_test_unscaled_df):
+        dump(X_test, joblib_filename_X_test_unscaled_df)
+
     # rf model
     if not os.path.exists(joblib_filename_model):
         dump(rf, joblib_filename_model)
@@ -496,23 +505,28 @@ def processing_pipeline(df, loc):
 
 # Calculate SHAP values for plotting
 def calc_shap(loc):
-    joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
+    # joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
+    joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
     joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
 
-    X_train = None
+    # X_train = None
+    X_test = None
     model = None
 
-    X_train = load(joblib_filename_X_train)
+    # X_train = load(joblib_filename_X_train)
+    X_test = load(joblib_filename_X_test)
     model = load(joblib_filename_model)
 
     explainer = shap.Explainer(model)
-    shap_values = explainer(X_train)
+    # shap_values = explainer(X_train)
+    shap_values = explainer(X_test)
 
     shap_values_array = shap_values.values
     # Get feature names from the DataFrame
-    feature_names = X_train.columns
-    
+    # feature_names = X_train.columns
+    feature_names = X_test.columns
+
     shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
 
 
