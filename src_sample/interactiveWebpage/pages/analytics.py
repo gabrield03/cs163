@@ -68,71 +68,66 @@ analytics_info = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col(
-                    html.P(
-                        [
-                            'Feature Analysis',
-                        ],
-                    ),
-                    style = {
-                        'font-size': '25px',
-                        'word-break': 'keep-all',
-                        'text-align': 'center',
-                    },
-                    width = 3,
-                ),
-                dbc.Col(
-                    html.P(
-                        [
-                            'This analysis will focus on understanding the influence of historical weather data on ',
-                            'energy consumption in San Francisco and San Jose. The goal is to identify which weather ',
-                            'variables (e.g., temperature, precipitation, wind speed) have a significant impact on ',
-                            'energy consumption and whether these impacts differ between the two regions. This will help ',
-                            'reveal any disproportionate effects of weather conditions on energy demand in each area.',
-                        ],
-                        style = {
-                        'font-size': '20px',
-                        'word-break': 'keep-all',
-                        'font-style': 'italic',
-                    },
-                    ),
-                    width = 9,
+                dbc.Accordion(
+                    [
+                        dbc.AccordionItem(
+                            html.P(
+                                [
+                                    'This analysis will focus on understanding the influence of historical weather data on ',
+                                    'energy consumption in San Francisco and San Jose. The goal is to identify which weather ',
+                                    'variables (e.g., temperature, precipitation, wind speed) have a significant impact on ',
+                                    'energy consumption and whether these impacts differ between the two regions. This will help ',
+                                    'reveal any disproportionate effects of weather conditions on energy demand in each area.',
+                                ],
+                                style = {
+                                'font-size': '20px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                                'color': '#444444',
+                                },
+                            ),
+                            title = html.P(
+                                'Feature Analysis',
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                            className = 'bg-success',
+                        ),
+                        dbc.AccordionItem(
+                            html.P(
+                                [
+                                    'To forecast future energy consumption, I will use time-series models such as Long-Short ',
+                                    'Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim ',
+                                    'is to create accurate predictions based on historical weather data, which will help energy ',
+                                    'providers and the public prepare for fluctuations in energy demand.',
+                                ],
+                                style = {
+                                    'font-size': '20px',
+                                    #'word-break': 'keep-all',
+                                    'font-style': 'italic',
+                                    'color': '#444444',
+                                },
+                            ),
+                            title = html.P(
+                                'Time-Series Analysis',
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                            className = 'bg-success',
+                        ),
+                    ],
+                    start_collapsed = True,
+                    flush = True,
+                    always_open = True,
                 ),
             ],
             className = 'mb-3',
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.P(
-                        [
-                            'Time-Series Analysis',
-                        ],
-                        style = {
-                            'font-size': '25px',
-                            'word-break': 'keep-all',
-                            'text-align': 'center',
-                        },
-                    ),
-                    width = 3,
-                ),
-                dbc.Col(
-                    html.P(
-                        [
-                            'To forecast future energy consumption, I will use time-series models such as Long-Short ',
-                            'Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim ',
-                            'is to create accurate predictions based on historical weather data, which will help energy ',
-                            'providers and the public prepare for fluctuations in energy demand.',
-                        ],
-                        style = {
-                            'font-size': '20px',
-                            'word-break': 'keep-all',
-                            'font-style': 'italic',
-                        },
-                    ),
-                    width = 9,
-                ),
-            ],
         ),
     ],
     className = 'mb-5',
@@ -460,6 +455,110 @@ analytics_objective_1_3 = html.Div(
                         ),
                     ],
                 ),
+            ],
+        ),
+        # Partial Dependency Plots
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'PDP Plots',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '30px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 12,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'San Jose',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        html.P(
+                            'San Francisco',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                # SJ PDP
+                dbc.Col(
+                    [
+                        dbc.Carousel(
+                            items=[
+                                {
+                                    "key": "1",
+                                    "src": "/assets/pdp_plots/sj_pdp_season.png",
+                                },
+                                {
+                                    "key": "2",
+                                    "src": "/assets/pdp_plots/sj_pdp_tmax.png",
+                                },
+                                {
+                                    "key": "3",
+                                    "src": "/assets/pdp_plots/sj_pdp_tmin.png",
+                                },
+                            ],
+                            controls = True,
+                            indicators = True,
+                            className = 'carousel-fade',
+                        ),
+                    ],
+                    width = 6,
+                ),
+                # SF PDP
+                dbc.Col(
+                    [
+                        dbc.Carousel(
+                            items=[
+                                {
+                                    "key": "1",
+                                    "src": "/assets/pdp_plots/sf_pdp_tmax.png",
+                                },
+                                {
+                                    "key": "2",
+                                    "src": "/assets/pdp_plots/sf_pdp_tmin.png",
+                                },
+                                {
+                                    "key": "3",
+                                    "src": "/assets/pdp_plots/sf_pdp_totalcustomers.png",
+                                },
+                            ],
+                            controls = True,
+                            indicators = True,
+                            className = 'carousel-fade',
+                        ),
+                    ],
+                    width = 6,
+                ),   
             ],
         ),
     ],

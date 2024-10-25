@@ -27,12 +27,16 @@ data_header = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H1(
+                    html.P(
                         'Data',
-                        className = 'mb-5 text-center',
                     ),
+                    className = 'text-center mb-5',
                     width = 12,
-                    style = {'height': '100%'}
+                    style = {
+                        'font-size': '50px',
+                        'height': '100%',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
                 ),
             ],
         ),
@@ -45,7 +49,15 @@ data_table1 = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H3('San Jose Data'),
+                    html.P(
+                        'San Jose Data',
+                        style = {
+                            'text-align': 'center',
+                            'font-size': '40px',
+                            'font-variant': 'small-caps',
+                            'text-shadow': '2px 2px 4px #000000',
+                        },
+                    ),
                     width = 12,
                     className = 'mb-2 text-center',
                 ),
@@ -92,7 +104,15 @@ data_table2 = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H3('San Francisco Data'),
+                    html.P(
+                        'San Francisco Data',
+                        style = {
+                            'text-align': 'center',
+                            'font-size': '40px',
+                            'font-variant': 'small-caps',
+                            'text-shadow': '2px 2px 4px #000000'
+                        },
+                    ),
                     width = 12,
                     className = 'mb-2 text-center',
                 ),

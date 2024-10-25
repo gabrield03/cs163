@@ -45,12 +45,16 @@ visualizations_header = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H1(
-                        'Passage about the visualizations created:',
+                    html.P(
+                        'Visualizations',
                     ),
                     className = 'text-center mb-5',
                     width = 12,
-                    style = {'height': '100%'}
+                    style = {
+                        'font-size': '50px',
+                        'height': '100%',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
                 ),
             ],
         ),
@@ -63,7 +67,15 @@ sj_histplots_1 = html.Div(
     [
         dbc.Row(
             [
-                html.H3('San Jose Energy Usage and Weather History'),
+                html.P(
+                    'San Jose Energy Usage and Weather History',
+                    style = {
+                        'text-align': 'center',
+                        'font-size': '40px',
+                        'font-variant': 'small-caps',
+                        'text-shadow': '2px 2px 4px #000000'
+                    },
+                ),
             ],
             className = 'mb-2 text-center',
         ),
@@ -87,7 +99,8 @@ sj_histplots_1 = html.Div(
                             }, 
                         ),
                     ],
-                    width = {'size': 3}, className = 'mb-2'
+                    width = {'size': 3},
+                    className = 'mb-2'
                 ),
             ]
         ),
@@ -126,7 +139,15 @@ sf_histplots_1 = html.Div(
     [
         dbc.Row(
             [
-                html.H3('San Francisco Energy Usage and Weather History'),
+                html.P(
+                    'San Francisco Energy Usage and Weather History',
+                    style = {
+                        'text-align': 'center',
+                        'font-size': '40px',
+                        'font-variant': 'small-caps',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
+                ),
             ],
             className = 'mb-2 text-center',
         ),
@@ -189,7 +210,15 @@ comb_heatmaps = html.Div(
     [
         dbc.Row(
             [
-                html.H3('Heatmaps for San Jose and San Francisco Energy Usage and Weather History'),
+                html.P(
+                    'Heatmaps for San Jose and San Francisco Energy Usage and Weather History',
+                    style = {
+                        'text-align': 'center',
+                        'font-size': '40px',
+                        'font-variant': 'small-caps',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
+                ),
             ],
             className = 'mb-2 text-center',
         ),

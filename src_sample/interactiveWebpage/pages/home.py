@@ -47,12 +47,16 @@ home_header = html.Div(
         dbc.Row(
             [
                 dbc.Col(
-                    html.H1(
+                    html.P(
                         'Effects of Weather on Energy Consumption in the Bay Area',
-                        className = 'text-center mb-5',
                     ),
+                    className = 'text-center mb-5',
                     width = 12,
-                    style = {'height': '100%'}
+                    style = {
+                        'font-size': '50px',
+                        'height': '100%',
+                        'text-shadow': '2px 2px 4px #000000',
+                    },
                 ),
             ],
         ),
@@ -63,10 +67,13 @@ home_header = html.Div(
 # Home page introduction title
 intro_text = html.Div(
     [
-        html.H3(
+        html.P(
             "Introduction",
             style = {
-                'text-align': 'center'
+                'text-align': 'center',
+                'font-size': '40px',
+                'font-variant': 'small-caps',
+                'text-shadow': '2px 2px 4px #000000'
             },
         ),
     ],

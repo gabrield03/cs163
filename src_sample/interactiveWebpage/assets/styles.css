@@ -3,13 +3,6 @@ html, body {
     padding: 0;
     height: 100%;
     background-attachment: fixed;
-
-    /* BACKGROUND COLOR CHOICES */
-    /* Basically white */
-    /* background-color: #f7f9f9;  */
-
-    /* Dark Blue to purple */
-    /* background-image: linear-gradient(to right, #141E30, #243B55); */
     
     /* Gray to blue */
     background-image: linear-gradient(to right, #3C3B3F, #605C3C);
@@ -21,15 +14,11 @@ h1, h2, h3, h4, h5, h6, p {
     color: #ecf0f1;
 }
 
+
 #sidebar {
     text-align: center;
     padding: 2rem 1rem;
 
-    /* sidebar colors  */
-    /* blue sidebar */
-    /* background-color: #2c3e50; */
-
-    /* consider black sidebar */
     background-color: #1b1a1a; 
 
     color: #ecf0f1;
@@ -65,13 +54,6 @@ h1, h2, h3, h4, h5, h6, p {
     font-family: "sans-serif";
     min-height: 100vh;
     background-attachment: fixed;
-
-    /* BACKGROUND COLOR CHOICES */
-    /* Basically white */
-    /* background-color: #f7f9f9;  */
-
-    /* Dark Blue to purple */
-    /* background-image: linear-gradient(to right, #141E30, #243B55); */
     
     /* Gray to blue */
     background-image: linear-gradient(to right, #3C3B3F, #605C3C);
