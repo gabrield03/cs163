@@ -232,7 +232,6 @@ analytics_objective_1_1 = html.Div(
 # SHAP - explaining features
 analytics_objective_1_2 = html.Div(
     [
-
         dbc.Row(
             [
                 dbc.Col(
@@ -269,7 +268,7 @@ analytics_objective_1_2 = html.Div(
                                 'The most important feature for the San Jose region is ',
                                 html.Span('season ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
                                 'with a SHAP value of 20.88. Season is twice as important to the overall model predictions ',
-                                'than the second and third most important features (tmin and tmax). ',
+                                'than the second and third most important features (tmax and tmin). ',
 
                                 'On the other hand, the most important feature for the San Francisco region is ',
                                 html.Span('tmax ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
@@ -299,26 +298,27 @@ analytics_objective_1_2 = html.Div(
                 dbc.Col(
                     [
                         dcc.RadioItems(
-                            id = 'regional_shap_option',
-                            options = [
+                            id='regional_shap_option',
+                            options=[
                                 {
-                                    'label': html.Div(['San Jose'], style = {'color': '#ffffff', 'font-size': 20, 'margin-right': '50px'}),
+                                    'label': html.Div(['San Jose'], style={'color': '#ffffff', 'font-size': 20}),
                                     'value': 'sj',
                                 },
                                 {
-                                    'label': html.Div(['San Francisco'], style = {'color': '#ffffff', 'font-size': 20}),
+                                    'label': html.Div(['San Francisco'], style={'color': '#ffffff', 'font-size': 20}),
                                     'value': 'sf',
                                 },
                             ],
-                            value = 'sj'
+                            value='sj',
+                            labelStyle={'display': 'inline-block', 'margin': '0 20px'},
                         ),
                     ],
-                    
+                    width={"size": 6, "offset": 3},
+                    style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}
                 ),
             ],
-            className = 'mb-3',
+            className='mb-3',
         ),
-
         dbc.Row(
             [
                 dbc.Col(
@@ -328,8 +328,85 @@ analytics_objective_1_2 = html.Div(
                                 figure = {},
                         ),
                     ],
-                    width = 10,
+                    width = 12,
                     align = 'center',
+                ),
+            ],
+            className = 'mb-5',
+        ),
+        # Decision Plots
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'SHAP Decision Plots',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '30px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 12,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'San Jose',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        html.P(
+                            'San Francisco',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                            }
+                        )
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Img(
+                            src = 'assets/shap_plots/sj_shap.png',
+                            style = {
+                                'width': '100%',
+                                'height': 'auto',
+                            },
+                        ),
+                    ],
+                ),
+                dbc.Col(
+                    [
+                        html.Img(
+                            src = 'assets/shap_plots/sf_shap.png',
+                            style = {
+                                'width': '100%',
+                                'height': 'auto',
+                            },
+                        ),
+                    ],
                 ),
             ],
         ),
