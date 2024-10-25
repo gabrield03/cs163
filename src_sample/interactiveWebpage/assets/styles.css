@@ -121,3 +121,18 @@ h1, h2, h3, h4, h5, h6, p {
         transition: margin-left 0.3s ease-in-out;
     }
 }
+
+/* Customize the background color of collapsed (unclicked) tabs */
+.accordion-button.collapsed {
+    background-color: #d3d3d3 !important;
+}
+
+/* Customize the background color of expanded (clicked) tabs */
+.accordion-button:not(.collapsed) {
+    background-color: #a1a1a1 !important;
+}
+
+/* Optional: Adjust the border color and style of the accordion */
+.accordion-item {
+    border: 1px solid #605C3C !important;  /* Border color for all accordion items */
+}

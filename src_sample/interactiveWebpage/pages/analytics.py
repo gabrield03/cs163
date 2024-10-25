@@ -80,21 +80,34 @@ analytics_info = html.Div(
                                     'reveal any disproportionate effects of weather conditions on energy demand in each area.',
                                 ],
                                 style = {
-                                'font-size': '20px',
-                                'word-break': 'keep-all',
-                                'font-style': 'italic',
-                                'color': '#444444',
+                                    'font-size': '20px',
+                                    'font-style': 'italic',
+                                    'color': '#444444',
                                 },
                             ),
-                            title = html.P(
-                                'Feature Analysis',
+                            title=html.Div(
+                                [
+                                    html.Img(
+                                        src = '/assets/Feature_Analysis_Icon.png',
+                                        style = {
+                                            'height': '25px',
+                                            'margin-right': '10px',
+                                        },
+                                    ),
+                                    html.P(
+                                        "Feature Analysis",
+                                        style = {
+                                            'font-size': '25px',
+                                            'color': '#000000',
+                                            'margin': '0px',
+                                        },
+                                    ),
+                                ],
                                 style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
+                                    'display': 'flex',
+                                    'align-items': 'center',
                                 },
                             ),
-                            className = 'bg-success',
                         ),
                         dbc.AccordionItem(
                             html.P(
@@ -106,20 +119,33 @@ analytics_info = html.Div(
                                 ],
                                 style = {
                                     'font-size': '20px',
-                                    #'word-break': 'keep-all',
                                     'font-style': 'italic',
                                     'color': '#444444',
                                 },
                             ),
-                            title = html.P(
-                                'Time-Series Analysis',
+                            title=html.Div(
+                                [
+                                    html.Img(
+                                        src = '/assets/Time-Series_Icon2.png',
+                                        style = {
+                                            'height': '25px',
+                                            'margin-right': '10px',
+                                        },
+                                    ),
+                                    html.P(
+                                        'Time-Series Analysis',
+                                        style = {
+                                            'font-size': '25px',
+                                            'color': '#000000',
+                                            'margin': '0px',
+                                        },
+                                    ),
+                                ],
                                 style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
+                                    'display': 'flex',
+                                    'align-items': 'center',
                                 },
                             ),
-                            className = 'bg-success',
                         ),
                     ],
                     start_collapsed = True,
