@@ -991,7 +991,7 @@ def update_sj_feature_importances(loc):
         feature_importances = load(importances_fn)
     
     # Need to add title and expand the actual axis
-    fig = px.scatter(
+    fig = px.bar(
         feature_importances,
         x = 'feature',
         y = 'importances',
