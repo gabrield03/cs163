@@ -7,8 +7,9 @@ import plotly.graph_objs as go
 
 from  utils.data_pipeline import (
     processing_pipeline,
-    calc_shap, calc_lstm,
-    lstm_predict
+    calc_shap,
+    lstm_predict,
+    pred_lstm, pred_lstm_multi
 )
 import os
 import pickle
@@ -693,7 +694,7 @@ analytics_objective_2_1 = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'LSTM Results',
+                            'LSTM Single-Step Prediction',
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -741,19 +742,31 @@ analytics_objective_2_1 = html.Div(
                 dbc.Col(
                     [
                         # Div to display LSTM scores
-                        html.Div(id='lstm-scores', style={'marginTop': 20}),
+                        html.Div(
+                            id = 'lstm_val_score',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
+                        html.Div(
+                            id = 'lstm_test_score',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
                     ],
                 ),
             ],
             className = 'mb-5',
         ),
-
         dbc.Row(
             [
                 dbc.Col(
                     [
                         html.P(
-                            'LSTM Future Predictions',
+                            'LSTM Multi-Step Prediction',
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -773,7 +786,7 @@ analytics_objective_2_1 = html.Div(
                     [
                         # Dropdown to select the region
                         dcc.Dropdown(
-                            id='region-dropdown',
+                            id='region_dropdown',
                             options=[
                                 {'label': 'San Jose', 'value': 'sj'},
                                 {'label': 'San Francisco', 'value': 'sf'},
@@ -790,7 +803,8 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        html.Button('Predict Future', id='predict-button'),
+                        # Div to display LSTM plot
+                        dcc.Graph(id='lstm_plot_multi'),
                     ],
                 ),
             ],
@@ -799,19 +813,25 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        dcc.Graph(id='future-prediction-graph'),
+                        # Div to display LSTM scores
+                        html.Div(
+                            id = 'lstm_val_score_multi',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
+                        html.Div(
+                            id = 'lstm_test_score_multi',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
                     ],
                 ),
             ],
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                       html.Div(id='prediction-output')
-                    ],
-                ),
-            ],
+            className = 'mb-5',
         ),
     ],
     className = 'mb-5',
@@ -959,70 +979,169 @@ def update_sj_shap(loc):
 
     return fig
 
-# LSTM 
+# LSTM - single step
 @callback(
-    [Output('lstm-scores', 'children'),
+    [Output('lstm_val_score', 'children'),
+     Output('lstm_test_score', 'children'),
      Output('lstm-plot', 'figure')],
     [Input('region-select', 'value')]
 )
 def update_lstm_analysis(region):
-    request_new_joblib = False
+    request_new_joblib = False  # Change this to True if you want to force a recalculation
     file_specifier = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_{file_specifier}.joblib'
 
+    # Map region values to plot titles
+    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
-    plot_title = region
-    if region == 'sj':
-        plot_title = 'San Jose'
-    else:
-        plot_title = 'San Francisco'
+    lstm_results = None
 
-    lstm_scores = None
-    actual_data = None
-    lstm_predictions = None
-
+    # Load LSTM scores and predictions
     if request_new_joblib:
-        # Call the LSTM calculation function
-        lstm_scores, actual_data, lstm_predictions = calc_lstm(region, request_new_joblib, file_specifier)
+        lstm_results = pred_lstm(region, request_new_joblib, file_specifier)
     else:
         if os.path.exists(joblib_filename_lstm_res):
-            res = load(joblib_filename_lstm_res)
-            lstm_scores = res['scores']
-            actual_data = res['actual_data']
-            lstm_predictions = res['predictions']
+            lstm_results = load(joblib_filename_lstm_res)
+    
+    val_score = lstm_results['val_score']
+    test_score = lstm_results['test_score']
+    inputs = lstm_results['inputs']
+    labels = lstm_results['labels']
+    predictions = lstm_results['predictions']
 
-    # Display LSTM scores
-    scores_report = [
-        html.H4("LSTM Scores"),
-        html.P(f"MAE: {lstm_scores['mae']}"),
-        html.P(f"MSE: {lstm_scores['mse']}"),
-    ]
+    inputs = inputs.numpy()
+    labels = labels.numpy()
 
-    # Create the plot
+    # Prepare the scores report
+    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
+    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
+
     fig = go.Figure()
-    
-    # Plot actual data
+
+    # Want the 3rd pred for this
+    input_col_index = 2
+    label_col_index = 0
+
+    # Input line
     fig.add_trace(go.Scatter(
-        x=actual_data['time'], y=actual_data['values'],
-        mode='lines', name='Actual'
+        x = list(range(len(inputs[0, 1:, input_col_index]))),
+        y = inputs[0, 1:, input_col_index],
+        mode = 'lines',
+        name = 'Inputs',
+        line = dict(color = 'blue'),
     ))
-    
-    # Plot LSTM predictions
+
+    # Label point (o)
     fig.add_trace(go.Scatter(
-        x=lstm_predictions['time'], y=lstm_predictions['values'],
-        mode='lines', name='Predicted'
+        x = list(range(len(labels[0, :, label_col_index]))),
+        y = labels[0, :, label_col_index].flatten(), 
+        mode = 'markers',
+        name = 'Labels',
+        marker = dict(size = 10, color = 'green', symbol = 'circle'),
     ))
-    
-    # Update layout of the plot
+
+    # Prediction point (x)
+    fig.add_trace(go.Scatter(
+        x = list(range(len(predictions[0, :, label_col_index]))),
+        y = predictions[0, :, label_col_index].flatten(),
+        mode = 'markers',
+        name = 'Predictions',
+        marker = dict(size = 10, color = 'red', symbol = 'x'),
+    ))
+
+    # Update the layout
     fig.update_layout(
-        title=f"LSTM Predictions for {plot_title}",
-        xaxis_title="Index?",
-        yaxis_title="Energy Consumption",
-        template="plotly_white"
+        title = f'Single Step LSTM Prediction for {plot_title}',
+        xaxis_title = 'Time Steps (Months)',
+        yaxis_title = 'Average Energy Usage (kWh)',
+        legend = dict(x = 0, y = 1)
     )
+
+    return lstm_val_score, lstm_test_score, fig
+
+# LSTM - multi step
+@callback(
+    [Output('lstm_val_score_multi', 'children'),
+     Output('lstm_test_score_multi', 'children'),
+     Output('lstm_plot_multi', 'figure')],
+    [Input('region_dropdown', 'value')]
+)
+def update_lstm_analysis_multi(region):
+    request_new_joblib = False
+    file_specifier = 1
+    shift = 12
+
+    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_multi_{file_specifier}.joblib'
+
+    # Map region values to plot titles
+    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
+
+    lstm_results = None
+
+    # Load LSTM scores and predictions
+    if request_new_joblib:
+        lstm_results = pred_lstm_multi(region, request_new_joblib, file_specifier, shift)
+    else:
+        if os.path.exists(joblib_filename_lstm_res):
+            lstm_results = load(joblib_filename_lstm_res)
     
-    return scores_report, fig
+    val_score = lstm_results['val_score']
+    test_score = lstm_results['test_score']
+    inputs = lstm_results['inputs']
+    labels = lstm_results['labels']
+    predictions = lstm_results['predictions']
+
+    inputs = inputs.numpy()
+    labels = labels.numpy()
+
+    # Prepare the scores report
+    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
+    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
+
+    fig = go.Figure()
+
+    # Want the 3rd pred for this
+    input_col_index = 2
+    label_col_index = 0
+
+    # Inputs line (up to the last point of actual data)
+    fig.add_trace(go.Scatter(
+        x=list(range(len(inputs[0, :, input_col_index]))),
+        y=inputs[0, :, input_col_index],
+        mode='lines',
+        name='Inputs',
+        line=dict(color='blue'),
+    ))
+
+    # Labels (actual future values, for comparison with predictions)
+    fig.add_trace(go.Scatter(
+        x=list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(labels[0, :, label_col_index]))),
+        y=labels[0, :, label_col_index].flatten(),
+        mode='markers',
+        name='Labels',
+        marker=dict(size=10, color='green', symbol='circle'),
+    ))
+
+    # Predictions (multi-step future predictions)
+    fig.add_trace(go.Scatter(
+        x=list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(predictions[0, :, label_col_index]))),
+        y=predictions[0, :, label_col_index].flatten(),
+        mode='markers',
+        name='Predictions',
+        marker=dict(size=10, color='red', symbol='x'),
+    ))
+
+    # Update layout
+    fig.update_layout(
+        title=f'Multi-Step LSTM Prediction for {plot_title}',
+        xaxis_title='Time Steps (Months)',
+        yaxis_title='Average Energy Usage (kWh)',
+        legend=dict(x=0, y=1)
+    )
+
+    return lstm_val_score, lstm_test_score, fig
+
 
 # Work in progress
 # LSTM Future Predictions callback
