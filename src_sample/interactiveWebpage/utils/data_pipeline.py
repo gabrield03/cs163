@@ -35,6 +35,18 @@ from keras.layers import Dense, Conv1D, LSTM, Lambda, Reshape, RNN, LSTMCell
 import warnings
 warnings.filterwarnings('ignore')
 
+# SARIMA libraries
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.seasonal import seasonal_decompose, STL
+from statsmodels.stats.diagnostic import acorr_ljungbox
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from statsmodels.tsa.arima_process import ArmaProcess
+from statsmodels.graphics.gofplots import qqplot
+from statsmodels.tsa.stattools import adfuller
+from tqdm import tqdm_notebook
+from itertools import product
+from typing import Union
+
 
 # Fetch the historical data
 def fetch_historical_data(file_url, joblib_filename, joblib_filename_clean):
@@ -989,7 +1001,67 @@ def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR N
 
     return predictions_original_scale
 
+# SARIMA predictions
+def pred_sarima(loc, request_new_joblib, file_specifier):
+    joblib_filename_sarima_res = f'joblib_files/sarima/{loc}_sarima_{file_specifier}.joblib'
 
+    df = load(f'joblib_files/base_data/{loc}_combined.joblib')
+
+    ps = range(0, 4, 1)
+    qs = range(0, 4, 1)
+    Ps = range(0, 4, 1)
+    Qs = range(0, 4, 1)
+
+    SARIMA_order_list = list(product(ps, qs, Ps, Qs))
+
+    train = df['averagekwh'][:-12]
+    test = df.loc[-12:]
+
+    d = 1
+    D = 1
+    s = 12
+    
+    '''
+    best SARIMA values sj:
+    SARIMA(2, 1, 1)(0, 1, 1)12 --> AIC: 1082.58
+
+    best SARIMA values sj:
+    SARIMA(1, 1, 1)(3, 1, 3)12 --> AIC: 876.93
+    '''
+
+    index_range = [126, 137]
+
+    SARIMA_model = None
+    if loc == 'sj':
+        SARIMA_model = SARIMAX(train, order = (2, 1, 1), seasonal_order = (0, 1, 1, 12), simple_differencing = False)
+    else:
+        SARIMA_model = SARIMAX(train, order = (1, 1, 1), seasonal_order = (3, 1, 3, 12), simple_differencing = False)
+        index_range = [119, 130]
+
+    SARIMA_model_fit = SARIMA_model.fit(disp = False)
+
+    # Forecast the number of monthly averagekwh for the year of 2024 to compare the predicted values to the observed values in the test set
+    SARIMA_pred = SARIMA_model_fit.get_prediction(index_range[0], index_range[1]).predicted_mean
+
+    test['SARIMA_pred'] = SARIMA_pred
+
+    
+    # Calculate the mean absolute percentage error (MAPE)
+    def calc_mape(y_true, y_pred):
+        return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    
+    mape_SARIMA = calc_mape(test['averagekwh'], test['SARIMA_pred'])
+
+    res = {
+        'test': test,
+        'df': df,
+        'mape_SARIMA': mape_SARIMA
+    }
+
+    if not os.path.exists(joblib_filename_sarima_res):
+        dump(res, joblib_filename_sarima_res)
+    
+    return res
 
 
 ### Code to fetch, process, and save the historical data ###

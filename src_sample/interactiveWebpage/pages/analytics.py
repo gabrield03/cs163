@@ -9,7 +9,8 @@ from  utils.data_pipeline import (
     processing_pipeline,
     calc_shap,
     lstm_predict,
-    pred_lstm, pred_lstm_multi
+    pred_lstm, pred_lstm_multi,
+    pred_sarima
 )
 import os
 import pickle
@@ -881,6 +882,71 @@ analytics_objective_2_2 = html.Div(
                 ),
             ],
         ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'SARIMA Predictions',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
+                    ],
+                    width = 12,
+                    align = 'center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Dropdown to select the region
+                        dcc.Dropdown(
+                            id='sarima_region_dropdown',
+                            options=[
+                                {'label': 'San Jose', 'value': 'sj'},
+                                {'label': 'San Francisco', 'value': 'sf'},
+                            ],
+                            value='sj',
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Div to display LSTM plot
+                        dcc.Graph(id='sarima_plot'),
+                    ],
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        # Div to display LSTM scores
+                        html.Div(
+                            id = 'sarima_mape',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
+                    ],
+                ),
+            ],
+            className = 'mb-5',
+        ),
     ],
     className = 'mb-5',
 )
@@ -1196,3 +1262,74 @@ def update_future_prediction(n_clicks, region): # BASICALLY PASS FOR NOW
 
     # Return the updated figure and output text
     return fig, f"Predicted Values: {predictions}"
+
+# SARIMA
+@callback(
+    [
+        Output('sarima_mape', 'children'),
+        Output('sarima_plot', 'figure'),
+    ],
+    [
+        Input('sarima_region_dropdown', 'value')
+    ]
+)
+def update_sarima(region):
+    request_new_joblib = False
+    file_specifier = 1
+
+    joblib_filename_sarima_res = f'joblib_files/sarima/{region}_sarima_{file_specifier}.joblib'
+
+    # Map region values to plot titles
+    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
+
+    sarima_results = None
+
+    # Load LSTM scores and predictions
+    if request_new_joblib:
+        sarima_results = pred_sarima(region, request_new_joblib, file_specifier)
+    else:
+        if os.path.exists(joblib_filename_sarima_res):
+            sarima_results = load(joblib_filename_sarima_res)
+
+    test = sarima_results['test']
+    df = sarima_results['df']
+    mape_SARIMA = sarima_results['mape_SARIMA']
+
+    mape_score = f'Mean Absolute Percentage Error (MAPE): {mape_SARIMA:.3f}'
+
+    fig = go.Figure()
+
+    # Main time series line
+    fig.add_trace(go.Scatter(
+        x=df['year-month'],
+        y=df['averagekwh'],
+        mode='lines',
+        name='Observed Data',
+        line=dict(color='blue')
+    ))
+
+    # SARIMA predictions
+    sarima_label = 'SARIMA(2, 1, 1)(0, 1, 1)12' if region == 'sj' else 'SARIMA(1, 1, 1)(3, 1, 3)12'
+    fig.add_trace(go.Scatter(
+        x=test['year-month'],
+        y=test['SARIMA_pred'],
+        mode='lines',
+        name=sarima_label,
+        line=dict(color='green', dash='dot')
+    ))
+
+    # Update layout for the plot
+    fig.update_layout(
+        title=f'SARIMA Forecast for {plot_title}',
+        xaxis_title='Date',
+        yaxis_title='Average Energy Usage (kWh)',
+        legend=dict(x=0.01, y=0.99),
+
+        xaxis = dict(
+            range=['2023-05', '2024-07'],
+            tickformat='%Y-%m',
+            tickvals=pd.date_range(start='2023-05', end='2024-07', freq='MS')
+        )
+    )
+
+    return mape_score, fig
