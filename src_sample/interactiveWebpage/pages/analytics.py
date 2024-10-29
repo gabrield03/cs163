@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from plotly.tools import mpl_to_plotly
 import plotly.express as px
 import plotly.graph_objs as go
-from pdpbox import pdp
 
 from  utils.data_pipeline import (
     processing_pipeline,
