@@ -2,8 +2,11 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 import pandas as pd
+import matplotlib.pyplot as plt
+from plotly.tools import mpl_to_plotly
 import plotly.express as px
 import plotly.graph_objs as go
+from pdpbox import pdp
 
 from  utils.data_pipeline import (
     processing_pipeline,
@@ -936,7 +939,7 @@ analytics_objective_2_2 = html.Div(
                     [
                         # Div to display LSTM scores
                         html.Div(
-                            id = 'sarima_mape',
+                            id = 'sarima_mae',
                             style = {
                                 'marginTop': 20,
                                 'color': 'white',
@@ -1266,7 +1269,7 @@ def update_future_prediction(n_clicks, region): # BASICALLY PASS FOR NOW
 # SARIMA
 @callback(
     [
-        Output('sarima_mape', 'children'),
+        Output('sarima_mae', 'children'),
         Output('sarima_plot', 'figure'),
     ],
     [
@@ -1293,9 +1296,9 @@ def update_sarima(region):
 
     test = sarima_results['test']
     df = sarima_results['df']
-    mape_SARIMA = sarima_results['mape_SARIMA']
+    mae_SARIMA = sarima_results['mae_SARIMA']
 
-    mape_score = f'Mean Absolute Percentage Error (MAPE): {mape_SARIMA:.3f}'
+    mae_score = f'Mean Absolute Error (MAE): {mae_SARIMA:.3f}'
 
     fig = go.Figure()
 
@@ -1332,4 +1335,4 @@ def update_sarima(region):
         )
     )
 
-    return mape_score, fig
+    return mae_score, fig

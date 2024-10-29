@@ -23,29 +23,21 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 import tensorflow as tf
-from keras import Model, Sequential
+from keras import Sequential
 
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from keras.losses import MeanSquaredError
 from keras.metrics import MeanAbsoluteError
 
-from keras.layers import Dense, Conv1D, LSTM, Lambda, Reshape, RNN, LSTMCell
+from keras.layers import Dense, LSTM
 
 import warnings
 warnings.filterwarnings('ignore')
 
 # SARIMA libraries
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-from statsmodels.tsa.seasonal import seasonal_decompose, STL
-from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from statsmodels.tsa.arima_process import ArmaProcess
-from statsmodels.graphics.gofplots import qqplot
-from statsmodels.tsa.stattools import adfuller
-from tqdm import tqdm_notebook
 from itertools import product
-from typing import Union
 
 
 # Fetch the historical data
@@ -564,7 +556,6 @@ def calc_shap(loc):
 
     return shap_plot_df
 
-
 # LSTM Predictions on past data
 def pred_lstm(loc, request_new_joblib, file_specifier):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_{file_specifier}.joblib'
@@ -954,17 +945,18 @@ def pred_lstm_multi(loc, request_new_joblib, file_specifier, shift):
     ms_test_performance = ms_lstm_model.evaluate(multi_window.test, verbose=0)
 
     # Gather data for predictions
-    inputs, labels = multi_window.sample_batch  # Get a sample batch for predictions
-    predictions = ms_lstm_model(inputs)  # Generate predictions
+    inputs, labels = multi_window.sample_batch
+    predictions = ms_lstm_model(inputs)
 
+    # predictions_og_scale = scaler.inverse_transform(predictions.numpy())
     # Return model performance and predictions for further processing
-
     res = {
         'val_score': ms_val_performance,
         'test_score': ms_test_performance,
         'inputs': inputs,
         'labels': labels,
         'predictions': predictions.numpy()
+        # 'predictions': predictions_og_scale.numpy()
     }
 
     if not os.path.exists(joblib_filename_lstm_res):
@@ -1046,16 +1038,16 @@ def pred_sarima(loc, request_new_joblib, file_specifier):
     test['SARIMA_pred'] = SARIMA_pred
 
     
-    # Calculate the mean absolute percentage error (MAPE)
-    def calc_mape(y_true, y_pred):
-        return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    # Calculate the mean absolute percentage error (MAE)
+    def calc_mae(y_true, y_pred):
+        return np.mean(np.abs(y_true - y_pred))
     
-    mape_SARIMA = calc_mape(test['averagekwh'], test['SARIMA_pred'])
+    mae_SARIMA = calc_mae(test['averagekwh'], test['SARIMA_pred'])
 
     res = {
         'test': test,
         'df': df,
-        'mape_SARIMA': mape_SARIMA
+        'mae_SARIMA': mae_SARIMA
     }
 
     if not os.path.exists(joblib_filename_sarima_res):
