@@ -953,11 +953,226 @@ analytics_objective_2_2 = html.Div(
     className = 'mb-5',
 )
 
+#### Testing other feature importance plots ####
+# Possible other feature importance plots
+sj_fi = load('joblib_files/processed_data/sj_importances_df.joblib')
+sf_fi = load('joblib_files/processed_data/sf_importances_df.joblib')
+
+feature_importances = pd.merge(sj_fi, sf_fi, on='feature')
+feature_importances.rename(columns = {'importances_x': 'sj_importance', 'importances_y': 'sf_importance'}, inplace = True)
+
+# Diverging bar plot
+def div_bar_chart(feature_importances):
+    # Make San Francisco's values negative for visual divergence
+    feature_importances['sf_importance_neg'] = -feature_importances['sf_importance']
+
+    feature_importances['importance_diff'] = feature_importances['sj_importance'] - feature_importances['sf_importance']
+
+    fig = go.Figure()
+
+    # Add San Jose's bar chart (positive)
+    fig.add_trace(go.Bar(
+        x=feature_importances['sj_importance'],
+        y=feature_importances['feature'],
+        orientation='h',
+        name='San Jose',
+        marker=dict(color='steelblue'),
+    ))
+
+    # Add San Francisco's bar chart (negative)
+    fig.add_trace(go.Bar(
+        x=feature_importances['sf_importance_neg'],
+        y=feature_importances['feature'],
+        orientation='h',
+        name='San Francisco',
+        marker=dict(color='indianred'),
+    ))
+
+    # Add importance difference bar chart
+    fig.add_trace(go.Bar(
+        x=feature_importances['importance_diff'],
+        y=feature_importances['feature'],
+        orientation='h',
+        name='Regional Difference',
+        marker=dict(color='green'),
+    ))
+
+    fig.update_layout(
+        title='Feature Importances: San Jose vs San Francisco',
+        xaxis_title='Importance',
+        yaxis=dict(autorange="reversed"),
+        barmode='overlay'
+    )
+
+    # Modify x-axis ticks to appear positive for both sides
+    fig.update_xaxes(
+        tickvals=[-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5],
+        ticktext=[-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5],
+    )
+
+    return fig
+
+
+def grouped_bar_chart(sj_importances, sf_importances):
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=sj_importances['feature'],
+        x=sj_importances['importances'],
+        orientation='h',
+        name='San Jose',
+        marker=dict(color='blue')
+    ))
+
+    fig.add_trace(go.Bar(
+        y=sf_importances['feature'],
+        x=sf_importances['importances'],
+        orientation='h',
+        name='San Francisco',
+        marker=dict(color='green')
+    ))
+
+    fig.update_layout(
+        title='Feature Importances by Region',
+        xaxis_title='Importance',
+        yaxis_title='Feature',
+        barmode='group',
+        yaxis=dict(autorange="reversed")
+    )
+    
+    return fig
+
+# Radar (spider) chart
+def radar_chart(sj_fi, sf_fi):
+    radar_data = pd.concat([
+        sj_fi.assign(Location='San Jose').rename(columns={'importances': 'Importance'}),
+        sf_fi.assign(Location='San Francisco').rename(columns={'importances': 'Importance'})
+    ])
+
+
+    fig = px.line_polar(radar_data, r='Importance', theta='feature', color='Location', line_close=True)
+
+    fig.update_layout(
+        title="Feature Importances for San Jose and San Francisco",
+        polar=dict(
+            radialaxis=dict(visible=True, range=[0, 0.5])
+        )
+    )
+    return fig
+
+# Dot plot
+def dot_plot(sj_fi, sf_fi):
+    # Combine into one DataFrame for scatter plot
+    dot_data = pd.concat([
+        sj_fi.assign(region='San Jose'),
+        sf_fi.assign(region='San Francisco')
+    ])
+
+    fig = px.scatter(
+        dot_data, x='feature', y='region', size='importances', color='importances',
+        color_continuous_scale='Viridis', title="Feature Importances Dot Plot",
+        labels={'importances': 'Importance', 'feature': 'Feature'},
+        size_max = 40,
+    )
+
+    fig.update_layout(yaxis_title="Region", xaxis_title="Feature")
+    return fig
+
+
 layout = dbc.Container(
     [
         analytics_header,
         analytics_info,
         analytics_objective_1_1,
+
+        #### Possible other options for feature importances ####
+        html.H1("Other options for feature importances"),
+        dbc.Accordion(
+            [
+                dbc.AccordionItem( # Diverging Horizontal Bar Plot
+                    html.P(
+                        [
+                            dcc.Graph(figure = div_bar_chart(feature_importances), id = 'diverging_bar_plot'),
+                        ],
+                    ),
+                    title=html.Div(
+                        [
+                            html.P(
+                                "Diverging Horizontal Bar Plot",
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                        ],
+                    ),
+                ),
+                dbc.AccordionItem( # Horizontal Bar Grouped Bar Plot
+                    html.P(
+                        [
+                            dcc.Graph(figure = grouped_bar_chart(sj_fi, sf_fi), id = 'grouped_bar_chart'),
+                        ],
+                    ),
+                    title=html.Div(
+                        [
+                            html.P(
+                                "Horizontal Bar Grouped Bar Plot",
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                        ],
+                    ),
+                ),
+                dbc.AccordionItem( # Radar (Spider) Plot
+                    html.P(
+                        [
+                            dcc.Graph(figure = radar_chart(sj_fi, sf_fi), id = 'radar_chart'),
+                        ],
+                    ),
+                    title=html.Div(
+                        [
+                            html.P(
+                                "Radar (Spider) Plot",
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                        ],
+                    ),
+                ),
+                dbc.AccordionItem( # Dot Plot
+                    html.P(
+                        [
+                            dcc.Graph(figure = dot_plot(sj_fi, sf_fi), id = 'dot_plot'),
+                        ],
+                    ),
+                    title=html.Div(
+                        [
+                            html.P(
+                                "Dot Plot",
+                                style = {
+                                    'font-size': '25px',
+                                    'color': '#000000',
+                                    'margin': '0px',
+                                },
+                            ),
+                        ],
+                    ),
+                ),
+            ],
+            start_collapsed = True,
+            flush = True,
+            always_open = True,
+        ),
+
+        
+
         analytics_objective_1_2,
         analytics_objective_1_3,
         analytics_objective_1_4,

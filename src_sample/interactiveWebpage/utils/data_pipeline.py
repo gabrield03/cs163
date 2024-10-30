@@ -459,19 +459,6 @@ def processing_pipeline(df, loc):
     # Combine the feature names
     all_features = num_col_list + cat_col_list
 
-            # PIPELINE STUFF
-            # # Create a pipeline that includes the preprocessor and a model (RandomForestRegressor in this case)
-            # pipeline = Pipeline(steps=[
-            #     ('preprocessor', preprocessor),
-            #     ('model', RandomForestRegressor())
-            # ])
-
-            # # Fit the pipeline on the training data
-            # pipeline.fit(X_train, y_train)
-
-            ## Make predictions on the test data
-            # y_pred = pipeline.predict(X_test)
-
     # Fit the RandomForest model on the preprocessed training data
     rf = RandomForestRegressor().fit(X_train_processed, y_train)
 
