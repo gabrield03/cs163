@@ -47,7 +47,7 @@ analytics_header = html.Div(
             ],
         ),
     ],
-    className = 'mb-5',
+    className = 'mb-1',
 )
 
 # Description of the analysis conducted
@@ -58,8 +58,7 @@ analytics_info = html.Div(
                 dbc.Col(
                     html.P(
                         [
-                            'The two core advanced analysis methods that this project will implement are ',
-                            'Feature Analysis and Time-Series Analysis',
+                            'This section focuses on two of the following advanced analysis methods:',
                         ],
                         style = {
                             'font-size': '25px',
@@ -72,92 +71,102 @@ analytics_info = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Accordion(
+                dbc.Col([], width = 4),
+                dbc.Col(
                     [
-                        dbc.AccordionItem(
-                            html.P(
-                                [
-                                    'This analysis will focus on understanding the influence of historical weather data on ',
-                                    'energy consumption in San Francisco and San Jose. The goal is to identify which weather ',
-                                    'variables (e.g., temperature, precipitation, wind speed) have a significant impact on ',
-                                    'energy consumption and whether these impacts differ between the two regions. This will help ',
-                                    'reveal any disproportionate effects of weather conditions on energy demand in each area.',
-                                ],
-                                style = {
-                                    'font-size': '20px',
-                                    'font-style': 'italic',
-                                    'color': '#444444',
-                                },
-                            ),
-                            title=html.Div(
-                                [
-                                    html.Img(
-                                        src = '/assets/Feature_Analysis_Icon.png',
-                                        style = {
-                                            'height': '20px',
-                                            'margin-right': '20px',
-                                        },
-                                    ),
-                                    html.P(
-                                        "Feature Analysis",
-                                        style = {
-                                            'font-size': '25px',
-                                            'color': '#000000',
-                                            'margin': '0px',
-                                        },
-                                    ),
-                                ],
-                                style = {
-                                    'display': 'flex',
-                                    'align-items': 'center',
-                                },
-                            ),
+                        dbc.Button(
+                            'Feature Analysis',
+                            color = 'primary',
+                            id = 'feature_analysis_button',
+                            className = 'me-1',
+                            n_clicks = 0,
+                            style = {
+                                'font-size': '20px',
+                                #'margin-right': '100px',
+                            },
                         ),
-                        dbc.AccordionItem(
-                            html.P(
-                                [
-                                    'To forecast future energy consumption, I will use time-series models such as Long-Short ',
-                                    'Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim ',
-                                    'is to create accurate predictions based on historical weather data, which will help energy ',
-                                    'providers and the public prepare for fluctuations in energy demand.',
-                                ],
-                                style = {
-                                    'font-size': '20px',
-                                    'font-style': 'italic',
-                                    'color': '#444444',
-                                },
-                            ),
-                            title=html.Div(
-                                [
-                                    html.Img(
-                                        src = '/assets/Time-Series_Icon2.png',
-                                        style = {
-                                            'height': '20px',
-                                            'margin-right': '17px',
-                                        },
-                                    ),
-                                    html.P(
-                                        'Time-Series Analysis',
-                                        style = {
-                                            'font-size': '25px',
-                                            'color': '#000000',
-                                            'margin': '0px',
-                                        },
-                                    ),
-                                ],
-                                style = {
-                                    'display': 'flex',
-                                    'align-items': 'center',
-                                },
-                            ),
+                        dbc.Button(
+                            'Time-Series Analysis',
+                            color = 'primary',
+                            id = 'time_series_analysis_button',
+                            className = 'me-1',
+                            n_clicks = 0,
+                            style = {
+                                'font-size': '20px',
+                                #'margin-right': '100px',
+                            },
+                        ),
+                        dbc.Button(
+                            'Toggle Both',
+                            color = 'primary',
+                            id = 'both_buttons',
+                            className = 'me-1',
+                            n_clicks = 0,
+                            style = {
+                                'font-size': '20px',
+                                #'margin-right': '100px',
+                            },
                         ),
                     ],
-                    start_collapsed = True,
-                    flush = True,
-                    always_open = True,
+                    width = 6,
+                    align = 'auto',
+                ),
+                dbc.Col([], width = 2),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dbc.Collapse(
+                            dbc.Card(
+                                html.P(
+                                    [
+                                        'This analysis will focus on understanding the influence of historical weather data on ',
+                                        'energy consumption in San Francisco and San Jose. The goal is to identify which weather ',
+                                        'variables (e.g., temperature, precipitation, wind speed) have a significant impact on ',
+                                        'energy consumption and whether these impacts differ between the two regions. This will help ',
+                                        'reveal any disproportionate effects of weather conditions on energy demand in each area.',
+                                    ],
+                                    style = {
+                                        'font-size': '20px',
+                                        'font-style': 'italic',
+                                        'color': '#444444',
+                                    }
+                                ),
+                                body = True,
+                            ),
+                            id = 'feature_analysis_collapse',
+                            is_open = True,
+                        ),
+                    ],
+                ),
+                dbc.Col(
+                    [
+                        dbc.Collapse(
+                            dbc.Card(
+                                html.P(
+                                    [
+                                        'To forecast future energy consumption, I will use time-series models such as Long-Short ',
+                                        'Term Memory (LSTM) networks and Autoregressive Integrated Moving Average (ARIMA). The aim ',
+                                        'is to create accurate predictions based on historical weather data, which will help energy ',
+                                        'providers and the public prepare for fluctuations in energy demand.',
+                                    ],
+                                    style = {
+                                        'font-size': '20px',
+                                        'font-style': 'italic',
+                                        'color': '#444444',
+                                    }
+                                ),
+                                body = True,
+                            ),
+                            id = 'time_series_analysis_collapse',
+                            is_open = True,
+                        ),
+                    ],
                 ),
             ],
-            className = 'mb-3',
+            className = 'mt-3',
         ),
     ],
     className = 'mb-5',
@@ -598,81 +607,6 @@ analytics_objective_1_3 = html.Div(
     className = 'mb-5',
 )
 
-# Regional Comparisons of feature importances
-analytics_objective_1_4 = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.P(
-                            'Summary of Findings',
-                            style = {
-                                'text-align': 'center',
-                                'font-size': '40px',
-                                'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
-                            },
-                        ),
-                        html.P(
-                            [
-                                'Our analysis demonstrates that energy consumption patterns in San Jose ',
-                                'and San Francisco are influenced by distinct weather-related factors, ', 
-                                'revealing how local climate characteristics can lead to differing energy ',
-                                'demands between regions. Using a random forest model paired with SHAP ',
-                                '(SHapley Additive exPlanations)—a statistical method that breaks down the ',
-                                'impact of each feature on model predictions—we quantified the importance ',
-                                'of various factors. SHAP is particularly valuable here because it assigns ',
-                                '"importance" scores to features based on their average impact on model ',
-                                'predictions, enabling a clear assessment of each feature\'s role.',
-
-                                html.Br(), html.Br(),
-
-                                'In San Jose, seasonality emerged as the most significant predictor of energy ',
-                                'consumption, with a mean SHAP value of 20, indicating a strong correlation ',
-                                'between energy use and the time of year. Temperature variables followed, with ',
-                                'maximum (Tmax) and minimum (Tmin) temperatures ranking second and third, ',
-                                'suggesting that while temperature plays a role, seasonality\'s impact is ',
-                                'notably higher. By contrast, San Francisco\'s energy consumption is most ',
-                                'sensitive to temperature extremes. Tmax had the highest mean SHAP value (12), ',
-                                'followed by Tmin (10) and the total number of customers (5), with seasonality ',
-                                'showing a relatively minor influence.',
-
-                                html.Br(), html.Br(),
-
-                                'To further explore these findings, SHAP decision plots were used to illustrate ',
-                                'each feature\'s contribution to specific predictions. Partial Dependence Plots ',
-                                '(PDP) then provided insight into how variations in the top three features impact ',
-                                'energy consumption predictions for each region.',
-
-                                html.Br(), html.Br(),
-
-                                'These insights suggest a fundamental difference in climate sensitivity between ',
-                                'the two regions: San Francisco\'s energy demands are more heavily influenced by ',
-                                'shifts in temperature, possibly indicating a higher sensitivity to climate ',
-                                'variability. Conversely, San Jose\'s reliance on seasonality hints that while its ',
-                                'energy consumption may be less responsive to incremental temperature changes, ',
-                                'seasonal cycles play a dominant role in its demand pattern. However, because ',
-                                'temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude ',
-                                'that San Jose is less vulnerable to climate changes; further analysis is ',
-                                'warranted to determine the relationship between seasonality and global temperature ',
-                                'shifts. This study suggests that regional energy planning could benefit from ',
-                                'tailored approaches that account for these differing sensitivities.',
-                            ],
-                            style = {
-                                'font-size': '25px',
-                                'word-break': 'keep-all',
-                                'font-style': 'italic',
-                            },
-                        ),
-                    ],
-                ),
-            ],
-        ),
-    ],
-    className = 'mb-5',
-)
-
 # Time-series analysis with LSTM
 analytics_objective_2_1 = html.Div(
     [
@@ -984,6 +918,81 @@ analytics_objective_2_2 = html.Div(
     className = 'mb-5',
 )
 
+#### Summary of Analysis Section ####
+analytics_objective_3_1 = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'Summary of Analysis',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '60px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'Our analysis demonstrates that energy consumption patterns in San Jose ',
+                                'and San Francisco are influenced by distinct weather-related factors, ', 
+                                'revealing how local climate characteristics can lead to differing energy ',
+                                'demands between regions. Using a random forest model paired with SHAP ',
+                                '(SHapley Additive exPlanations)—a statistical method that breaks down the ',
+                                'impact of each feature on model predictions—we quantified the importance ',
+                                'of various factors. SHAP is particularly valuable here because it assigns ',
+                                '"importance" scores to features based on their average impact on model ',
+                                'predictions, enabling a clear assessment of each feature\'s role.',
+
+                                html.Br(), html.Br(),
+
+                                'In San Jose, seasonality emerged as the most significant predictor of energy ',
+                                'consumption, with a mean SHAP value of 20, indicating a strong correlation ',
+                                'between energy use and the time of year. Temperature variables followed, with ',
+                                'maximum (Tmax) and minimum (Tmin) temperatures ranking second and third, ',
+                                'suggesting that while temperature plays a role, seasonality\'s impact is ',
+                                'notably higher. By contrast, San Francisco\'s energy consumption is most ',
+                                'sensitive to temperature extremes. Tmax had the highest mean SHAP value (12), ',
+                                'followed by Tmin (10) and the total number of customers (5), with seasonality ',
+                                'showing a relatively minor influence.',
+
+                                html.Br(), html.Br(),
+
+                                'To further explore these findings, SHAP decision plots were used to illustrate ',
+                                'each feature\'s contribution to specific predictions. Partial Dependence Plots ',
+                                '(PDP) then provided insight into how variations in the top three features impact ',
+                                'energy consumption predictions for each region.',
+
+                                html.Br(), html.Br(),
+
+                                'These insights suggest a fundamental difference in climate sensitivity between ',
+                                'the two regions: San Francisco\'s energy demands are more heavily influenced by ',
+                                'shifts in temperature, possibly indicating a higher sensitivity to climate ',
+                                'variability. Conversely, San Jose\'s reliance on seasonality hints that while its ',
+                                'energy consumption may be less responsive to incremental temperature changes, ',
+                                'seasonal cycles play a dominant role in its demand pattern. However, because ',
+                                'temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude ',
+                                'that San Jose is less vulnerable to climate changes; further analysis is ',
+                                'warranted to determine the relationship between seasonality and global temperature ',
+                                'shifts. This study suggests that regional energy planning could benefit from ',
+                                'tailored approaches that account for these differing sensitivities.',
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                            },
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ],
+    className = 'mb-5',
+)
+
 #### Testing other feature importance plots ####
 # Possible other feature importance plots
 sj_shap = load('joblib_files/shap/sj_shap_plot.joblib')
@@ -1173,12 +1182,37 @@ layout = dbc.Container(
 
 
         analytics_objective_1_3,
-        analytics_objective_1_4,
         analytics_objective_2_1,
         analytics_objective_2_2,
+        analytics_objective_3_1,
     ],
     fluid = True,
 )
+
+# Callback to toggle visibility of each collapse
+@callback(
+    Output('feature_analysis_collapse', 'is_open'),
+    [Input('feature_analysis_button', 'n_clicks'), Input('both_buttons', 'n_clicks')],
+    [State('feature_analysis_collapse', 'is_open')],
+)
+def toggle_left(n_left, n_both, is_open):
+    if n_left or n_both:
+        return not is_open
+    return is_open
+
+
+@callback(
+    Output('time_series_analaysis_collapse', 'is_open'),
+    [Input('time_series_analysis_button', 'n_clicks'), Input('both_buttons', 'n_clicks')],
+    [State('time_series_analaysis_collapse', 'is_open')],
+)
+def toggle_left(n_right, n_both, is_open):
+    if n_right or n_both:
+        return not is_open
+    return is_open
+
+
+
 
 # Callback for Feature Importances
 @callback(
