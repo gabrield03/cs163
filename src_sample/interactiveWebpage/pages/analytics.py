@@ -1042,24 +1042,6 @@ def grouped_bar_chart(sj_importances, sf_importances):
     
     return fig
 
-# Radar (spider) chart
-def radar_chart(sj_fi, sf_fi):
-    radar_data = pd.concat([
-        sj_fi.assign(Location='San Jose').rename(columns={'importances': 'Importance'}),
-        sf_fi.assign(Location='San Francisco').rename(columns={'importances': 'Importance'})
-    ])
-
-
-    fig = px.line_polar(radar_data, r='Importance', theta='feature', color='Location', line_close=True)
-
-    fig.update_layout(
-        title="Feature Importances for San Jose and San Francisco",
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 0.5])
-        )
-    )
-    return fig
-
 # Dot plot
 def dot_plot(sj_fi, sf_fi):
     # Combine into one DataFrame for scatter plot
@@ -1118,25 +1100,6 @@ layout = dbc.Container(
                         [
                             html.P(
                                 "Horizontal Bar Grouped Bar Plot",
-                                style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
-                                },
-                            ),
-                        ],
-                    ),
-                ),
-                dbc.AccordionItem( # Radar (Spider) Plot
-                    html.P(
-                        [
-                            dcc.Graph(figure = radar_chart(sj_fi, sf_fi), id = 'radar_chart'),
-                        ],
-                    ),
-                    title=html.Div(
-                        [
-                            html.P(
-                                "Radar (Spider) Plot",
                                 style = {
                                     'font-size': '25px',
                                     'color': '#000000',
