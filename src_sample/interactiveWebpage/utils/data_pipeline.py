@@ -139,7 +139,6 @@ def clean_data(df, joblib_filename_clean):
 
     # Weather data - joblib not created
     else: 
-
         joblib_filename = None
         # Change col names to lowercase for consistency
         df.columns = df.columns.str.lower()
@@ -399,7 +398,6 @@ def processing_pipeline(df, loc):
 
         def transform(self, X, y = None):
             return X.reshape(-1, 3)
-        
     
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
     joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train.joblib'
@@ -412,15 +410,11 @@ def processing_pipeline(df, loc):
     joblib_filename_importances = f'joblib_files/processed_data/{loc}_importances_df.joblib'
     joblib_filename_X_test_unscaled_df = f'joblib_files/processed_data/{loc}_X_test_unscaled_df.joblib'
 
-
-
     drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month']
 
     # test making regions have the same columns
     drop_list2 = ['wdf5', 'wsf5', 'awnd', 'wdf2', 'wsf2']
     drop_list.extend(drop_list2)
-
-
 
     for col in drop_list:
         if col in df.columns:
@@ -506,30 +500,23 @@ def processing_pipeline(df, loc):
 
 # Calculate SHAP values for plotting
 def calc_shap(loc):
-    # joblib_filename_X_train = f'joblib_files/processed_data/{loc}_X_train_processed_df.joblib'
     joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
     joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
 
-    # X_train = None
     X_test = None
     model = None
 
-    # X_train = load(joblib_filename_X_train)
     X_test = load(joblib_filename_X_test)
     model = load(joblib_filename_model)
 
     explainer = shap.Explainer(model)
-    # shap_values = explainer(X_train)
     shap_values = explainer(X_test)
 
     shap_values_array = shap_values.values
-    # Get feature names from the DataFrame
-    # feature_names = X_train.columns
     feature_names = X_test.columns
 
     shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
-
 
     # Compute the mean absolute SHAP values for each feature
     shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
@@ -546,7 +533,6 @@ def calc_shap(loc):
 # LSTM Predictions on past data
 def pred_lstm(loc, request_new_joblib, file_specifier):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_{file_specifier}.joblib'
-    #joblib_filename_lstm_model = f'joblib_files/lstm/{loc}_lstm_model_{file_specifier}.joblib'
 
     df = load(f'joblib_files/base_data/{loc}_combined.joblib')
 
@@ -712,7 +698,6 @@ def pred_lstm(loc, request_new_joblib, file_specifier):
         return history
 
     # Initialize data windows
-    single_step_window = DataWindow(input_width=1, label_width=1, shift=1, label_columns=['averagekwh']) 
     wide_window = DataWindow(input_width=12, label_width=12, shift=1, label_columns=['averagekwh'])
 
     # Build the LSTM model

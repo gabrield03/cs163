@@ -71,7 +71,12 @@ analytics_info = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col([], width = 4),
+                dbc.Col(
+                    [
+
+                    ], 
+                    width = 4
+                ),
                 dbc.Col(
                     [
                         dbc.Button(
@@ -111,7 +116,12 @@ analytics_info = html.Div(
                     width = 6,
                     align = 'auto',
                 ),
-                dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+
+                    ],
+                    width = 2
+                ),
             ],
         ),
         dbc.Row(
@@ -132,7 +142,7 @@ analytics_info = html.Div(
                                         'font-size': '20px',
                                         'font-style': 'italic',
                                         'color': '#444444',
-                                    }
+                                    },
                                 ),
                                 body = True,
                                 style = {
@@ -159,7 +169,7 @@ analytics_info = html.Div(
                                         'font-size': '20px',
                                         'font-style': 'italic',
                                         'color': '#444444',
-                                    }
+                                    },
                                 ),
                                 body = True,
                                 style = {
@@ -240,7 +250,7 @@ analytics_objective_1_1 = html.Div(
                             value = 'sj',
                             style = {
                                 'backgroundColor': '#bdc3c7',
-                                'color': '#2c3e50'
+                                'color': '#2c3e50',
                             }, 
                         ),
                     ],
@@ -256,11 +266,10 @@ analytics_objective_1_1 = html.Div(
                     [
                         dcc.Graph(
                             id = 'sj_feature_importances',
-                            figure = {},
                         ),
                     ],
                     width = 10,
-                    align = 'center'
+                    align = 'center',
                 ),
             ],
         ),
@@ -304,14 +313,30 @@ analytics_objective_1_2_1 = html.Div(
                                 'SHAP values calculated based on the same features.',
                                 
                                 html.Br(),
-                                'The most important feature for the San Jose region is ',
-                                html.Span('season ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
-                                'with a SHAP value of 20.88. Season is twice as important to the overall model predictions ',
+                                'The most important feature for the ',
+                                html.Span(
+                                    'San Jose region is season',
+                                    id = 'season_tooltip',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'font-style': 'normal',
+                                        'color': 'red',
+                                    },
+                                ),
+                                ' with a SHAP value of 20.88. Season is twice as important to the overall model predictions ',
                                 'than the second and third most important features (tmax and tmin). ',
 
-                                'On the other hand, the most important feature for the San Francisco region is ',
-                                html.Span('tmax ', style = {'font-weight': 'bold', 'font-style': 'normal', 'color': 'red',}),
-                                'with a SHAP value of 14.5. The next two most important features (tmin and totalcustomers). ',
+                                'On the other hand, the most important feature for the  ',
+                                html.Span(
+                                    'San Francisco region is tmax',
+                                    id = 'tmax_tooltip',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'font-style': 'normal',
+                                        'color': 'red',
+                                    },
+                                ),
+                                ' with a SHAP value of 14.5. The next two most important features (tmin and totalcustomers). ',
                                 'The top two features (tmax and tmin) have much closer scores than in the San Jose region. ',
                                 'Here, totalcustomers  represents the number of residents serviced in the area (the region\'s zipcode). ',
                                 
@@ -320,12 +345,29 @@ analytics_objective_1_2_1 = html.Div(
                                 'that energy consumption in the San Jose region is more affected by season-specific weather ',
                                 'than San Francisco. We can see that the overall (maximum and minimum) temperatures ',
                                 'in San Francisco play a more important role than the time of the year (the season).'
-                                
                             ],
                             style = {
                                 'font-size': '20px',
                                 'word-break': 'keep-all',
                                 'font-style': 'italic',
+                            },
+                        ),
+                        dbc.Tooltip(
+                            'SJ season - 20.88 SHAP value',
+                            target = 'season_tooltip',
+                            placement = 'top',
+                            style = {
+                                'font-size': '14px',
+                                'color': '#333333',
+                            },
+                        ),
+                        dbc.Tooltip(
+                            'SF tmax - 14.5 SHAP value',
+                            target = 'tmax_tooltip',
+                            placement = 'top',
+                            style = {
+                                'font-size': '14px',
+                                'color': '#333333',
                             },
                         ),
                     ],
@@ -349,11 +391,21 @@ analytics_objective_1_2_1 = html.Div(
                                 },
                             ],
                             value='sj',
-                            labelStyle={'display': 'inline-block', 'margin': '0 20px'},
+                            labelStyle = {
+                                'display': 'inline-block',
+                                'margin': '0 20px',
+                            },
                         ),
                     ],
-                    width={"size": 6, "offset": 3},
-                    style={'display': 'flex', 'justifyContent': 'center', 'alignItems': 'center'}
+                    width = {
+                        'size': 6,
+                        'offset': 3,
+                    },
+                    style = {
+                        'display': 'flex',
+                        'justifyContent': 'center',
+                        'alignItems': 'center',
+                    },
                 ),
             ],
             className='mb-3',
@@ -364,7 +416,6 @@ analytics_objective_1_2_1 = html.Div(
                     [
                         dcc.Graph(
                                 id = 'regional_shap',
-                                figure = {},
                         ),
                     ],
                     width = 12,
@@ -389,8 +440,8 @@ analytics_objective_1_2_2 = html.Div(
                                 'text-align': 'center',
                                 'font-size': '30px',
                                 'font-variant': 'small-caps',
-                            }
-                        )
+                            },
+                        ),
                     ],
                     width = 12,
                 ),
@@ -407,8 +458,8 @@ analytics_objective_1_2_2 = html.Div(
                                 'text-align': 'center',
                                 'font-size': '25px',
                                 'font-variant': 'small-caps',
-                            }
-                        )
+                            },
+                        ),
                     ],
                     width = 6,
                 ),
@@ -420,8 +471,8 @@ analytics_objective_1_2_2 = html.Div(
                                 'text-align': 'center',
                                 'font-size': '25px',
                                 'font-variant': 'small-caps',
-                            }
-                        )
+                            },
+                        ),
                     ],
                     width = 6,
                 ),
@@ -458,7 +509,7 @@ analytics_objective_1_2_2 = html.Div(
     className = 'mb-5',
 )
 
-# PDP - additional feature interpretability -> looking to change this to permutation models
+# PDP Section
 analytics_objective_1_3 = html.Div(
     [
         dbc.Row(
@@ -473,7 +524,6 @@ analytics_objective_1_3 = html.Div(
                                 'font-variant': 'small-caps',
                                 'text-shadow': '2px 2px 4px #000000',
                             },
-
                         ),
                         html.P(
                             [
@@ -493,7 +543,7 @@ analytics_objective_1_3 = html.Div(
                         html.P(
                             [
                                 'The top three more impactful features from each region (calculated by SHAP) are ',
-                                'displayed in the plots below. ',
+                                'displayed in the plots below.',
                             ],
                             style = {
                                 'font-size': '20px',
@@ -686,14 +736,13 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Dropdown to select the region
                         dcc.Dropdown(
-                            id='region-select',
-                            options=[
+                            id = 'region_select',
+                            options = [
                                 {'label': 'San Jose', 'value': 'sj'},
                                 {'label': 'San Francisco', 'value': 'sf'},
                             ],
-                            value='sj',
+                            value = 'sj',
                         ),
                     ],
                     width = 6,
@@ -705,8 +754,9 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM plot
-                        dcc.Graph(id='lstm-plot'),
+                        dcc.Graph(
+                            id = 'lstm_plot',
+                        ),
                     ],
                 ),
             ],
@@ -715,7 +765,6 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM scores
                         html.Div(
                             id = 'lstm_val_score',
                             style = {
@@ -758,14 +807,13 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Dropdown to select the region
                         dcc.Dropdown(
-                            id='region_dropdown',
-                            options=[
+                            id = 'region_dropdown',
+                            options = [
                                 {'label': 'San Jose', 'value': 'sj'},
                                 {'label': 'San Francisco', 'value': 'sf'},
                             ],
-                            value='sj',
+                            value = 'sj',
                         ),
                     ],
                     width = 6,
@@ -777,7 +825,6 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM plot
                         dcc.Graph(id='lstm_plot_multi'),
                     ],
                 ),
@@ -787,7 +834,6 @@ analytics_objective_2_1 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM scores
                         html.Div(
                             id = 'lstm_val_score_multi',
                             style = {
@@ -843,7 +889,16 @@ analytics_objective_2_2 = html.Div(
                         ),
                         html.P(
                             [
-                                '[explanation of plot below]',
+                                'SARIMA models are statistical models that are seasonal extensions of ARIMA ',
+                                'models. The model is comprised of traditional ARIMA components (p, d, q) - ',
+                                'p: the order of the auto regression, d: the number of times the data was differenced ',
+                                'to become stationary, q: the order of the moving average. Seasonal components are ',
+                                'accounted for with (P, D, Q, m) which are the same definitions but for seasonality. ',
+                                'Also, m: the number of time steps in a seasonal cycle. SARIMA models can work well ',
+                                'with small datasets like the ones used for this project. The predictions plotted ',
+                                'here (2023-07 to 2024-06) show SARIMA\'s predictions and the actual labeled data. ',
+                                'The mean absolute error (mae) is 22.895, meaning the SARIMA model\'s average ',
+                                'prediction error for the 12 data points was off by 22 kWh.',
                             ],
                             style = {
                                 'font-size': '20px',
@@ -878,14 +933,13 @@ analytics_objective_2_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Dropdown to select the region
                         dcc.Dropdown(
-                            id='sarima_region_dropdown',
-                            options=[
+                            id = 'sarima_region_dropdown',
+                            options = [
                                 {'label': 'San Jose', 'value': 'sj'},
                                 {'label': 'San Francisco', 'value': 'sf'},
                             ],
-                            value='sj',
+                            value = 'sj',
                         ),
                     ],
                     width = 6,
@@ -897,8 +951,9 @@ analytics_objective_2_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM plot
-                        dcc.Graph(id='sarima_plot'),
+                        dcc.Graph(
+                            id = 'sarima_plot'
+                        ),
                     ],
                 ),
             ],
@@ -907,7 +962,6 @@ analytics_objective_2_2 = html.Div(
             [
                 dbc.Col(
                     [
-                        # Div to display LSTM scores
                         html.Div(
                             id = 'sarima_mae',
                             style = {
@@ -973,6 +1027,7 @@ analytics_objective_3_1 = html.Div(
 
                                 html.Br(), html.Br(),
 
+                                
                                 'These insights suggest a fundamental difference in climate sensitivity between ',
                                 'the two regions: San Francisco\'s energy demands are more heavily influenced by ',
                                 'shifts in temperature, possibly indicating a higher sensitivity to climate ',
@@ -1004,56 +1059,61 @@ analytics_objective_3_1 = html.Div(
 sj_shap = load('joblib_files/shap/sj_shap_plot.joblib')
 sf_shap = load('joblib_files/shap/sf_shap_plot.joblib')
 
-shap_values = pd.merge(sj_shap, sf_shap, on='Feature')
+shap_values = pd.merge(sj_shap, sf_shap, on = 'Feature')
 shap_values.rename(columns = {'Feature': 'feature', 'Mean SHAP Value_x': 'sj_mean_shap_value', 'Mean SHAP Value_y': 'sf_mean_shap_value'}, inplace = True)
 
 # Diverging bar plot
 def div_bar_chart(shap_values):
-    # Make San Francisco's values negative for visual divergence
     shap_values['sf_mean_shap_value_neg'] = -shap_values['sf_mean_shap_value']
 
     shap_values['shap_diff'] = shap_values['sj_mean_shap_value'] - shap_values['sf_mean_shap_value']
 
     fig = go.Figure()
 
-    # Add San Jose's bar chart (positive)
-    fig.add_trace(go.Bar(
-        x=shap_values['sj_mean_shap_value'],
-        y=shap_values['feature'],
-        orientation='h',
-        name='San Jose',
-        marker=dict(color='steelblue'),
-    ))
-
-    # Add San Francisco's bar chart (negative)
-    fig.add_trace(go.Bar(
-        x=shap_values['sf_mean_shap_value_neg'],
-        y=shap_values['feature'],
-        orientation='h',
-        name='San Francisco',
-        marker=dict(color='indianred'),
-    ))
-
-    # Add importance difference bar chart
-    fig.add_trace(go.Bar(
-        x=shap_values['shap_diff'],
-        y=shap_values['feature'],
-        orientation='h',
-        name='Regional Difference',
-        marker=dict(color='green'),
-    ))
-
-    fig.update_layout(
-        title='SHAP Plot: San Jose vs San Francisco',
-        xaxis_title='Mean SHAP Value',
-        yaxis=dict(autorange="reversed"),
-        barmode='overlay'
+    # San Jose's bar chart (positive side)
+    fig.add_trace(
+        go.Bar(
+            x = shap_values['sj_mean_shap_value'],
+            y = shap_values['feature'],
+            orientation = 'h',
+            name = 'San Jose',
+            marker = dict(color = 'steelblue'),
+        )
     )
 
-    # Modify x-axis ticks to appear positive for both sides
+    # San Francisco's bar chart (negative side)
+    fig.add_trace(
+        go.Bar(
+            x = shap_values['sf_mean_shap_value_neg'],
+            y = shap_values['feature'],
+            orientation = 'h',
+            name = 'San Francisco',
+            marker = dict(color = 'indianred'),
+        )
+    )
+
+    # SHAP difference bar chart
+    fig.add_trace(
+        go.Bar(
+            x = shap_values['shap_diff'],
+            y = shap_values['feature'],
+            orientation = 'h',
+            name = 'Regional Difference',
+            marker = dict(color = 'green'),
+        )
+    )
+
+    fig.update_layout(
+        title = 'SHAP Plot: San Jose vs San Francisco',
+        xaxis_title = 'Mean SHAP Value',
+        yaxis = dict(autorange = 'reversed'),
+        barmode = 'overlay',
+    )
+
+    # Set x-axis
     fig.update_xaxes(
-        tickvals=[-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
-        ticktext=[-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
+        tickvals = [-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
+        ticktext = [-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
     )
 
     return fig
@@ -1062,48 +1122,59 @@ def div_bar_chart(shap_values):
 def grouped_bar_chart(sj_shap, sf_shap):
     fig = go.Figure()
 
-    fig.add_trace(go.Bar(
-        y=sj_shap['Feature'],
-        x=sj_shap['Mean SHAP Value'],
-        orientation='h',
-        name='San Jose',
-        marker=dict(color='blue')
-    ))
+    fig.add_trace(
+        go.Bar(
+            y = sj_shap['Feature'],
+            x = sj_shap['Mean SHAP Value'],
+            orientation = 'h',
+            name = 'San Jose',
+            marker = dict(color = 'blue'),
+        )
+    )
 
-    fig.add_trace(go.Bar(
-        y=sf_shap['Feature'],
-        x=sf_shap['Mean SHAP Value'],
-        orientation='h',
-        name='San Francisco',
-        marker=dict(color='green')
-    ))
+    fig.add_trace(
+        go.Bar(
+            y = sf_shap['Feature'],
+            x = sf_shap['Mean SHAP Value'],
+            orientation = 'h',
+            name = 'San Francisco',
+            marker = dict(color = 'green'),
+        )
+    )
 
     fig.update_layout(
-        title='SHAP Values by Region',
-        xaxis_title='Mean SHAP Value',
-        yaxis_title='Feature',
-        barmode='group',
-        yaxis=dict(autorange="reversed")
+        title = 'SHAP Values by Region',
+        xaxis_title = 'Mean SHAP Value',
+        yaxis_title = 'Feature',
+        barmode = 'group',
+        yaxis = dict(autorange = "reversed"),
     )
     
     return fig
 
 # Dot plot
 def dot_plot(sj_shap, sf_shap):
-    # Combine into one DataFrame for scatter plot
-    dot_data = pd.concat([
-        sj_shap.assign(region='San Jose'),
-        sf_shap.assign(region='San Francisco')
-    ])
+    # Combine sj_shap and sf_shap
+    dot_data = pd.concat(
+        [
+            sj_shap.assign(region = 'San Jose'),
+            sf_shap.assign(region = 'San Francisco')
+        ]
+    )
 
     fig = px.scatter(
-        dot_data, x='Feature', y='region', size='Mean SHAP Value', color='Mean SHAP Value',
-        color_continuous_scale='Viridis', title="SHAP Value Dot Plot",
-        labels={'Mean SHAP Value': 'Mean SHAP Value', 'Feature': 'Feature'},
+        dot_data,
+        x = 'Feature',
+        y = 'region',
+        size = 'Mean SHAP Value',
+        color = 'Mean SHAP Value',
+        color_continuous_scale = 'Viridis',
+        title = "SHAP Value Dot Plot",
+        labels = {'Mean SHAP Value': 'Mean SHAP Value', 'Feature': 'Feature'},
         size_max = 60,
     )
 
-    fig.update_layout(yaxis_title="Region", xaxis_title="Feature")
+    fig.update_layout(yaxis_title = "Region", xaxis_title = "Feature")
     return fig
 
 layout = dbc.Container(
@@ -1125,7 +1196,7 @@ layout = dbc.Container(
                             dcc.Graph(figure = div_bar_chart(shap_values), id = 'diverging_bar_plot'),
                         ],
                     ),
-                    title=html.Div(
+                    title = html.Div(
                         [
                             html.P(
                                 "Diverging Horizontal Bar Plot",
@@ -1144,7 +1215,7 @@ layout = dbc.Container(
                             dcc.Graph(figure = grouped_bar_chart(sj_shap, sf_shap), id = 'grouped_bar_chart'),
                         ],
                     ),
-                    title=html.Div(
+                    title = html.Div(
                         [
                             html.P(
                                 "Horizontal Bar Grouped Bar Plot",
@@ -1163,7 +1234,7 @@ layout = dbc.Container(
                             dcc.Graph(figure = dot_plot(sj_shap, sf_shap), id = 'dot_plot'),
                         ],
                     ),
-                    title=html.Div(
+                    title = html.Div(
                         [
                             html.P(
                                 "Dot Plot",
@@ -1198,8 +1269,13 @@ layout = dbc.Container(
 # Callback to toggle visibility of each collapse
 @callback(
     Output('feature_analysis_collapse', 'is_open'),
-    [Input('feature_analysis_button', 'n_clicks'), Input('both_buttons', 'n_clicks')],
-    [State('feature_analysis_collapse', 'is_open')],
+    [
+        Input('feature_analysis_button', 'n_clicks'),
+        Input('both_buttons', 'n_clicks')
+    ],
+    [
+        State('feature_analysis_collapse', 'is_open')
+    ],
 )
 def toggle_left(n_left, n_both, is_open):
     if n_left or n_both:
@@ -1209,16 +1285,18 @@ def toggle_left(n_left, n_both, is_open):
 
 @callback(
     Output('time_series_analysis_collapse', 'is_open'),
-    [Input('time_series_analysis_button', 'n_clicks'), Input('both_buttons', 'n_clicks')],
-    [State('time_series_analysis_collapse', 'is_open')],
+    [
+        Input('time_series_analysis_button', 'n_clicks'),
+        Input('both_buttons', 'n_clicks')
+    ],
+    [
+        State('time_series_analysis_collapse', 'is_open')
+    ],
 )
 def toggle_left(n_right, n_both, is_open):
     if n_right or n_both:
         return not is_open
     return is_open
-
-
-
 
 # Callback for Feature Importances
 @callback(
@@ -1233,11 +1311,8 @@ def toggle_left(n_right, n_both, is_open):
 def update_sj_feature_importances(loc):
     feature_importances = None
 
-    df = pd.DataFrame()
-    if loc == 'sj':
-        df = sj_df
-    elif loc == 'sf':
-        df = sf_df
+    df = None
+    df = sj_df if loc == 'sj' else sf_df
 
     importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
     if not os.path.exists(importances_fn):
@@ -1245,12 +1320,10 @@ def update_sj_feature_importances(loc):
     else:
         feature_importances = load(importances_fn)
     
-    # Need to add title and expand the actual axis
     fig = px.bar(
         feature_importances,
         x = 'feature',
         y = 'importances',
-        #title = 'Feature Importances',
     )
 
     fig.update_layout(
@@ -1263,8 +1336,12 @@ def update_sj_feature_importances(loc):
 
 # SHAP Callback and Functions
 @callback(
-    Output('regional_shap', 'figure'),
-    [Input('regional_shap_option', 'value')],
+    [
+        Output('regional_shap', 'figure'),
+    ],
+    [
+        Input('regional_shap_option', 'value')
+    ],
 )
 def update_sj_shap(loc):
     shap_plot_df = None
@@ -1275,13 +1352,9 @@ def update_sj_shap(loc):
     else:
         shap_plot_df = load(joblib_filename_shap)
 
+    region = None
+    region = 'San Jose' if region == 'sj' else 'San Francisco'
 
-    region = 'San Jose'
-    if loc == 'sf':
-        region = 'San Francisco'
-
-
-    # Create the Plotly figure for visualization
     fig = {
         'data': [
             {
@@ -1298,22 +1371,25 @@ def update_sj_shap(loc):
         }
     }
 
-    return fig
+    return [fig]
 
 # LSTM - single step
 @callback(
-    [Output('lstm_val_score', 'children'),
-     Output('lstm_test_score', 'children'),
-     Output('lstm-plot', 'figure')],
-    [Input('region-select', 'value')]
+    [
+        Output('lstm_val_score', 'children'),
+        Output('lstm_test_score', 'children'),
+        Output('lstm_plot', 'figure'),
+    ],
+    [
+        Input('region_select', 'value')
+    ]
 )
 def update_lstm_analysis(region):
-    request_new_joblib = False  # Change this to True if you want to force a recalculation
+    request_new_joblib = False  # Change to true for new file creation
     file_specifier = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_{file_specifier}.joblib'
 
-    # Map region values to plot titles
     plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
     lstm_results = None
@@ -1334,7 +1410,7 @@ def update_lstm_analysis(region):
     inputs = inputs.numpy()
     labels = labels.numpy()
 
-    # Prepare the scores report
+    # Set scores
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
     lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
 
@@ -1345,48 +1421,58 @@ def update_lstm_analysis(region):
     label_col_index = 0
 
     # Input line
-    fig.add_trace(go.Scatter(
-        x = list(range(len(inputs[0, 1:, input_col_index]))),
-        y = inputs[0, 1:, input_col_index],
-        mode = 'lines',
-        name = 'Inputs',
-        line = dict(color = 'blue'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(inputs[0, 1:, input_col_index]))),
+            y = inputs[0, 1:, input_col_index],
+            mode = 'lines',
+            name = 'Inputs',
+            line = dict(color = 'blue'),
+        )
+    )
 
     # Label point (o)
-    fig.add_trace(go.Scatter(
-        x = list(range(len(labels[0, :, label_col_index]))),
-        y = labels[0, :, label_col_index].flatten(), 
-        mode = 'markers',
-        name = 'Labels',
-        marker = dict(size = 10, color = 'green', symbol = 'circle'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(labels[0, :, label_col_index]))),
+            y = labels[0, :, label_col_index].flatten(), 
+            mode = 'markers',
+            name = 'Labels',
+            marker = dict(size = 10, color = 'green', symbol = 'circle'),
+        )
+    )
 
     # Prediction point (x)
-    fig.add_trace(go.Scatter(
-        x = list(range(len(predictions[0, :, label_col_index]))),
-        y = predictions[0, :, label_col_index].flatten(),
-        mode = 'markers',
-        name = 'Predictions',
-        marker = dict(size = 10, color = 'red', symbol = 'x'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(predictions[0, :, label_col_index]))),
+            y = predictions[0, :, label_col_index].flatten(),
+            mode = 'markers',
+            name = 'Predictions',
+            marker = dict(size = 10, color = 'red', symbol = 'x'),
+        )
+    )
 
     # Update the layout
     fig.update_layout(
         title = f'Single Step LSTM Prediction for {plot_title}',
         xaxis_title = 'Time Steps (Months)',
         yaxis_title = 'Average Energy Usage (kWh)',
-        legend = dict(x = 0, y = 1)
+        legend = dict(x = 0, y = 1),
     )
 
     return lstm_val_score, lstm_test_score, fig
 
 # LSTM - multi step
 @callback(
-    [Output('lstm_val_score_multi', 'children'),
-     Output('lstm_test_score_multi', 'children'),
-     Output('lstm_plot_multi', 'figure')],
-    [Input('region_dropdown', 'value')]
+    [
+        Output('lstm_val_score_multi', 'children'),
+        Output('lstm_test_score_multi', 'children'),
+        Output('lstm_plot_multi', 'figure'),
+    ],
+    [
+        Input('region_dropdown', 'value')
+    ]
 )
 def update_lstm_analysis_multi(region):
     request_new_joblib = False
@@ -1395,7 +1481,6 @@ def update_lstm_analysis_multi(region):
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_multi_{file_specifier}.joblib'
 
-    # Map region values to plot titles
     plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
     lstm_results = None
@@ -1416,7 +1501,7 @@ def update_lstm_analysis_multi(region):
     inputs = inputs.numpy()
     labels = labels.numpy()
 
-    # Prepare the scores report
+    # Set scores
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
     lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
 
@@ -1427,38 +1512,46 @@ def update_lstm_analysis_multi(region):
     label_col_index = 0
 
     # Inputs line (up to the last point of actual data)
-    fig.add_trace(go.Scatter(
-        x=list(range(len(inputs[0, :, input_col_index]))),
-        y=inputs[0, :, input_col_index],
-        mode='lines',
-        name='Inputs',
-        line=dict(color='blue'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(inputs[0, :, input_col_index]))),
+            y = inputs[0, :, input_col_index],
+            mode = 'lines',
+            name = 'Inputs',
+            line = dict(color = 'blue'),
+        )
+    )
 
+    #### Need to figure out x range for the points to be plotted ####
     # Labels (actual future values, for comparison with predictions)
-    fig.add_trace(go.Scatter(
-        x=list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(labels[0, :, label_col_index]))),
-        y=labels[0, :, label_col_index].flatten(),
-        mode='markers',
-        name='Labels',
-        marker=dict(size=10, color='green', symbol='circle'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(labels[0, :, label_col_index]))),
+            y = labels[0, :, label_col_index].flatten(),
+            mode = 'markers',
+            name = 'Labels',
+            marker = dict(size = 10, color = 'green', symbol = 'circle'),
+        )
+    )
 
+    #### Need to figure out x range for the points to be plotted ####
     # Predictions (multi-step future predictions)
-    fig.add_trace(go.Scatter(
-        x=list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(predictions[0, :, label_col_index]))),
-        y=predictions[0, :, label_col_index].flatten(),
-        mode='markers',
-        name='Predictions',
-        marker=dict(size=10, color='red', symbol='x'),
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(predictions[0, :, label_col_index]))),
+            y = predictions[0, :, label_col_index].flatten(),
+            mode = 'markers',
+            name = 'Predictions',
+            marker = dict(size = 10, color = 'red', symbol = 'x'),
+        )
+    )
 
     # Update layout
     fig.update_layout(
-        title=f'Multi-Step LSTM Prediction for {plot_title}',
-        xaxis_title='Time Steps (Months)',
-        yaxis_title='Average Energy Usage (kWh)',
-        legend=dict(x=0, y=1)
+        title = f'Multi-Step LSTM Prediction for {plot_title}',
+        xaxis_title = 'Time Steps (Months)',
+        yaxis_title = 'Average Energy Usage (kWh)',
+        legend = dict(x = 0, y = 1)
     )
 
     return lstm_val_score, lstm_test_score, fig
@@ -1467,10 +1560,16 @@ def update_lstm_analysis_multi(region):
 # Work in progress
 # LSTM Future Predictions callback
 @callback(
-    Output('future-prediction-graph', 'figure'),
-    Output('prediction-output', 'children'),
-    Input('predict-button', 'n_clicks'),
-    State('region-dropdown', 'value')
+    [
+        Output('future-prediction-graph', 'figure'),
+        Output('prediction-output', 'children'),
+    ],
+    [
+        Input('predict-button', 'n_clicks'),
+    ],
+    [
+        State('region-dropdown', 'value'),
+    ],
 )
 def update_future_prediction(n_clicks, region): # BASICALLY PASS FOR NOW
     fig = go.Figure()
@@ -1534,7 +1633,6 @@ def update_sarima(region):
 
     joblib_filename_sarima_res = f'joblib_files/sarima/{region}_sarima_{file_specifier}.joblib'
 
-    # Map region values to plot titles
     plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
     sarima_results = None
@@ -1555,35 +1653,39 @@ def update_sarima(region):
     fig = go.Figure()
 
     # Main time series line
-    fig.add_trace(go.Scatter(
-        x=df['year-month'],
-        y=df['averagekwh'],
-        mode='lines',
-        name='Observed Data',
-        line=dict(color='blue')
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = df['year-month'],
+            y = df['averagekwh'],
+            mode = 'lines',
+            name = 'Observed Data',
+            line = dict(color = 'blue')
+        )
+    )
 
     # SARIMA predictions
     sarima_label = 'SARIMA(2, 1, 1)(0, 1, 1)12' if region == 'sj' else 'SARIMA(1, 1, 1)(3, 1, 3)12'
-    fig.add_trace(go.Scatter(
-        x=test['year-month'],
-        y=test['SARIMA_pred'],
-        mode='lines',
-        name=sarima_label,
-        line=dict(color='green', dash='dot')
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = test['year-month'],
+            y = test['SARIMA_pred'],
+            mode = 'lines',
+            name = sarima_label,
+            line = dict(color = 'green', dash = 'dot')
+        )
+    )
 
     # Update layout for the plot
     fig.update_layout(
-        title=f'SARIMA Forecast for {plot_title}',
-        xaxis_title='Date',
-        yaxis_title='Average Energy Usage (kWh)',
-        legend=dict(x=0.01, y=0.99),
+        title = f'SARIMA Forecast for {plot_title}',
+        xaxis_title = 'Date',
+        yaxis_title = 'Average Energy Usage (kWh)',
+        legend = dict(x = 0.01, y = 0.99),
 
         xaxis = dict(
-            range=['2023-05', '2024-07'],
-            tickformat='%Y-%m',
-            tickvals=pd.date_range(start='2023-05', end='2024-07', freq='MS')
+            range = ['2023-05', '2024-07'],
+            tickformat = '%Y-%m',
+            tickvals = pd.date_range(start = '2023-05', end = '2024-07', freq = 'MS'),
         )
     )
 
