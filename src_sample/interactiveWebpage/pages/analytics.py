@@ -76,35 +76,35 @@ analytics_info = html.Div(
                     [
                         dbc.Button(
                             'Feature Analysis',
-                            color = 'primary',
+                            color = 'secondary',
                             id = 'feature_analysis_button',
                             className = 'me-1',
                             n_clicks = 0,
                             style = {
                                 'font-size': '20px',
-                                #'margin-right': '100px',
+                                'background-color': '#bdc3c7',
                             },
                         ),
                         dbc.Button(
                             'Time-Series Analysis',
-                            color = 'primary',
+                            color = 'secondary',
                             id = 'time_series_analysis_button',
                             className = 'me-1',
                             n_clicks = 0,
                             style = {
                                 'font-size': '20px',
-                                #'margin-right': '100px',
+                                'background-color': '#bdc3c7',
                             },
                         ),
                         dbc.Button(
                             'Toggle Both',
-                            color = 'primary',
+                            color = 'secondary',
                             id = 'both_buttons',
                             className = 'me-1',
                             n_clicks = 0,
                             style = {
                                 'font-size': '20px',
-                                #'margin-right': '100px',
+                                'background-color': '#bdc3c7',
                             },
                         ),
                     ],
@@ -135,9 +135,12 @@ analytics_info = html.Div(
                                     }
                                 ),
                                 body = True,
+                                style = {
+                                    'background-color': '#d4d7da',
+                                },
                             ),
                             id = 'feature_analysis_collapse',
-                            is_open = True,
+                            is_open = False,
                         ),
                     ],
                 ),
@@ -159,9 +162,12 @@ analytics_info = html.Div(
                                     }
                                 ),
                                 body = True,
+                                style = {
+                                    'background-color': '#d4d7da',
+                                },
                             ),
                             id = 'time_series_analysis_collapse',
-                            is_open = True,
+                            is_open = False,
                         ),
                     ],
                 ),
@@ -1202,9 +1208,9 @@ def toggle_left(n_left, n_both, is_open):
 
 
 @callback(
-    Output('time_series_analaysis_collapse', 'is_open'),
+    Output('time_series_analysis_collapse', 'is_open'),
     [Input('time_series_analysis_button', 'n_clicks'), Input('both_buttons', 'n_clicks')],
-    [State('time_series_analaysis_collapse', 'is_open')],
+    [State('time_series_analysis_collapse', 'is_open')],
 )
 def toggle_left(n_right, n_both, is_open):
     if n_right or n_both:
