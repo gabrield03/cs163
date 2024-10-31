@@ -135,7 +135,12 @@ h1, h2, h3, h4, h5, h6, p {
 
 /* Border extra */
 .accordion-item {
-    border: 1px solid #605C3C !important;
+    border: 1px solid #603c3c !important;
+}
+
+.small-button {
+    font-size: 12px !important;
+    padding: 5px 10px !important;
 }
 
 /* Custom carousel */

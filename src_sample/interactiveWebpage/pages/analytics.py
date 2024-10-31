@@ -28,7 +28,7 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
-analytics_header = html.Div(
+analytics_header_section = html.Div(
     [
         dbc.Row(
             [
@@ -51,7 +51,7 @@ analytics_header = html.Div(
 )
 
 # Description of the analysis conducted
-analytics_info = html.Div(
+analytics_info_section = html.Div(
     [
         dbc.Row(
             [
@@ -71,56 +71,63 @@ analytics_info = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col(
-                    [
-
-                    ], 
-                    width = 4
-                ),
+                dbc.Col([], width = 2),
                 dbc.Col(
                     [
                         dbc.Button(
-                            'Feature Analysis',
+                            html.Span(
+                                'Feature Analysis',
+                                id = 'feature_analysis_tooltip',
+                            ),
                             color = 'secondary',
                             id = 'feature_analysis_button',
-                            className = 'me-1',
+                            className = 'me-1 small-button',
                             n_clicks = 0,
                             style = {
-                                'font-size': '20px',
-                                'background-color': '#bdc3c7',
-                            },
-                        ),
-                        dbc.Button(
-                            'Time-Series Analysis',
-                            color = 'secondary',
-                            id = 'time_series_analysis_button',
-                            className = 'me-1',
-                            n_clicks = 0,
-                            style = {
-                                'font-size': '20px',
-                                'background-color': '#bdc3c7',
-                            },
-                        ),
-                        dbc.Button(
-                            'Toggle Both',
-                            color = 'secondary',
-                            id = 'both_buttons',
-                            className = 'me-1',
-                            n_clicks = 0,
-                            style = {
-                                'font-size': '20px',
+                                'font-size': '16px',
                                 'background-color': '#bdc3c7',
                             },
                         ),
                     ],
-                    width = 6,
-                    align = 'auto',
+                    width = 3,
                 ),
+                dbc.Col([], width = 3),
                 dbc.Col(
                     [
-
+                        dbc.Button(
+                            html.Span(
+                                'Time-Series Analysis',
+                                id = 'time_series_analysis_tooltip',
+                            ),
+                            color = 'secondary',
+                            id = 'time_series_analysis_button',
+                            className = 'me-1 small-button',
+                            n_clicks = 0,
+                            style = {
+                                'font-size': '16px',
+                                'background-color': '#bdc3c7',
+                            },
+                        ),
                     ],
-                    width = 2
+                    width = 3,
+                ),
+                dbc.Tooltip(
+                    'click me!',
+                    target = 'feature_analysis_tooltip',
+                    placement = 'top',
+                    style = {
+                        'font-size': '14px',
+                        'color': '#333333',
+                    },
+                ),
+                dbc.Tooltip(
+                    'click me!',
+                    target = 'time_series_analysis_tooltip',
+                    placement = 'top',
+                    style = {
+                        'font-size': '14px',
+                        'color': '#333333',
+                    },
                 ),
             ],
         ),
@@ -189,7 +196,7 @@ analytics_info = html.Div(
 )
 
 # Random forest for feature importances
-analytics_objective_1_1 = html.Div(
+feature_importances_section = html.Div(
     [
         dbc.Row(
             [
@@ -224,7 +231,7 @@ analytics_objective_1_1 = html.Div(
                             [
                                 'To identify significant weather variables affecting energy consumption, I trained ',
                                 'separate models for each region (San Francisco and San Jose). Each model calculates and ranks ',
-                                'the feature importances of weather variables. [explanation of the plot] ',
+                                'the feature importances of weather variables.',
                             ],
                             style = {
                                 'font-size': '20px',
@@ -254,7 +261,7 @@ analytics_objective_1_1 = html.Div(
                             }, 
                         ),
                     ],
-                    width = 10,
+                    width = 4,
                     align = 'center',
                 ),
             ],
@@ -265,10 +272,10 @@ analytics_objective_1_1 = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                            id = 'sj_feature_importances',
+                            id = 'sj_feature_importances_section',
                         ),
                     ],
-                    width = 10,
+                    width = 12,
                     align = 'center',
                 ),
             ],
@@ -278,7 +285,7 @@ analytics_objective_1_1 = html.Div(
 )
 
 # SHAP - explaining features
-analytics_objective_1_2_1 = html.Div(
+shap_intro_section = html.Div(
     [
         dbc.Row(
             [
@@ -308,11 +315,11 @@ analytics_objective_1_2_1 = html.Div(
                         ),
                         html.P(
                             [
-                                'Toggling between the two options show the mean SHAP values for each region. Several ',
-                                'features from the San Jose data have been omitted so that each region has the their ',
-                                'SHAP values calculated based on the same features.',
+                                'Below displays the mean SHAP values for each region. The size of the bubbles are ',
+                                'indicative of the SHAP value. Several features from the San Jose data have been ',
+                                'omitted so that each region has the their SHAP values calculated based on the same features.',
                                 
-                                html.Br(),
+                                html.Br(), html.Br(),
                                 'The most important feature for the ',
                                 html.Span(
                                     'San Jose region is season',
@@ -374,48 +381,52 @@ analytics_objective_1_2_1 = html.Div(
                 ),
             ],
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.RadioItems(
-                            id='regional_shap_option',
-                            options=[
-                                {
-                                    'label': html.Div(['San Jose'], style={'color': '#ffffff', 'font-size': 20}),
-                                    'value': 'sj',
-                                },
-                                {
-                                    'label': html.Div(['San Francisco'], style={'color': '#ffffff', 'font-size': 20}),
-                                    'value': 'sf',
-                                },
-                            ],
-                            value='sj',
-                            labelStyle = {
-                                'display': 'inline-block',
-                                'margin': '0 20px',
-                            },
-                        ),
-                    ],
-                    width = {
-                        'size': 6,
-                        'offset': 3,
-                    },
-                    style = {
-                        'display': 'flex',
-                        'justifyContent': 'center',
-                        'alignItems': 'center',
-                    },
-                ),
-            ],
-            className='mb-3',
-        ),
+    ],
+    className = 'mb-5',
+)
+
+# SHAP Dot plot function
+def shap_dot_plot():
+    sj_shap = load('joblib_files/shap/sj_shap_plot.joblib')
+    sf_shap = load('joblib_files/shap/sf_shap_plot.joblib')
+
+    # Combine into one DataFrame for scatter plot
+    dot_data = pd.concat(
+        [
+            sj_shap.assign(region = 'San Jose'),
+            sf_shap.assign(region = 'San Francisco')
+        ]
+    )
+
+    fig = px.scatter(
+        dot_data,
+        x = 'Feature',
+        y = 'region',
+        size = 'Mean SHAP Value',
+        color = 'Mean SHAP Value',
+        color_continuous_scale = 'Viridis',
+        title = 'Mean SHAP Value for Both Regions',
+        labels = {
+            'Mean SHAP Value': 'Mean SHAP Value',
+            'Feature': 'Feature'
+        },
+        size_max = 60,
+    )
+
+    fig.update_layout(yaxis_title = 'Region', xaxis_title = 'Feature')
+
+    return fig
+
+# SHAP Dot Plots
+shap_dot_plot_section = html.Div(
+    [
         dbc.Row(
             [
                 dbc.Col(
                     [
                         dcc.Graph(
-                                id = 'regional_shap',
+                            id = 'shap_dot_plot',
+                            figure = shap_dot_plot(),
                         ),
                     ],
                     width = 12,
@@ -427,8 +438,8 @@ analytics_objective_1_2_1 = html.Div(
     ],
 )
 
-# Decision Plots
-analytics_objective_1_2_2 = html.Div(
+# SHAP Decision Plots
+shap_decision_plot_section = html.Div(
     [
         dbc.Row(
             [
@@ -510,7 +521,7 @@ analytics_objective_1_2_2 = html.Div(
 )
 
 # PDP Section
-analytics_objective_1_3 = html.Div(
+pdp_section = html.Div(
     [
         dbc.Row(
             [
@@ -664,7 +675,7 @@ analytics_objective_1_3 = html.Div(
 )
 
 # Time-series analysis with LSTM
-analytics_objective_2_1 = html.Div(
+lstm_section = html.Div(
     [
         dbc.Row(
             [
@@ -858,7 +869,7 @@ analytics_objective_2_1 = html.Div(
 )
 
 # Time-Series Analysis with SARIMA
-analytics_objective_2_2 = html.Div(
+sarima_section = html.Div(
     [
         dbc.Row(
             [
@@ -979,7 +990,7 @@ analytics_objective_2_2 = html.Div(
 )
 
 #### Summary of Analysis Section ####
-analytics_objective_3_1 = html.Div(
+analysis_summary_section = html.Div(
     [
         dbc.Row(
             [
@@ -1054,214 +1065,18 @@ analytics_objective_3_1 = html.Div(
     className = 'mb-5',
 )
 
-#### Testing other feature importance plots ####
-# Possible other feature importance plots
-sj_shap = load('joblib_files/shap/sj_shap_plot.joblib')
-sf_shap = load('joblib_files/shap/sf_shap_plot.joblib')
-
-shap_values = pd.merge(sj_shap, sf_shap, on = 'Feature')
-shap_values.rename(columns = {'Feature': 'feature', 'Mean SHAP Value_x': 'sj_mean_shap_value', 'Mean SHAP Value_y': 'sf_mean_shap_value'}, inplace = True)
-
-# Diverging bar plot
-def div_bar_chart(shap_values):
-    shap_values['sf_mean_shap_value_neg'] = -shap_values['sf_mean_shap_value']
-
-    shap_values['shap_diff'] = shap_values['sj_mean_shap_value'] - shap_values['sf_mean_shap_value']
-
-    fig = go.Figure()
-
-    # San Jose's bar chart (positive side)
-    fig.add_trace(
-        go.Bar(
-            x = shap_values['sj_mean_shap_value'],
-            y = shap_values['feature'],
-            orientation = 'h',
-            name = 'San Jose',
-            marker = dict(color = 'steelblue'),
-        )
-    )
-
-    # San Francisco's bar chart (negative side)
-    fig.add_trace(
-        go.Bar(
-            x = shap_values['sf_mean_shap_value_neg'],
-            y = shap_values['feature'],
-            orientation = 'h',
-            name = 'San Francisco',
-            marker = dict(color = 'indianred'),
-        )
-    )
-
-    # SHAP difference bar chart
-    fig.add_trace(
-        go.Bar(
-            x = shap_values['shap_diff'],
-            y = shap_values['feature'],
-            orientation = 'h',
-            name = 'Regional Difference',
-            marker = dict(color = 'green'),
-        )
-    )
-
-    fig.update_layout(
-        title = 'SHAP Plot: San Jose vs San Francisco',
-        xaxis_title = 'Mean SHAP Value',
-        yaxis = dict(autorange = 'reversed'),
-        barmode = 'overlay',
-    )
-
-    # Set x-axis
-    fig.update_xaxes(
-        tickvals = [-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
-        ticktext = [-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25],
-    )
-
-    return fig
-
-# Horizontal Grouped Bar Chart
-def grouped_bar_chart(sj_shap, sf_shap):
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Bar(
-            y = sj_shap['Feature'],
-            x = sj_shap['Mean SHAP Value'],
-            orientation = 'h',
-            name = 'San Jose',
-            marker = dict(color = 'blue'),
-        )
-    )
-
-    fig.add_trace(
-        go.Bar(
-            y = sf_shap['Feature'],
-            x = sf_shap['Mean SHAP Value'],
-            orientation = 'h',
-            name = 'San Francisco',
-            marker = dict(color = 'green'),
-        )
-    )
-
-    fig.update_layout(
-        title = 'SHAP Values by Region',
-        xaxis_title = 'Mean SHAP Value',
-        yaxis_title = 'Feature',
-        barmode = 'group',
-        yaxis = dict(autorange = "reversed"),
-    )
-    
-    return fig
-
-# Dot plot
-def dot_plot(sj_shap, sf_shap):
-    # Combine sj_shap and sf_shap
-    dot_data = pd.concat(
-        [
-            sj_shap.assign(region = 'San Jose'),
-            sf_shap.assign(region = 'San Francisco')
-        ]
-    )
-
-    fig = px.scatter(
-        dot_data,
-        x = 'Feature',
-        y = 'region',
-        size = 'Mean SHAP Value',
-        color = 'Mean SHAP Value',
-        color_continuous_scale = 'Viridis',
-        title = "SHAP Value Dot Plot",
-        labels = {'Mean SHAP Value': 'Mean SHAP Value', 'Feature': 'Feature'},
-        size_max = 60,
-    )
-
-    fig.update_layout(yaxis_title = "Region", xaxis_title = "Feature")
-    return fig
-
 layout = dbc.Container(
     [
-        analytics_header,
-        analytics_info,
-        analytics_objective_1_1,
-        analytics_objective_1_2_1,
-
-
-
-        #### Possible other options for SHAP plots ####
-        html.H1("Other options for feature importances"),
-        dbc.Accordion(
-            [
-                dbc.AccordionItem( # Diverging Horizontal Bar Plot
-                    html.P(
-                        [
-                            dcc.Graph(figure = div_bar_chart(shap_values), id = 'diverging_bar_plot'),
-                        ],
-                    ),
-                    title = html.Div(
-                        [
-                            html.P(
-                                "Diverging Horizontal Bar Plot",
-                                style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
-                                },
-                            ),
-                        ],
-                    ),
-                ),
-                dbc.AccordionItem( # Horizontal Bar Grouped Bar Plot
-                    html.P(
-                        [
-                            dcc.Graph(figure = grouped_bar_chart(sj_shap, sf_shap), id = 'grouped_bar_chart'),
-                        ],
-                    ),
-                    title = html.Div(
-                        [
-                            html.P(
-                                "Horizontal Bar Grouped Bar Plot",
-                                style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
-                                },
-                            ),
-                        ],
-                    ),
-                ),
-                dbc.AccordionItem( # Dot Plot
-                    html.P(
-                        [
-                            dcc.Graph(figure = dot_plot(sj_shap, sf_shap), id = 'dot_plot'),
-                        ],
-                    ),
-                    title = html.Div(
-                        [
-                            html.P(
-                                "Dot Plot",
-                                style = {
-                                    'font-size': '25px',
-                                    'color': '#000000',
-                                    'margin': '0px',
-                                },
-                            ),
-                        ],
-                    ),
-                ),
-            ],
-            start_collapsed = True,
-            flush = True,
-            always_open = True,
-        ),
-
-
-        analytics_objective_1_2_2,
-
-
-
-        analytics_objective_1_3,
-        analytics_objective_2_1,
-        analytics_objective_2_2,
-        analytics_objective_3_1,
+        analytics_header_section,
+        analytics_info_section,
+        feature_importances_section,
+        shap_intro_section,
+        shap_dot_plot_section,
+        shap_decision_plot_section,
+        pdp_section,
+        lstm_section,
+        sarima_section,
+        analysis_summary_section,
     ],
     fluid = True,
 )
@@ -1271,14 +1086,13 @@ layout = dbc.Container(
     Output('feature_analysis_collapse', 'is_open'),
     [
         Input('feature_analysis_button', 'n_clicks'),
-        Input('both_buttons', 'n_clicks')
     ],
     [
         State('feature_analysis_collapse', 'is_open')
     ],
 )
-def toggle_left(n_left, n_both, is_open):
-    if n_left or n_both:
+def toggle_left(n_left, is_open):
+    if n_left:
         return not is_open
     return is_open
 
@@ -1287,41 +1101,40 @@ def toggle_left(n_left, n_both, is_open):
     Output('time_series_analysis_collapse', 'is_open'),
     [
         Input('time_series_analysis_button', 'n_clicks'),
-        Input('both_buttons', 'n_clicks')
     ],
     [
         State('time_series_analysis_collapse', 'is_open')
     ],
 )
-def toggle_left(n_right, n_both, is_open):
-    if n_right or n_both:
+def toggle_left(n_right, is_open):
+    if n_right:
         return not is_open
     return is_open
 
 # Callback for Feature Importances
 @callback(
     [
-        Output('sj_feature_importances', 'figure')
+        Output('sj_feature_importances_section', 'figure')
     ],
     [
         Input('region_option', 'value'),
     ]
 )
 # Animated plot function
-def update_sj_feature_importances(loc):
-    feature_importances = None
+def update_sj_feature_importances_section(loc):
+    feature_importances_section = None
 
     df = None
     df = sj_df if loc == 'sj' else sf_df
 
     importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
     if not os.path.exists(importances_fn):
-        feature_importances = processing_pipeline(df, loc)
+        feature_importances_section = processing_pipeline(df, loc)
     else:
-        feature_importances = load(importances_fn)
+        feature_importances_section = load(importances_fn)
     
     fig = px.bar(
-        feature_importances,
+        feature_importances_section,
         x = 'feature',
         y = 'importances',
     )
