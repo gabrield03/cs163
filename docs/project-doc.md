@@ -300,7 +300,8 @@ showing a relatively minor influence.
 
 - San Jose's SHAP Decision Plot
 
-	![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png){: width="50%"}
+	![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png)
+	<img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png" width = "48">
 
 - San Francisco's SHAP Decision Plot
 
