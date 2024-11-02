@@ -298,26 +298,26 @@ The following sections should be used for the analysis outcome presentation. The
 - In San Jose, seasonality emerged as the most significant predictor of energy consumption, with a mean SHAP value of 20, indicating a strong correlation between energy use and the time of year. Temperature variables followed, with maximum (Tmax) and minimum (Tmin) temperatures ranking second and third, suggesting that while temperature plays a role, seasonality's impact is notably higher. By contrast, San Francisco's energy consumption is most sensitive to temperature extremes. Tmax had the highest mean SHAP value (12), followed by Tmin (10) and the total number of customers (5), with seasonality
 showing a relatively minor influence.
 
-- San Jose's SHAP
+- San Jose's SHAP Decision Plot
 
 	![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png)
 
-- San Francisco's SHAP
+- San Francisco's SHAP Decision Plot
 
-	![alt text](/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png | width=100)
+	![alt text](/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png)
 
 
 - To further explore these findings, SHAP decision plots were used to illustrate each feature's contribution to specific predictions. Partial Dependence Plots (PDP) then provided insight into how variations in the top three features impact energy consumption predictions for each region.
 
 - San Jose's PDP's
-| Season PDP | Max Temperature PDP | Min Temperature PDP |
-|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-| ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) |
+	| Season PDP | Max Temperature PDP | Min Temperature PDP |
+	|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+	| ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) |
   
 - San Francisco PDP's
-| Max Temperature PDP | Min Temperature PDP |
-|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-| ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) |
+	| Max Temperature PDP | Min Temperature PDP |
+	|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+	| ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) | ![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png) |
 
 
 - These insights suggest a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. Conversely, San Jose's reliance on seasonality hints that while its energy consumption may be less responsive to incremental temperature changes, seasonal cycles play a dominant role in its demand pattern. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude that San Jose is less vulnerable to climate changes; further analysis is necessary to determine the relationship between seasonality and global temperature shifts. This analysis suggests that regional energy planning could benefit from tailored approaches that account for these differing sensitivities.
