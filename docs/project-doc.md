@@ -299,10 +299,12 @@ The following sections should be used for the analysis outcome presentation. The
 showing a relatively minor influence.
 
 - San Jose's SHAP
-![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png | width=100)
+
+	![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png)
 
 - San Francisco's SHAP
-![alt text](/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png | width=100)
+
+	![alt text](/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png | width=100)
 
 
 - To further explore these findings, SHAP decision plots were used to illustrate each feature's contribution to specific predictions. Partial Dependence Plots (PDP) then provided insight into how variations in the top three features impact energy consumption predictions for each region.
