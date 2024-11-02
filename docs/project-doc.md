@@ -305,13 +305,13 @@ showing a relatively minor influence.
 
 - To further explore these findings, SHAP decision plots were used to illustrate each feature's contribution to specific predictions. Partial Dependence Plots (PDP) then provided insight into how variations in the top three features impact energy consumption predictions for each region.
 
-- San Jose's PDP's
+- San Jose's PDP's - 3 Most Impactful Features
 
 	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png" width = "75%">
 	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
 	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%">
   
-- San Francisco PDP's
+- San Francisco PDP's - 3 Most Impactful Features
 
 	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
 	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%">
