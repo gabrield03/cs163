@@ -298,15 +298,19 @@ The following sections should be used for the analysis outcome presentation. The
 - In San Jose, seasonality emerged as the most significant predictor of energy consumption, with a mean SHAP value of 20, indicating a strong correlation between energy use and the time of year. Temperature variables followed, with maximum (Tmax) and minimum (Tmin) temperatures ranking second and third, suggesting that while temperature plays a role, seasonality's impact is notably higher. By contrast, San Francisco's energy consumption is most sensitive to temperature extremes. Tmax had the highest mean SHAP value (12), followed by Tmin (10) and the total number of customers (5), with seasonality
 showing a relatively minor influence.
 
-- San Jose's SHAP Decision Plot
+- Regional SHAP Decision Plots
 
 	<!-- ![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png) -->
-	<img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png" width = "50%">
+	 <!-- width = "50%"> -->
+	| San Jose | San Francisco |
+	|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+	|<img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png">|
+	<img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
 
 - San Francisco's SHAP Decision Plot
 
 	<!-- ![](/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png){: width="50%"} -->
-	<img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png" width = "75%">
+	
 
 
 - To further explore these findings, SHAP decision plots were used to illustrate each feature's contribution to specific predictions. Partial Dependence Plots (PDP) then provided insight into how variations in the top three features impact energy consumption predictions for each region.
