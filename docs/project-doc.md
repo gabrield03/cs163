@@ -302,10 +302,9 @@ showing a relatively minor influence.
 
 	<!-- ![](/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png) -->
 	 <!-- width = "50%"> -->
-	| San Jose | San Francisco |
+	| Max Temperature PDP | Min Temperature PDP |
 	|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-	|<img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png">|
-	<img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+	| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
 
 - San Francisco's SHAP Decision Plot
 
