@@ -314,19 +314,19 @@ showing a relatively minor influence.
 <!-- insert pdp images -->
 <!-- Ex. ![alt text](/docs/assets/plots/Dual_Ax_95110.png) -->
 		- San Jose's PDP's
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png)
 
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
 
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
 
 
 		- San Francisco PDP's
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
 
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png)
 
-![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png)
+			![alt text](/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png)
 
 - These insights suggest a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. Conversely, San Jose's reliance on seasonality hints that while its energy consumption may be less responsive to incremental temperature changes, seasonal cycles play a dominant role in its demand pattern. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude that San Jose is less vulnerable to climate changes; further analysis is necessary to determine the relationship between seasonality and global temperature shifts. This analysis suggests that regional energy planning could benefit from tailored approaches that account for these differing sensitivities.
 
