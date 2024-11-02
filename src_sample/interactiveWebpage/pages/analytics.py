@@ -1007,15 +1007,15 @@ analysis_summary_section = html.Div(
                         ),
                         html.P(
                             [
-                                'Our analysis demonstrates that energy consumption patterns in San Jose ',
+                                'This analysis demonstrates that energy consumption patterns in San Jose ',
                                 'and San Francisco are influenced by distinct weather-related factors, ', 
                                 'revealing how local climate characteristics can lead to differing energy ',
                                 'demands between regions. Using a random forest model paired with SHAP ',
-                                '(SHapley Additive exPlanations)—a statistical method that breaks down the ',
-                                'impact of each feature on model predictions—we quantified the importance ',
+                                '(SHapley Additive exPlanations) — a statistical method that breaks down the ',
+                                'impact of each feature on model predictions, I quantified the importance ',
                                 'of various factors. SHAP is particularly valuable here because it assigns ',
                                 '"importance" scores to features based on their average impact on model ',
-                                'predictions, enabling a clear assessment of each feature\'s role.',
+                                'predictions which enables a clear assessment of each feature\'s role.',
 
                                 html.Br(), html.Br(),
 
@@ -1048,7 +1048,7 @@ analysis_summary_section = html.Div(
                                 'temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude ',
                                 'that San Jose is less vulnerable to climate changes; further analysis is ',
                                 'warranted to determine the relationship between seasonality and global temperature ',
-                                'shifts. This study suggests that regional energy planning could benefit from ',
+                                'shifts. This analysis suggests that regional energy planning could benefit from ',
                                 'tailored approaches that account for these differing sensitivities.',
                             ],
                             style = {
