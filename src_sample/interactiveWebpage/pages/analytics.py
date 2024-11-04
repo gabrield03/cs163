@@ -1184,6 +1184,8 @@ def update_lstm_single_step(region):
     inputs = lstm_results['inputs']
     labels = lstm_results['labels']
     predictions = lstm_results['predictions']
+    scaler = lstm_results['scaler']
+    encoder = lstm_results['encoder']
 
     inputs = inputs.numpy()
     labels = labels.numpy()
@@ -1236,7 +1238,7 @@ def update_lstm_single_step(region):
         title = f'Single Step LSTM Prediction for {plot_title}',
         xaxis_title = 'Time Steps (Months)',
         yaxis_title = 'Average Energy Usage (kWh)',
-        legend = dict(x = 0.9, y = 1.3),
+        legend = dict(x = 0.8, y = 1.3),
     )
 
     return lstm_val_score, lstm_test_score, fig
@@ -1275,6 +1277,8 @@ def update_lstm_mutli_step(region):
     inputs = lstm_results['inputs']
     labels = lstm_results['labels']
     predictions = lstm_results['predictions']
+    scaler = lstm_results['scaler']
+    encoder = lstm_results['encoder']
 
     inputs = inputs.numpy()
     labels = labels.numpy()
@@ -1329,7 +1333,7 @@ def update_lstm_mutli_step(region):
         title = f'Multi-Step LSTM Prediction for {plot_title}',
         xaxis_title = 'Time Steps (Months)',
         yaxis_title = 'Average Energy Usage (kWh)',
-        legend = dict(x = 0.9, y = 1.3),
+        legend = dict(x = 0.8, y = 1.3),
     )
 
     return lstm_val_score, lstm_test_score, fig

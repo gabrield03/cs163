@@ -530,6 +530,7 @@ def calc_shap(loc):
 
     return shap_plot_df
 
+# Process the data for LSTM
 def lstm_data_processing(loc):
     df = load(f'joblib_files/base_data/{loc}_combined.joblib')
 
@@ -548,10 +549,10 @@ def lstm_data_processing(loc):
     df['month_sin'] = np.sin(2 * np.pi * yr_mo / mos_in_yr)
     df['month_cos'] = np.cos(2 * np.pi * yr_mo / mos_in_yr)
 
-    # Drop the original 'year-month' column if no longer needed
+    # Drop the original 'year-month' column - no longer needed
     df.drop(['year-month'], axis = 1, inplace = True)
 
-    # Splitting the data - default is sj data
+    # Splitting the data
     test_size = 24
     val_size = 24
     train_size = len(df) - test_size - val_size
@@ -564,7 +565,7 @@ def lstm_data_processing(loc):
     # Train data
     # Separate cat, num, and cyclical features
     train_df_cat = train_df[['year', 'month', 'season']]
-    train_df_num = train_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
+    train_df_num = train_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
     train_df_cyc = train_df[['month_sin', 'month_cos']]
 
     # Scale num train data
@@ -577,7 +578,7 @@ def lstm_data_processing(loc):
 
     # Val data
     val_df_cat = val_df[['year', 'month', 'season']]
-    val_df_num = val_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
+    val_df_num = val_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
     val_df_cyc = val_df[['month_sin', 'month_cos']]
 
     val_df_num_scaled = pd.DataFrame(scaler.transform(val_df_num), columns=val_df_num.columns)
@@ -585,7 +586,7 @@ def lstm_data_processing(loc):
 
     # Test data
     test_df_cat = test_df[['year', 'month', 'season']]
-    test_df_num = test_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
+    test_df_num = test_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
     test_df_cyc = test_df[['month_sin', 'month_cos']]
 
     test_df_num_scaled = pd.DataFrame(scaler.transform(test_df_num), columns=test_df_num.columns)
@@ -604,7 +605,7 @@ def lstm_data_processing(loc):
 
     train_df_processed.drop(columns=['yr', 'mo', 'year-month'], inplace=True)
     
-    return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df
+    return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder
 
 class DataWindow():
     def __init__(self, 
@@ -702,7 +703,7 @@ def compile_and_fit(model, window, patience = 10, max_epochs = 100):
 def pred_lstm_single_step(loc, file_specifier, shift):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_single_step_{file_specifier}.joblib'
 
-    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df = lstm_data_processing(loc)
+    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
 
     # Initialize data windows
     wide_window = DataWindow(
@@ -716,7 +717,7 @@ def pred_lstm_single_step(loc, file_specifier, shift):
     lstm_model = Sequential(
         [
             LSTM(32, return_sequences = True),
-            Dense(units=1)
+            Dense(units = 1)
         ]
     )
 
@@ -738,7 +739,9 @@ def pred_lstm_single_step(loc, file_specifier, shift):
         'test_score': test_performance,
         'inputs': inputs,
         'labels': labels,
-        'predictions': predictions.numpy()
+        'predictions': predictions.numpy(),
+        'scaler': scaler,
+        'encoder': encoder
     }
 
     if not os.path.exists(joblib_filename_lstm_res):
@@ -750,7 +753,7 @@ def pred_lstm_single_step(loc, file_specifier, shift):
 def pred_lstm_multi_step(loc, file_specifier, shift):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_multi_step_{file_specifier}.joblib'
 
-    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df = lstm_data_processing(loc)
+    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
 
     # Initialize data windows
     multi_window = DataWindow(
@@ -782,7 +785,9 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
         'test_score': ms_test_performance,
         'inputs': inputs,
         'labels': labels,
-        'predictions': predictions.numpy()
+        'predictions': predictions.numpy(),
+        'scaler': scaler,
+        'encoder': encoder,
     }
 
     if not os.path.exists(joblib_filename_lstm_res):
