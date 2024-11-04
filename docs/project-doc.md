@@ -314,7 +314,7 @@ The following sections should be used for the analysis outcome presentation. The
 		- San Jose's PDP's - 3 Most Impactful Features
 
 			| test1 | test2 | test3 |
-			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:| :---------------------------------------------------------------------:|
 			| <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png"> |
 			<!-- <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png" width = "75%">
 			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
