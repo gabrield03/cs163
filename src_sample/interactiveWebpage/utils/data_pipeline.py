@@ -498,37 +498,37 @@ def processing_pipeline(df, loc):
 
     return importances_df
 
-# Calculate SHAP values for plotting
-def calc_shap(loc):
-    joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
-    joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
-    joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
+# # Calculate SHAP values for plotting
+# def calc_shap(loc):
+#     joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
+#     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
+#     joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
 
-    X_test = None
-    model = None
+#     X_test = None
+#     model = None
 
-    X_test = load(joblib_filename_X_test)
-    model = load(joblib_filename_model)
+#     X_test = load(joblib_filename_X_test)
+#     model = load(joblib_filename_model)
 
-    explainer = shap.Explainer(model)
-    shap_values = explainer(X_test)
+#     explainer = shap.Explainer(model)
+#     shap_values = explainer(X_test)
 
-    shap_values_array = shap_values.values
-    feature_names = X_test.columns
+#     shap_values_array = shap_values.values
+#     feature_names = X_test.columns
 
-    shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
+#     shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
 
-    # Compute the mean absolute SHAP values for each feature
-    shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
+#     # Compute the mean absolute SHAP values for each feature
+#     shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
 
-    # Convert to a DataFrame for plotting
-    shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
-    shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
+#     # Convert to a DataFrame for plotting
+#     shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
+#     shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
 
-    if not os.path.exists(joblib_filename_shap):
-        dump(shap_plot_df, joblib_filename_shap)
+#     if not os.path.exists(joblib_filename_shap):
+#         dump(shap_plot_df, joblib_filename_shap)
 
-    return shap_plot_df
+#     return shap_plot_df
 
 # Process the data for LSTM
 def lstm_data_processing(loc):
@@ -561,120 +561,88 @@ def lstm_data_processing(loc):
     val_df = df[train_size: train_size + val_size]
     test_df = df[train_size + val_size:]
 
-    #### Scaling and encoding the data ####
-    # Train data
     # Separate cat, num, and cyclical features
-    train_df_cat = train_df[['year', 'month', 'season']]
-    train_df_num = train_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
-    train_df_cyc = train_df[['month_sin', 'month_cos']]
+    cat_columns = ['year', 'month', 'season']
+    num_columns = train_df.select_dtypes(include=['float64', 'int32']).columns.difference(['month_sin', 'month_cos', 'year'])
+    cyc_columns = ['month_sin', 'month_cos']
 
-    # Scale num train data
+    # Ordinal encode categorical data
+    encoder = OrdinalEncoder(handle_unknown = 'use_encoded_value', unknown_value = -1)
+
+    train_df_cat_encoded = pd.DataFrame(encoder.fit_transform(train_df[cat_columns]), columns = cat_columns)
+    val_df_cat_encoded = pd.DataFrame(encoder.transform(val_df[cat_columns]), columns = cat_columns)
+    test_df_cat_encoded = pd.DataFrame(encoder.transform(test_df[cat_columns]), columns = cat_columns)
+
+    # Scale numerical data
     scaler = StandardScaler()
-    train_df_num_scaled = pd.DataFrame(scaler.fit_transform(train_df_num), columns=train_df_num.columns)
 
-    # Encode cat train data
-    encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
-    train_df_cat_encoded = pd.DataFrame(encoder.fit_transform(train_df_cat), columns=train_df_cat.columns)
+    train_df_num_scaled = pd.DataFrame(scaler.fit_transform(train_df[num_columns]), columns = num_columns)
+    val_df_num_scaled = pd.DataFrame(scaler.transform(val_df[num_columns]), columns = num_columns)
+    test_df_num_scaled = pd.DataFrame(scaler.transform(test_df[num_columns]), columns = num_columns)
 
-    # Val data
-    val_df_cat = val_df[['year', 'month', 'season']]
-    val_df_num = val_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
-    val_df_cyc = val_df[['month_sin', 'month_cos']]
+    # Combine all processed features
+    train_df_processed = pd.concat([train_df_num_scaled, train_df_cat_encoded, train_df[cyc_columns].reset_index(drop = True)], axis = 1)
+    val_df_processed = pd.concat([val_df_num_scaled, val_df_cat_encoded, val_df[cyc_columns].reset_index(drop = True)], axis = 1)
+    test_df_processed = pd.concat([test_df_num_scaled, test_df_cat_encoded, test_df[cyc_columns].reset_index(drop = True)], axis = 1)
 
-    val_df_num_scaled = pd.DataFrame(scaler.transform(val_df_num), columns=val_df_num.columns)
-    val_df_cat_encoded = pd.DataFrame(encoder.transform(val_df_cat), columns=val_df_cat.columns)
-
-    # Test data
-    test_df_cat = test_df[['year', 'month', 'season']]
-    test_df_num = test_df.select_dtypes(include=['float64', 'int32']).drop(columns=['month_sin', 'month_cos', 'year', 'averagekwh'], errors='ignore')
-    test_df_cyc = test_df[['month_sin', 'month_cos']]
-
-    test_df_num_scaled = pd.DataFrame(scaler.transform(test_df_num), columns=test_df_num.columns)
-    test_df_cat_encoded = pd.DataFrame(encoder.transform(test_df_cat), columns=test_df_cat.columns)
-
-    # Concatenate the parts
-    train_df_processed = pd.concat([train_df_num_scaled, train_df_cat_encoded, train_df_cyc.reset_index(drop=True)], axis=1)
-    val_df_processed = pd.concat([val_df_num_scaled, val_df_cat_encoded, val_df_cyc.reset_index(drop=True)], axis=1)
-    test_df_processed = pd.concat([test_df_num_scaled, test_df_cat_encoded, test_df_cyc.reset_index(drop=True)], axis=1)
-
-    train_df_processed['yr'] = 2013 + (train_df_processed.index // 12)
-    train_df_processed['mo'] = (train_df_processed.index % 12) + 1
-
-    # Create the 'year-month' column
-    train_df_processed['year-month'] = train_df_processed['yr'].astype(str) + '-' + train_df_processed['mo'].astype(str).str.zfill(2)
-
-    train_df_processed.drop(columns=['yr', 'mo', 'year-month'], inplace=True)
-    
     return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder
 
 class DataWindow():
-    def __init__(self, 
-                 input_width, label_width, shift, 
-                 train_df = None, val_df = None, test_df = None, 
-                 train_df_proc = None, val_df_proc = None, test_df_proc = None, 
-                 label_columns = None):
-        
+    def __init__(self, input_width, label_width, shift, train_df_proc, val_df_proc, test_df_proc, label_columns=None):
         self.train_df = train_df_proc
         self.val_df = val_df_proc
         self.test_df = test_df_proc
-        
+
         self.label_columns = label_columns
         if label_columns is not None:
             self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
-        self.column_indices = {name: i for i, name in enumerate(train_df.columns)}
-        
+        self.column_indices = {name: i for i, name in enumerate(train_df_proc.columns)}
+
         self.input_width = input_width
         self.label_width = label_width
         self.shift = shift
-        
+
         self.total_window_size = input_width + shift
-        
         self.input_slice = slice(0, input_width)
         self.input_indices = np.arange(self.total_window_size)[self.input_slice]
-        
         self.label_start = self.total_window_size - self.label_width
         self.labels_slice = slice(self.label_start, None)
         self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
-    
+
     def split_to_inputs_labels(self, features):
         inputs = features[:, self.input_slice, :]
         labels = features[:, self.labels_slice, :]
         if self.label_columns is not None:
-            labels = tf.stack(
-                [labels[:, :, self.column_indices[name]] for name in self.label_columns],
-                axis=-1
-            )
+            labels = tf.stack([labels[:, :, self.column_indices[name]] for name in self.label_columns], axis=-1)
         inputs.set_shape([None, self.input_width, None])
         labels.set_shape([None, self.label_width, None])
-        
         return inputs, labels
-    
+
     def make_dataset(self, data):
-        data = np.array(data, dtype = np.float32)
+        data = np.array(data, dtype=np.float32)
         ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-            data = data,
-            targets = None,
-            sequence_length = self.total_window_size,
-            sequence_stride = 1,
-            shuffle = True,
-            batch_size = 32
+            data=data,
+            targets=None,
+            sequence_length=self.total_window_size,
+            sequence_stride=1,
+            shuffle=True,
+            batch_size=32
         )
-        
         ds = ds.map(self.split_to_inputs_labels)
         return ds
-    
+
     @property
     def train(self):
         return self.make_dataset(self.train_df)
-    
+
     @property
     def val(self):
         return self.make_dataset(self.val_df)
-    
+
     @property
     def test(self):
         return self.make_dataset(self.test_df)
-    
+
     @property
     def sample_batch(self):
         result = getattr(self, '_sample_batch', None)
@@ -699,6 +667,36 @@ def compile_and_fit(model, window, patience = 10, max_epochs = 100):
     
     return history
 
+# Inverse transformation functions
+def inverse_transform_predictions(predictions, labels, scaler):
+    # Reshape predictions to match the scaler's input shape
+    predictions_reshaped = predictions.reshape(-1, 1)
+    labels_reshaped = labels.reshape(-1, 1)
+
+    # Create an array for inverse_transform
+    n_features = scaler.scale_.shape[0] 
+
+    # Create full input arrays for predictions and labels
+    full_input_predictions = np.zeros((predictions_reshaped.shape[0], n_features))
+    full_input_labels = np.zeros((labels_reshaped.shape[0], n_features))
+
+    # averagekwh - first feature
+    full_input_predictions[:, 0] = predictions_reshaped.flatten()  
+    full_input_labels[:, 0] = labels_reshaped.flatten()  
+
+    # Inverse transformation
+    original_predictions = scaler.inverse_transform(full_input_predictions)[:, 0]
+    original_labels = scaler.inverse_transform(full_input_labels)[:, 0]
+
+    return original_predictions, original_labels
+
+
+def inverse_transform_categorical(encoded_data, encoder, cat_columns):
+    # Inverse encoding
+    original_data = encoder.inverse_transform(encoded_data)
+
+    return pd.DataFrame(original_data, columns=cat_columns)
+
 # LSTM Single-Step Predictions on past data
 def pred_lstm_single_step(loc, file_specifier, shift):
     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_single_step_{file_specifier}.joblib'
@@ -707,38 +705,27 @@ def pred_lstm_single_step(loc, file_specifier, shift):
 
     # Initialize data windows
     wide_window = DataWindow(
-        input_width = 12, label_width = 12, shift = shift, 
-        train_df = train_df, val_df = val_df, test_df = test_df,
-        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed, 
-        label_columns = ['averagekwh']
+        input_width=12, label_width=12, shift=shift,
+        train_df_proc=train_df_processed, val_df_proc=val_df_processed, test_df_proc=test_df_processed,
+        label_columns=['averagekwh']
     )
 
-    # Build the LSTM model
-    lstm_model = Sequential(
-        [
-            LSTM(32, return_sequences = True),
-            Dense(units = 1)
-        ]
-    )
-
-    # Compile and fit the model
+    # Build and train the LSTM model
+    lstm_model = Sequential([
+        LSTM(32, return_sequences=True),
+        Dense(units=1)
+    ])
     history = compile_and_fit(lstm_model, wide_window)
 
-    # Evaluate performance
-    val_performance = lstm_model.evaluate(wide_window.val, verbose = 0)
-    test_performance = lstm_model.evaluate(wide_window.test, verbose = 0)
-
-    # Gather data for predictions
+    # Gather predictions
     inputs, labels = wide_window.sample_batch
     predictions = lstm_model(inputs)
 
-    # Return model performance and predictions for further processing
-
     res = {
-        'val_score': val_performance,
-        'test_score': test_performance,
-        'inputs': inputs,
-        'labels': labels,
+        'val_score': lstm_model.evaluate(wide_window.val, verbose=0),
+        'test_score': lstm_model.evaluate(wide_window.test, verbose=0),
+        'inputs': inputs.numpy(),
+        'labels': labels.numpy(),
         'predictions': predictions.numpy(),
         'scaler': scaler,
         'encoder': encoder
@@ -757,23 +744,18 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     # Initialize data windows
     multi_window = DataWindow(
-        input_width = 12, label_width = 12, shift = shift, 
-        train_df = train_df, val_df = val_df, test_df = test_df,
-        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed, 
+        input_width = 12, label_width = 12, shift = shift,
+        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
         label_columns = ['averagekwh']
     )
     # Build the LSTM model
     ms_lstm_model = Sequential([
-        LSTM(32, return_sequences=True),
-        Dense(units=1, kernel_initializer=tf.initializers.zeros),
+        LSTM(32, return_sequences = True),
+        Dense(units = 1, kernel_initializer = tf.initializers.zeros),
     ])
 
     # Compile and fit the model
     history = compile_and_fit(ms_lstm_model, multi_window)
-
-    # Evaluate performance
-    ms_val_performance = ms_lstm_model.evaluate(multi_window.val, verbose = 0)
-    ms_test_performance = ms_lstm_model.evaluate(multi_window.test, verbose = 0)
 
     # Gather data for predictions
     inputs, labels = multi_window.sample_batch
@@ -781,10 +763,10 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     # Return model performance and predictions for further processing
     res = {
-        'val_score': ms_val_performance,
-        'test_score': ms_test_performance,
-        'inputs': inputs,
-        'labels': labels,
+        'val_score': ms_lstm_model.evaluate(multi_window.val, verbose = 0),
+        'test_score': ms_lstm_model.evaluate(multi_window.test, verbose = 0),
+        'inputs': inputs.numpy(),
+        'labels': labels.numpy(),
         'predictions': predictions.numpy(),
         'scaler': scaler,
         'encoder': encoder,

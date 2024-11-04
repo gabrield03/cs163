@@ -6,12 +6,15 @@ import matplotlib.pyplot as plt
 from plotly.tools import mpl_to_plotly
 import plotly.express as px
 import plotly.graph_objs as go
+import random
+import numpy as np
 
 from  utils.data_pipeline import (
     processing_pipeline,
-    calc_shap,
+    # calc_shap,
     lstm_predict,
     pred_lstm_single_step, pred_lstm_multi_step,
+    inverse_transform_predictions, inverse_transform_categorical,
     pred_sarima
 )
 import os
@@ -1160,7 +1163,7 @@ def update_sj_feature_importances_section(loc):
 )
 def update_lstm_single_step(region):
     request_new_joblib = False  # Change to True for new lstm file
-    file_specifier = 1
+    file_specifier = 2
     shift = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
@@ -1178,66 +1181,79 @@ def update_lstm_single_step(region):
     
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    # lstm_val_score = lstm_results['lstm_val_score']
-    # lstm_test_score = lstm_results['lstm_test_score']
+    inputs, labels, predictions = lstm_results['inputs'], lstm_results['labels'], lstm_results['predictions']
+    scaler, encoder = lstm_results['scaler'], lstm_results['encoder']
 
-    inputs = lstm_results['inputs']
-    labels = lstm_results['labels']
-    predictions = lstm_results['predictions']
-    scaler = lstm_results['scaler']
-    encoder = lstm_results['encoder']
+    # Inverse transform numerical data
+    original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
 
-    inputs = inputs.numpy()
-    labels = labels.numpy()
+    lstm_val_score = val_score[1] 
+    lstm_test_score = test_score[1]
+    # train_mae = mean_absolute_error(original_train_labels, original_train_predictions)
 
-    # Set scores
+    # Set the scores - add scaled train score later
+    # lstm_train_score = f'Train - Mean Absolute Error (MAE) (Scaled): {train_mae:.3f}'
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
     lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
 
+
+    # Extract the first value from each inner array of inputs - skip the first inner array
+    first_input_values = inputs[1:, :, 0]
+    first_input_values_flat = first_input_values.flatten()
+
+    # Prep input array for inverse transformation
+    full_input_array = np.zeros((first_input_values_flat.shape[0], scaler.scale_.shape[0]))
+    full_input_array[:, 0] = first_input_values_flat
+
+    # Inverse scale the first input values
+    original_input_values = scaler.inverse_transform(full_input_array)[:, 0]
+
     fig = go.Figure()
 
-    # Want the 3rd pred for this
-    input_col_index = 2
-    label_col_index = 0
+    # Adjust the x-axis for the input values
+    input_x_values = list(range(11, 11 + len(original_input_values)))
 
-    # Input line
+    # Plot the input points
+    for i in range(1, len(original_input_values), 12):
+        if i + 12 <= len(original_input_values):
+            fig.add_trace(
+                go.Scatter(
+                    x = input_x_values[i:i + 11],
+                    y = original_input_values[i:i + 11],
+                    mode = 'lines',
+                    line = dict(color = 'blue'),
+                    showlegend = False
+                )
+            )
+
+    # Plot label points (o)
     fig.add_trace(
         go.Scatter(
-            x = list(range(len(inputs[0, 1:, input_col_index]))),
-            y = inputs[0, 1:, input_col_index],
-            mode = 'lines',
-            name = 'Inputs',
-            line = dict(color = 'blue'),
-        )
-    )
-
-    # Label point (o)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(labels[0, :, label_col_index]))),
-            y = labels[0, :, label_col_index].flatten(), 
+            x = list(range(len(original_labels))),
+            y = original_labels,
             mode = 'markers',
             name = 'Labels',
             marker = dict(size = 10, color = 'green', symbol = 'circle'),
         )
     )
 
-    # Prediction point (x)
+    # Plot prediction points (x)
     fig.add_trace(
         go.Scatter(
-            x = list(range(len(predictions[0, :, label_col_index]))),
-            y = predictions[0, :, label_col_index].flatten(),
+            x = list(range(len(original_predictions))),
+            y = original_predictions,
             mode = 'markers',
             name = 'Predictions',
             marker = dict(size = 10, color = 'red', symbol = 'x'),
         )
     )
 
-    # Update the layout
+    x_range = random.randint(1,30) * 12
     fig.update_layout(
-        title = f'Single Step LSTM Prediction for {plot_title}',
+        title = f'Single-Step LSTM Prediction for {plot_title}',
         xaxis_title = 'Time Steps (Months)',
         yaxis_title = 'Average Energy Usage (kWh)',
+        xaxis_range = [x_range - 0.5, x_range + 12 - 0.5],
         legend = dict(x = 0.8, y = 1.3),
     )
 
@@ -1254,10 +1270,10 @@ def update_lstm_single_step(region):
         Input('region_dropdown', 'value')
     ]
 )
-def update_lstm_mutli_step(region):
+def update_lstm_multi_step(region):
     request_new_joblib = False  # Change to True for new lstm file
-    file_specifier = 1
-    shift = 12
+    file_specifier = 2
+    shift = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
 
@@ -1274,14 +1290,8 @@ def update_lstm_mutli_step(region):
     
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    inputs = lstm_results['inputs']
-    labels = lstm_results['labels']
-    predictions = lstm_results['predictions']
-    scaler = lstm_results['scaler']
-    encoder = lstm_results['encoder']
-
-    inputs = inputs.numpy()
-    labels = labels.numpy()
+    inputs, labels, predictions = lstm_results['inputs'], lstm_results['labels'], lstm_results['predictions']
+    scaler, encoder = lstm_results['scaler'], lstm_results['encoder']
 
     # Set scores
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
@@ -1289,50 +1299,68 @@ def update_lstm_mutli_step(region):
 
     fig = go.Figure()
 
-    # Want the 3rd pred for this
-    input_col_index = 2
-    label_col_index = 0
+    # Inverse transform numerical data
+    original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
 
-    # Inputs line (up to the last point of actual data)
+    # Extract the first value from each inner array of inputs - skip the first inner array
+    first_input_values = inputs[1:, :, 0]
+    first_input_values_flat = first_input_values.flatten()
+
+    # Prep for inverse transformation
+    full_input_array = np.zeros((first_input_values_flat.shape[0], scaler.scale_.shape[0]))
+    full_input_array[:, 0] = first_input_values_flat
+
+    # Inverse scale the first input values
+    original_input_values = scaler.inverse_transform(full_input_array)[:, 0]
+
+    fig = go.Figure()
+
+    # Shift x-axis for inputs
+    input_x_values = list(range(11, 11 + len(original_input_values)))  
+
+    # Plot the input points with disjoint connections
+    for i in range(1, len(original_input_values)+1, 12):
+        if i + 12 <= len(original_input_values):
+            fig.add_trace(
+                go.Scatter(
+                    x = input_x_values[i:i + 12],
+                    y = original_input_values[i:i + 12],
+                    mode = 'lines',
+                    line = dict(color = 'blue'),
+                    showlegend = False
+                )
+            )
+
+    # Plot label points (o)
     fig.add_trace(
         go.Scatter(
-            x = list(range(len(inputs[0, :, input_col_index]))),
-            y = inputs[0, :, input_col_index],
-            mode = 'lines',
-            name = 'Inputs',
-            line = dict(color = 'blue'),
-        )
-    )
-
-    #### Need to figure out x range for the points to be plotted ####
-    # Labels (actual future values, for comparison with predictions)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(labels[0, :, label_col_index]))),
-            y = labels[0, :, label_col_index].flatten(),
+            x = list(range(len(original_labels))),
+            y = original_labels,
             mode = 'markers',
             name = 'Labels',
             marker = dict(size = 10, color = 'green', symbol = 'circle'),
         )
     )
 
-    #### Need to figure out x range for the points to be plotted ####
-    # Predictions (multi-step future predictions)
+    # Plot prediction points (x)
     fig.add_trace(
         go.Scatter(
-            x = list(range(len(inputs[0, :, input_col_index]), len(inputs[0, :, input_col_index]) + len(predictions[0, :, label_col_index]))),
-            y = predictions[0, :, label_col_index].flatten(),
+            x = list(range(len(original_predictions))),
+            y = original_predictions,
             mode = 'markers',
             name = 'Predictions',
             marker = dict(size = 10, color = 'red', symbol = 'x'),
         )
     )
 
+    x_range = random.randint(1,30) * 12
     # Update layout
     fig.update_layout(
         title = f'Multi-Step LSTM Prediction for {plot_title}',
         xaxis_title = 'Time Steps (Months)',
+
         yaxis_title = 'Average Energy Usage (kWh)',
+        xaxis_range = [360 - 0.5, 383 + 0.5],
         legend = dict(x = 0.8, y = 1.3),
     )
 
