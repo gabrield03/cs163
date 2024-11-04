@@ -346,12 +346,12 @@ The following sections should be used for the analysis outcome presentation. The
 			- Single-Step Predictions
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
 
 			- Multi-Step Predictions
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_multi_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_multi_step.png"> |
 
 		- SARIMA Models:
 			- SARIMA modeling was chosen because of the small size of the dataset. The models were trained on the entire dataset, excluding the final 12 months 
@@ -361,7 +361,7 @@ The following sections should be used for the analysis outcome presentation. The
 			- SARIMA 12-Month Predictions
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
-				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+				| <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sj_sarima.png"> | <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sf_sarima.png"> |
 
 
 	- Comparing Model Performance
