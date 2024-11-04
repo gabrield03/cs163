@@ -312,19 +312,15 @@ The following sections should be used for the analysis outcome presentation. The
 
 
 		- San Jose's PDP's - 3 Most Impactful Features
-
-			| test1 | test2 | test3 |
+			| Season | Temperature (Max) | Temperature (Min) |
 			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:| :---------------------------------------------------------------------:|
-			| <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png"> |
-			<!-- <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png" width = "75%">
-			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
-			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%"> -->
+			| <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png"> |
+
 		
 		- San Francisco PDP's - 3 Most Impactful Features
-
-			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
-			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%">
-			<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png" width = "75%">
+			| Temperature (Max) | Temperature (Min) | Total Customers |
+			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:| :---------------------------------------------------------------------:|
+			| <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png"> |
 
 	- These insights suggest a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. Conversely, San Jose's reliance on seasonality hints that while its energy consumption may be less responsive to incremental temperature changes, seasonal cycles play a dominant role in its demand pattern. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude that San Jose is less vulnerable to climate changes; further analysis is necessary to determine the relationship between seasonality and global temperature shifts. This analysis suggests that regional energy planning could benefit from tailored approaches that account for these differing sensitivities.
 
