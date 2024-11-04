@@ -322,9 +322,52 @@ The following sections should be used for the analysis outcome presentation. The
 			|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:| :---------------------------------------------------------------------:|
 			| <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png"> | <img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png"> |
 
-	- These insights suggest a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. Conversely, San Jose's reliance on seasonality hints that while its energy consumption may be less responsive to incremental temperature changes, seasonal cycles play a dominant role in its demand pattern. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude that San Jose is less vulnerable to climate changes; further analysis is necessary to determine the relationship between seasonality and global temperature shifts. This analysis suggests that regional energy planning could benefit from tailored approaches that account for these differing sensitivities.
+	- These insights tell us there is a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are 
+	more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. 
+	Conversely, San Jose's reliance on seasonality hints that while its energy consumption is less responsive to incremental temperature changes, 
+	seasonal cycles play a dominant role in energy usage predictions. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], 
+	it would be naive to conclude that San Jose is less vulnerable to shifts in climate change; further analysis is necessary to determine the 
+	relationship between seasonality and global temperature shifts.
 
 - Forecasting Energy Usage:
+	- Two modeling approaches were used to predict energy consumption for each region: LSTM models and SARIMA models.
+		
+		- LSTM Models:
+			- The LSTM models provided both "single-step" and "multi-step" predictions.
+				- Single-Step Prediction:
+					The single-step LSTM model forecasted energy consumption one month ahead for each region. It was trained using data 
+					from the previous 12-month data window to account for seasonal trends. The performance was evaluated using Mean Absolute Error (MAE). 
+					For San Jose, the test MAE was [Insert Value], and for San Francisco, the test MAE was [Insert Value].
+
+				- Multi-Step Prediction:
+					- The multi-step LSTM model was also trained on the preceding 12 months of data but it predicted energy consumption for the next 12 months.
+					Similarly to the single-step LSTM model, performance was measured with MAE. San Jose's test MAE was [Insert Value], and San Francisco's test MAE was [Insert Value].
+
+			- Single-Step Predictions
+				| San Jose | San Francisco |
+				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+
+			- Multi-Step Predictions
+				| San Jose | San Francisco |
+				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+
+		- SARIMA Models:
+			- SARIMA modeling was chosen because of the small size of the dataset. The models were trained on the entire dataset, excluding the final 12 months 
+			for each region, which served as the 12-month prediction window. As with the LSTM models, MAE was used to assess performance. 
+			The SARIMA model achieved an MAE of 22.895 for San Jose and 13.082 for San Francisco.
+
+			- SARIMA 12-Month Predictions
+				| San Jose | San Francisco |
+				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+
+
+	- Comparing Model Performance
+		- Direct comparison between SARIMA and LSTM predictions is complicated due to differences in output scaling (scaled vs. unscaled). 
+		Transforming the LSTM model's predictions from scaled back to unscaled values is still going. Once the output transformation is completed, 
+		I will be able to compare the models' (LSTM multi-step model and SARIMA model) performance to determine which method provides the most accurate 12-month forecasts.
 
 <!--- 
 ----------
