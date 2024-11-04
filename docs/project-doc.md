@@ -280,7 +280,7 @@ The following sections should be used for the analysis planning. These are not r
 		- Long-Short Term Memory (LSTM):
 			- LSTM networks are designed to handle time-series data by retaining information over time, making them effective for capturing long-term dependencies in weather and energy usage data. I will use LSTM to predict future energy consumption based on historical weather data. The model will initially produce monthly energy predictions, with the possibility of transitioning to daily forecasts if daily energy records become available or if the current data (daily weather records and monthly energy data) is proves to be sufficient in predicting daily energy consumption.
 
-		- Autoregressive Integrated Moving Average (ARIMA):
+		- Seasonal Autoregressive Integrated Moving Average (SARIMA):
 			- Seasonal ARIMA will be used to test time-series forecasting when dealing with smaller datasets or where simpler modeling is appropriate. ARIMA works by creating a linear equation that describes and forecasts the time-series data. It can provide some baseline predictions for energy consumption.
 
 
@@ -292,7 +292,37 @@ The following sections should be used for the analysis outcome presentation. The
 -->
 # Analysis Outcomes
 <!--- Explain the analysis you conducted and show the results. Discuss how the data, your analysis, and/or visualization can support the claims or findings. What will be the recommendations or suggestions you can make based on the results? Use bullet points, tables, and figures (if possible) to increase the readability of the document. -->
+- This analysis demonstrates that energy consumption patterns in San Jose  and San Francisco are influenced by distinct weather-related factors, revealing how local climate characteristics can lead to differing energy demands between regions. Using a random forest model paired with SHAP (SHapley Additive exPlanations) - a statistical method that breaks down the impact of each feature on model predictions, I quantified the importance of various factors. SHAP is particularly valuable here because it assigns "importance" scores to features based on their average impact on model predictions which enables a clear assessment of each feature's role.
 
+
+- In San Jose, seasonality emerged as the most significant predictor of energy consumption, with a mean SHAP value of 20, indicating a strong correlation between energy use and the time of year. Temperature variables followed, with maximum (Tmax) and minimum (Tmin) temperatures ranking second and third, suggesting that while temperature plays a role, seasonality's impact is notably higher. By contrast, San Francisco's energy consumption is most sensitive to temperature extremes. Tmax had the highest mean SHAP value (12), followed by Tmin (10) and the total number of customers (5), with seasonality
+showing a relatively minor influence.
+
+- Regional SHAP
+
+	<img src="/src_sample/interactiveWebpage/assets/shap_plots/shap_dot_plot.png" width = "75%"> 
+
+- Regional SHAP Decision Plots
+
+	| San Jose | San Francisco |
+	|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+	| <img src="/src_sample/interactiveWebpage/assets/shap_plots/sj_shap.png"> | <img src="/src_sample/interactiveWebpage/assets/shap_plots/sf_shap.png"> |
+
+- To further explore these findings, SHAP decision plots were used to illustrate each feature's contribution to specific predictions. Partial Dependence Plots (PDP) then provided insight into how variations in the top three features impact energy consumption predictions for each region.
+
+- San Jose's PDP's - 3 Most Impactful Features
+
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sj_pdp_season.png" width = "75%">
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%">
+  
+- San Francisco PDP's - 3 Most Impactful Features
+
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmax.png" width = "75%">
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_tmin.png" width = "75%">
+	<img src="/src_sample/interactiveWebpage/assets/pdp_plots/sf_pdp_totalcustomers.png" width = "75%">
+
+- These insights suggest a fundamental difference in climate sensitivity between the two regions: San Francisco's energy demands are more heavily influenced by shifts in temperature, possibly indicating a higher sensitivity to climate variability. Conversely, San Jose's reliance on seasonality hints that while its energy consumption may be less responsive to incremental temperature changes, seasonal cycles play a dominant role in its demand pattern. However, because temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude that San Jose is less vulnerable to climate changes; further analysis is necessary to determine the relationship between seasonality and global temperature shifts. This analysis suggests that regional energy planning could benefit from tailored approaches that account for these differing sensitivities.
 
 
 <!--- 

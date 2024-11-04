@@ -530,19 +530,16 @@ def calc_shap(loc):
 
     return shap_plot_df
 
-# LSTM Predictions on past data
-def pred_lstm(loc, request_new_joblib, file_specifier):
-    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_{file_specifier}.joblib'
-
+def lstm_data_processing(loc):
     df = load(f'joblib_files/base_data/{loc}_combined.joblib')
 
     #### Data preprocessing for lstm ####
     # Drop unnecessary columns
     drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric']
-    df.drop(drop_list, axis=1, inplace=True)
+    df.drop(drop_list, axis = 1, inplace = True)
 
     # Change year-month col to sin+cos for cyclical nature and lstm usability
-    df['year-month'] = pd.to_datetime(df['year-month'], format='%Y-%m')
+    df['year-month'] = pd.to_datetime(df['year-month'], format = '%Y-%m')
     yr_mo = df['year-month'].dt.month
 
     mos_in_yr = 12
@@ -552,7 +549,7 @@ def pred_lstm(loc, request_new_joblib, file_specifier):
     df['month_cos'] = np.cos(2 * np.pi * yr_mo / mos_in_yr)
 
     # Drop the original 'year-month' column if no longer needed
-    df.drop(['year-month'], axis=1, inplace=True)
+    df.drop(['year-month'], axis = 1, inplace = True)
 
     # Splitting the data - default is sj data
     test_size = 24
@@ -606,116 +603,133 @@ def pred_lstm(loc, request_new_joblib, file_specifier):
     train_df_processed['year-month'] = train_df_processed['yr'].astype(str) + '-' + train_df_processed['mo'].astype(str).str.zfill(2)
 
     train_df_processed.drop(columns=['yr', 'mo', 'year-month'], inplace=True)
+    
+    return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df
 
-    class DataWindow():
-        def __init__(self, input_width, label_width, shift, 
-                     train_df=train_df, val_df=val_df, test_df=test_df, 
-                     label_columns=None):
-            
-            self.train_df = train_df_processed
-            self.val_df = val_df_processed
-            self.test_df = test_df_processed
-            
-            self.label_columns = label_columns
-            if label_columns is not None:
-                self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
-            self.column_indices = {name: i for i, name in enumerate(train_df.columns)}
-            
-            self.input_width = input_width
-            self.label_width = label_width
-            self.shift = shift
-            
-            self.total_window_size = input_width + shift
-            
-            self.input_slice = slice(0, input_width)
-            self.input_indices = np.arange(self.total_window_size)[self.input_slice]
-            
-            self.label_start = self.total_window_size - self.label_width
-            self.labels_slice = slice(self.label_start, None)
-            self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
+class DataWindow():
+    def __init__(self, 
+                 input_width, label_width, shift, 
+                 train_df = None, val_df = None, test_df = None, 
+                 train_df_proc = None, val_df_proc = None, test_df_proc = None, 
+                 label_columns = None):
         
-        def split_to_inputs_labels(self, features):
-            inputs = features[:, self.input_slice, :]
-            labels = features[:, self.labels_slice, :]
-            if self.label_columns is not None:
-                labels = tf.stack(
-                    [labels[:, :, self.column_indices[name]] for name in self.label_columns],
-                    axis=-1
-                )
-            inputs.set_shape([None, self.input_width, None])
-            labels.set_shape([None, self.label_width, None])
-            
-            return inputs, labels
+        self.train_df = train_df_proc
+        self.val_df = val_df_proc
+        self.test_df = test_df_proc
         
-        def make_dataset(self, data):
-            data = np.array(data, dtype=np.float32)
-            ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-                data=data,
-                targets=None,
-                sequence_length=self.total_window_size,
-                sequence_stride=1,
-                shuffle=True,
-                batch_size=32
+        self.label_columns = label_columns
+        if label_columns is not None:
+            self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
+        self.column_indices = {name: i for i, name in enumerate(train_df.columns)}
+        
+        self.input_width = input_width
+        self.label_width = label_width
+        self.shift = shift
+        
+        self.total_window_size = input_width + shift
+        
+        self.input_slice = slice(0, input_width)
+        self.input_indices = np.arange(self.total_window_size)[self.input_slice]
+        
+        self.label_start = self.total_window_size - self.label_width
+        self.labels_slice = slice(self.label_start, None)
+        self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
+    
+    def split_to_inputs_labels(self, features):
+        inputs = features[:, self.input_slice, :]
+        labels = features[:, self.labels_slice, :]
+        if self.label_columns is not None:
+            labels = tf.stack(
+                [labels[:, :, self.column_indices[name]] for name in self.label_columns],
+                axis=-1
             )
-            
-            ds = ds.map(self.split_to_inputs_labels)
-            return ds
+        inputs.set_shape([None, self.input_width, None])
+        labels.set_shape([None, self.label_width, None])
         
-        @property
-        def train(self):
-            return self.make_dataset(self.train_df)
+        return inputs, labels
+    
+    def make_dataset(self, data):
+        data = np.array(data, dtype = np.float32)
+        ds = tf.keras.preprocessing.timeseries_dataset_from_array(
+            data = data,
+            targets = None,
+            sequence_length = self.total_window_size,
+            sequence_stride = 1,
+            shuffle = True,
+            batch_size = 32
+        )
         
-        @property
-        def val(self):
-            return self.make_dataset(self.val_df)
-        
-        @property
-        def test(self):
-            return self.make_dataset(self.test_df)
-        
-        @property
-        def sample_batch(self):
-            result = getattr(self, '_sample_batch', None)
-            if result is None:
-                result = next(iter(self.train))
-                self._sample_batch = result
-            return result
+        ds = ds.map(self.split_to_inputs_labels)
+        return ds
+    
+    @property
+    def train(self):
+        return self.make_dataset(self.train_df)
+    
+    @property
+    def val(self):
+        return self.make_dataset(self.val_df)
+    
+    @property
+    def test(self):
+        return self.make_dataset(self.test_df)
+    
+    @property
+    def sample_batch(self):
+        result = getattr(self, '_sample_batch', None)
+        if result is None:
+            result = next(iter(self.train))
+            self._sample_batch = result
+        return result
+    
+def compile_and_fit(model, window, patience = 10, max_epochs = 100):
+    early_stopping = EarlyStopping(monitor = 'val_loss',
+                                    patience = patience,
+                                    mode = 'min')
+    
+    model.compile(loss = MeanSquaredError(),
+                    optimizer = Adam(),
+                    metrics = [MeanAbsoluteError()])
+    
+    history = model.fit(window.train,
+                        epochs = max_epochs,
+                        validation_data = window.val,
+                        callbacks = [early_stopping])
+    
+    return history
 
-    def compile_and_fit(model, window, patience=10, max_epochs=50):
-        early_stopping = EarlyStopping(monitor='val_loss',
-                                       patience=patience,
-                                       mode='min')
-        
-        model.compile(loss=MeanSquaredError(),
-                      optimizer=Adam(),
-                      metrics=[MeanAbsoluteError()])
-        
-        history = model.fit(window.train,
-                            epochs=max_epochs,
-                            validation_data=window.val,
-                            callbacks=[early_stopping])
-        
-        return history
+# LSTM Single-Step Predictions on past data
+def pred_lstm_single_step(loc, file_specifier, shift):
+    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_single_step_{file_specifier}.joblib'
+
+    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df = lstm_data_processing(loc)
 
     # Initialize data windows
-    wide_window = DataWindow(input_width=12, label_width=12, shift=1, label_columns=['averagekwh'])
+    wide_window = DataWindow(
+        input_width = 12, label_width = 12, shift = shift, 
+        train_df = train_df, val_df = val_df, test_df = test_df,
+        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed, 
+        label_columns = ['averagekwh']
+    )
 
     # Build the LSTM model
-    lstm_model = Sequential([
-        LSTM(32, return_sequences=True),
-        Dense(units=1)
-    ])
+    lstm_model = Sequential(
+        [
+            LSTM(32, return_sequences = True),
+            Dense(units=1)
+        ]
+    )
 
     # Compile and fit the model
     history = compile_and_fit(lstm_model, wide_window)
 
     # Evaluate performance
-    val_performance = lstm_model.evaluate(wide_window.val)
-    test_performance = lstm_model.evaluate(wide_window.test, verbose=0)
+    val_performance = lstm_model.evaluate(wide_window.val, verbose = 0)
+    test_performance = lstm_model.evaluate(wide_window.test, verbose = 0)
 
     # Gather data for predictions
-    inputs, labels = wide_window.sample_batch  # Get a sample batch for predictions
-    predictions = lstm_model(inputs)  # Generate predictions
+    inputs, labels = wide_window.sample_batch
+    predictions = lstm_model(inputs)
 
     # Return model performance and predictions for further processing
 
@@ -732,177 +746,19 @@ def pred_lstm(loc, request_new_joblib, file_specifier):
 
     return res
 
-# LSTM Predictions on past data
-def pred_lstm_multi(loc, request_new_joblib, file_specifier, shift):
-    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_results_multi_{file_specifier}.joblib'
-    #joblib_filename_lstm_model = f'joblib_files/lstm/{loc}_lstm_model_{file_specifier}.joblib'
+# LSTM Multi-Step Predictions on past data
+def pred_lstm_multi_step(loc, file_specifier, shift):
+    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_multi_step_{file_specifier}.joblib'
 
-    df = load(f'joblib_files/base_data/{loc}_combined.joblib')
-
-    #### Data preprocessing for lstm ####
-    # Drop unnecessary columns
-    drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric']
-    df.drop(drop_list, axis=1, inplace=True)
-
-    # Change year-month col to sin+cos for cyclical nature and lstm usability
-    df['year-month'] = pd.to_datetime(df['year-month'], format='%Y-%m')
-    yr_mo = df['year-month'].dt.month
-
-    mos_in_yr = 12
-
-    # Calculate the cyclic features based on a 12-month cycle
-    df['month_sin'] = np.sin(2 * np.pi * yr_mo / mos_in_yr)
-    df['month_cos'] = np.cos(2 * np.pi * yr_mo / mos_in_yr)
-
-    # Drop the original 'year-month' column if no longer needed
-    df.drop(['year-month'], axis=1, inplace=True)
-
-    # Splitting the data - default is sj data
-    test_size = 24
-    val_size = 24
-    train_size = len(df) - test_size - val_size
-
-    train_df = df[:train_size]
-    val_df = df[train_size: train_size + val_size]
-    test_df = df[train_size + val_size:]
-
-    #### Scaling and encoding the data ####
-    # Train data
-    # Separate cat, num, and cyclical features
-    train_df_cat = train_df[['year', 'month', 'season']]
-    train_df_num = train_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
-    train_df_cyc = train_df[['month_sin', 'month_cos']]
-
-    # Scale num train data
-    scaler = StandardScaler()
-    train_df_num_scaled = pd.DataFrame(scaler.fit_transform(train_df_num), columns=train_df_num.columns)
-
-    # Encode cat train data
-    encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
-    train_df_cat_encoded = pd.DataFrame(encoder.fit_transform(train_df_cat), columns=train_df_cat.columns)
-
-    # Val data
-    val_df_cat = val_df[['year', 'month', 'season']]
-    val_df_num = val_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
-    val_df_cyc = val_df[['month_sin', 'month_cos']]
-
-    val_df_num_scaled = pd.DataFrame(scaler.transform(val_df_num), columns=val_df_num.columns)
-    val_df_cat_encoded = pd.DataFrame(encoder.transform(val_df_cat), columns=val_df_cat.columns)
-
-    # Test data
-    test_df_cat = test_df[['year', 'month', 'season']]
-    test_df_num = test_df.select_dtypes(include=['float64', 'int64']).drop(columns=['month_sin', 'month_cos', 'year'], errors='ignore')
-    test_df_cyc = test_df[['month_sin', 'month_cos']]
-
-    test_df_num_scaled = pd.DataFrame(scaler.transform(test_df_num), columns=test_df_num.columns)
-    test_df_cat_encoded = pd.DataFrame(encoder.transform(test_df_cat), columns=test_df_cat.columns)
-
-    # Concatenate the parts
-    train_df_processed = pd.concat([train_df_num_scaled, train_df_cat_encoded, train_df_cyc.reset_index(drop=True)], axis=1)
-    val_df_processed = pd.concat([val_df_num_scaled, val_df_cat_encoded, val_df_cyc.reset_index(drop=True)], axis=1)
-    test_df_processed = pd.concat([test_df_num_scaled, test_df_cat_encoded, test_df_cyc.reset_index(drop=True)], axis=1)
-
-    train_df_processed['yr'] = 2013 + (train_df_processed.index // 12)
-    train_df_processed['mo'] = (train_df_processed.index % 12) + 1
-
-    # Create the 'year-month' column
-    train_df_processed['year-month'] = train_df_processed['yr'].astype(str) + '-' + train_df_processed['mo'].astype(str).str.zfill(2)
-
-    train_df_processed.drop(columns=['yr', 'mo', 'year-month'], inplace=True)
-
-    class DataWindow():
-        def __init__(self, input_width, label_width, shift, 
-                     train_df=train_df, val_df=val_df, test_df=test_df, 
-                     label_columns=None):
-            
-            self.train_df = train_df_processed
-            self.val_df = val_df_processed
-            self.test_df = test_df_processed
-            
-            self.label_columns = label_columns
-            if label_columns is not None:
-                self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
-            self.column_indices = {name: i for i, name in enumerate(train_df.columns)}
-            
-            self.input_width = input_width
-            self.label_width = label_width
-            self.shift = shift
-            
-            self.total_window_size = input_width + shift
-            
-            self.input_slice = slice(0, input_width)
-            self.input_indices = np.arange(self.total_window_size)[self.input_slice]
-            
-            self.label_start = self.total_window_size - self.label_width
-            self.labels_slice = slice(self.label_start, None)
-            self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
-        
-        def split_to_inputs_labels(self, features):
-            inputs = features[:, self.input_slice, :]
-            labels = features[:, self.labels_slice, :]
-            if self.label_columns is not None:
-                labels = tf.stack(
-                    [labels[:, :, self.column_indices[name]] for name in self.label_columns],
-                    axis=-1
-                )
-            inputs.set_shape([None, self.input_width, None])
-            labels.set_shape([None, self.label_width, None])
-            
-            return inputs, labels
-        
-        def make_dataset(self, data):
-            data = np.array(data, dtype=np.float32)
-            ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-                data=data,
-                targets=None,
-                sequence_length=self.total_window_size,
-                sequence_stride=1,
-                shuffle=True,
-                batch_size=32
-            )
-            
-            ds = ds.map(self.split_to_inputs_labels)
-            return ds
-        
-        @property
-        def train(self):
-            return self.make_dataset(self.train_df)
-        
-        @property
-        def val(self):
-            return self.make_dataset(self.val_df)
-        
-        @property
-        def test(self):
-            return self.make_dataset(self.test_df)
-        
-        @property
-        def sample_batch(self):
-            result = getattr(self, '_sample_batch', None)
-            if result is None:
-                result = next(iter(self.train))
-                self._sample_batch = result
-            return result
-
-    def compile_and_fit(model, window, patience=10, max_epochs=50):
-        early_stopping = EarlyStopping(monitor='val_loss',
-                                       patience=patience,
-                                       mode='min')
-        
-        model.compile(loss=MeanSquaredError(),
-                      optimizer=Adam(),
-                      metrics=[MeanAbsoluteError()])
-        
-        history = model.fit(window.train,
-                            epochs=max_epochs,
-                            validation_data=window.val,
-                            callbacks=[early_stopping])
-        
-        return history
+    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df = lstm_data_processing(loc)
 
     # Initialize data windows
-    multi_window = DataWindow(input_width=12, label_width=12, shift=shift, label_columns=['averagekwh'])
-
+    multi_window = DataWindow(
+        input_width = 12, label_width = 12, shift = shift, 
+        train_df = train_df, val_df = val_df, test_df = test_df,
+        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed, 
+        label_columns = ['averagekwh']
+    )
     # Build the LSTM model
     ms_lstm_model = Sequential([
         LSTM(32, return_sequences=True),
@@ -913,14 +769,13 @@ def pred_lstm_multi(loc, request_new_joblib, file_specifier, shift):
     history = compile_and_fit(ms_lstm_model, multi_window)
 
     # Evaluate performance
-    ms_val_performance = ms_lstm_model.evaluate(multi_window.val)
-    ms_test_performance = ms_lstm_model.evaluate(multi_window.test, verbose=0)
+    ms_val_performance = ms_lstm_model.evaluate(multi_window.val, verbose = 0)
+    ms_test_performance = ms_lstm_model.evaluate(multi_window.test, verbose = 0)
 
     # Gather data for predictions
     inputs, labels = multi_window.sample_batch
     predictions = ms_lstm_model(inputs)
 
-    # predictions_og_scale = scaler.inverse_transform(predictions.numpy())
     # Return model performance and predictions for further processing
     res = {
         'val_score': ms_val_performance,
@@ -928,7 +783,6 @@ def pred_lstm_multi(loc, request_new_joblib, file_specifier, shift):
         'inputs': inputs,
         'labels': labels,
         'predictions': predictions.numpy()
-        # 'predictions': predictions_og_scale.numpy()
     }
 
     if not os.path.exists(joblib_filename_lstm_res):

@@ -11,7 +11,7 @@ from  utils.data_pipeline import (
     processing_pipeline,
     calc_shap,
     lstm_predict,
-    pred_lstm, pred_lstm_multi,
+    pred_lstm_single_step, pred_lstm_multi_step,
     pred_sarima
 )
 import os
@@ -404,7 +404,7 @@ def shap_dot_plot():
         y = 'region',
         size = 'Mean SHAP Value',
         color = 'Mean SHAP Value',
-        color_continuous_scale = 'Viridis',
+        color_continuous_scale = 'Agsunset',
         title = 'Mean SHAP Value for Both Regions',
         labels = {
             'Mean SHAP Value': 'Mean SHAP Value',
@@ -1147,45 +1147,6 @@ def update_sj_feature_importances_section(loc):
 
     return [fig]
 
-# SHAP Callback and Functions
-@callback(
-    [
-        Output('regional_shap', 'figure'),
-    ],
-    [
-        Input('regional_shap_option', 'value')
-    ],
-)
-def update_sj_shap(loc):
-    shap_plot_df = None
-
-    joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
-    if not os.path.exists(joblib_filename_shap):
-        shap_plot_df = calc_shap(loc)
-    else:
-        shap_plot_df = load(joblib_filename_shap)
-
-    region = None
-    region = 'San Jose' if region == 'sj' else 'San Francisco'
-
-    fig = {
-        'data': [
-            {
-                'x': shap_plot_df['Feature'],
-                'y': shap_plot_df['Mean SHAP Value'],
-                'type': 'bar',
-                'marker': {'color': 'blue'},
-            }
-        ],
-        'layout': {
-            'title': f'Mean SHAP Values for {region}',
-            'xaxis': {'title': 'Features'},
-            'yaxis': {'title': 'Mean SHAP Value'},
-        }
-    }
-
-    return [fig]
-
 # LSTM - single step
 @callback(
     [
@@ -1197,11 +1158,12 @@ def update_sj_shap(loc):
         Input('region_select', 'value')
     ]
 )
-def update_lstm_analysis(region):
-    request_new_joblib = False  # Change to true for new file creation
+def update_lstm_single_step(region):
+    request_new_joblib = False  # Change to True for new lstm file
     file_specifier = 1
+    shift = 1
 
-    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_{file_specifier}.joblib'
+    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
 
     plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
@@ -1209,13 +1171,16 @@ def update_lstm_analysis(region):
 
     # Load LSTM scores and predictions
     if request_new_joblib:
-        lstm_results = pred_lstm(region, request_new_joblib, file_specifier)
+        lstm_results = pred_lstm_single_step(region, file_specifier, shift)
     else:
         if os.path.exists(joblib_filename_lstm_res):
             lstm_results = load(joblib_filename_lstm_res)
     
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
+    # lstm_val_score = lstm_results['lstm_val_score']
+    # lstm_test_score = lstm_results['lstm_test_score']
+
     inputs = lstm_results['inputs']
     labels = lstm_results['labels']
     predictions = lstm_results['predictions']
@@ -1287,12 +1252,12 @@ def update_lstm_analysis(region):
         Input('region_dropdown', 'value')
     ]
 )
-def update_lstm_analysis_multi(region):
-    request_new_joblib = False
+def update_lstm_mutli_step(region):
+    request_new_joblib = False  # Change to True for new lstm file
     file_specifier = 1
     shift = 12
 
-    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_results_multi_{file_specifier}.joblib'
+    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
 
     plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
@@ -1300,7 +1265,7 @@ def update_lstm_analysis_multi(region):
 
     # Load LSTM scores and predictions
     if request_new_joblib:
-        lstm_results = pred_lstm_multi(region, request_new_joblib, file_specifier, shift)
+        lstm_results = pred_lstm_multi_step(region, file_specifier, shift)
     else:
         if os.path.exists(joblib_filename_lstm_res):
             lstm_results = load(joblib_filename_lstm_res)

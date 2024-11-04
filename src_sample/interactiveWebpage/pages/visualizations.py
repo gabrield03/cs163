@@ -722,7 +722,7 @@ def update_sf_graph(option_selected):
 )
 # Function for heatmaps
 def update_heatmap(selected_tab):
-    color_scale = 'Aggrnyl'
+    color_scale = 'Bluyl'
     container = ''
     df = ''
 
@@ -743,14 +743,14 @@ def update_heatmap(selected_tab):
         df = sj_df
         value_column = 'tmax'
         title = 'Avg Max Temp (SJ - 95110)'
-        color_scale = 'Inferno'
+        color_scale = 'YlOrRd'
         container = sj_max_temp_heat
 
     else:
         df = sf_df
         value_column = 'tmax'
         title = 'Avg Max Temp (SF - 94102)'
-        color_scale = 'Inferno'
+        color_scale = 'YlOrRd'
         container = sf_max_temp_heat
 
     # Create pivot table for heatmap: months (x-axis) and years (y-axis)
