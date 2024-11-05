@@ -715,6 +715,7 @@ def pred_lstm_single_step(loc, file_specifier, shift):
         LSTM(32, return_sequences=True),
         Dense(units=1)
     ])
+
     history = compile_and_fit(lstm_model, wide_window)
 
     # Gather predictions
@@ -722,6 +723,7 @@ def pred_lstm_single_step(loc, file_specifier, shift):
     predictions = lstm_model(inputs)
 
     res = {
+        'train_score': lstm_model.evaluate(wide_window.train, verbose=0),
         'val_score': lstm_model.evaluate(wide_window.val, verbose=0),
         'test_score': lstm_model.evaluate(wide_window.test, verbose=0),
         'inputs': inputs.numpy(),
@@ -763,6 +765,7 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     # Return model performance and predictions for further processing
     res = {
+        'train_score': ms_lstm_model.evaluate(multi_window.train, verbose=0),
         'val_score': ms_lstm_model.evaluate(multi_window.val, verbose = 0),
         'test_score': ms_lstm_model.evaluate(multi_window.test, verbose = 0),
         'inputs': inputs.numpy(),

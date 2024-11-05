@@ -780,6 +780,13 @@ lstm_section = html.Div(
                 dbc.Col(
                     [
                         html.Div(
+                            id = 'lstm_train_score',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
+                        html.Div(
                             id = 'lstm_val_score',
                             style = {
                                 'marginTop': 20,
@@ -848,6 +855,13 @@ lstm_section = html.Div(
             [
                 dbc.Col(
                     [
+                        html.Div(
+                            id = 'lstm_train_score_multi',
+                            style = {
+                                'marginTop': 20,
+                                'color': 'white',
+                            },
+                        ),
                         html.Div(
                             id = 'lstm_val_score_multi',
                             style = {
@@ -1153,6 +1167,7 @@ def update_sj_feature_importances_section(loc):
 # LSTM - single step
 @callback(
     [
+        Output('lstm_train_score', 'children'),
         Output('lstm_val_score', 'children'),
         Output('lstm_test_score', 'children'),
         Output('lstm_plot', 'figure'),
@@ -1163,7 +1178,7 @@ def update_sj_feature_importances_section(loc):
 )
 def update_lstm_single_step(region):
     request_new_joblib = False  # Change to True for new lstm file
-    file_specifier = 2
+    file_specifier = 1
     shift = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
@@ -1179,23 +1194,37 @@ def update_lstm_single_step(region):
         if os.path.exists(joblib_filename_lstm_res):
             lstm_results = load(joblib_filename_lstm_res)
     
+    train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    inputs, labels, predictions = lstm_results['inputs'], lstm_results['labels'], lstm_results['predictions']
-    scaler, encoder = lstm_results['scaler'], lstm_results['encoder']
+    inputs = lstm_results['inputs']
+    labels = lstm_results['labels']
+    predictions = lstm_results['predictions']
+    scaler = lstm_results['scaler']
+    encoder = lstm_results['encoder']
 
     # Inverse transform numerical data
     original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
 
+    lstm_train_score = train_score[1]
     lstm_val_score = val_score[1] 
     lstm_test_score = test_score[1]
-    # train_mae = mean_absolute_error(original_train_labels, original_train_predictions)
+
+    # averagekwh index
+    averagekwh_index = 0
+
+    # Extract the scale and mean used for 'averagekwh'
+    averagekwh_scale = scaler.scale_[averagekwh_index]
+
+    # Transform MAE back to to the original scale
+    train_score_original = lstm_train_score * averagekwh_scale
+    val_score_original = lstm_val_score * averagekwh_scale
+    test_score_original = lstm_test_score * averagekwh_scale
 
     # Set the scores - add scaled train score later
-    # lstm_train_score = f'Train - Mean Absolute Error (MAE) (Scaled): {train_mae:.3f}'
-    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
-    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
-
+    lstm_train_score = f'Train - Mean Absolute Error (MAE): {train_score_original:.3f}'
+    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score_original:.3f}'
+    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score_original:.3f}'
 
     # Extract the first value from each inner array of inputs - skip the first inner array
     first_input_values = inputs[1:, :, 0]
@@ -1257,11 +1286,12 @@ def update_lstm_single_step(region):
         legend = dict(x = 0.8, y = 1.3),
     )
 
-    return lstm_val_score, lstm_test_score, fig
+    return lstm_train_score, lstm_val_score, lstm_test_score, fig
 
 # LSTM - multi step
 @callback(
     [
+        Output('lstm_train_score_multi', 'children'),
         Output('lstm_val_score_multi', 'children'),
         Output('lstm_test_score_multi', 'children'),
         Output('lstm_plot_multi', 'figure'),
@@ -1272,7 +1302,7 @@ def update_lstm_single_step(region):
 )
 def update_lstm_multi_step(region):
     request_new_joblib = False  # Change to True for new lstm file
-    file_specifier = 2
+    file_specifier = 1
     shift = 1
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
@@ -1288,19 +1318,37 @@ def update_lstm_multi_step(region):
         if os.path.exists(joblib_filename_lstm_res):
             lstm_results = load(joblib_filename_lstm_res)
     
+    train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    inputs, labels, predictions = lstm_results['inputs'], lstm_results['labels'], lstm_results['predictions']
-    scaler, encoder = lstm_results['scaler'], lstm_results['encoder']
-
-    # Set scores
-    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score[1]:.3f}'
-    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score[1]:.3f}'
-
-    fig = go.Figure()
+    inputs = lstm_results['inputs']
+    labels = lstm_results['labels']
+    predictions = lstm_results['predictions']
+    scaler = lstm_results['scaler']
+    encoder = lstm_results['encoder']
 
     # Inverse transform numerical data
     original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
+
+    lstm_train_score = train_score[1]
+    lstm_val_score = val_score[1] 
+    lstm_test_score = test_score[1]
+
+    # averagekwh index
+    averagekwh_index = 0
+
+    # Extract the scale and mean used for 'averagekwh'
+    averagekwh_scale = scaler.scale_[averagekwh_index]
+
+    # Transform MAE back to to the original scale
+    train_score_original = lstm_train_score * averagekwh_scale
+    val_score_original = lstm_val_score * averagekwh_scale
+    test_score_original = lstm_test_score * averagekwh_scale
+
+    # Set the scores - add scaled train score later
+    lstm_train_score = f'Train - Mean Absolute Error (MAE): {train_score_original:.3f}'
+    lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score_original:.3f}'
+    lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score_original:.3f}'
 
     # Extract the first value from each inner array of inputs - skip the first inner array
     first_input_values = inputs[1:, :, 0]
@@ -1364,7 +1412,7 @@ def update_lstm_multi_step(region):
         legend = dict(x = 0.8, y = 1.3),
     )
 
-    return lstm_val_score, lstm_test_score, fig
+    return lstm_train_score, lstm_val_score, lstm_test_score, fig
 
 
 # Work in progress
