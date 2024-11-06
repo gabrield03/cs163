@@ -381,27 +381,15 @@ The following sections should be used for the analysis outcome presentation. The
 				| San Francisco | 13.082 |
 
 	- Evaluating Model Performance
-		- To understand what the mae scores mean for each region and each model, it is important to remember that the models 
-		are using two zip codes from the San Jose and San Francisco region. There, the average energy usage (kWh) per month is recorded. 
-		the average energy usage is specific for each household in each zipcode. The mae tells us the model's average error between 
-		its prediction and the actual energy usage *per customer (household)*. So, the single-step LSTM train mae for san jose being 10.081 indicates 
-		that the model's average absolute prediction error is off by 10 kWh per month for a customer.
-		- A kilowatt-hour (kWh) is a unit of measure for using one kilowatt of power for one hour. For instance, using a 100-watt light bulb 
-		for 10 hours is equivalent to one kilowatt-hour of energy. A more relatable example of 1 kWh would be using a 50-watt LED TV for 20 hours.
+		- To interpret the mean absolute error (MAE) scores for each model and region, it’s important to consider that the models are based on energy usage data from two zip codes in the San Jose and San Francisco regions. The average monthly energy usage, recorded in kilowatt-hours (kWh), is specific to each household within those zip codes. The MAE indicates the average difference between the model's predicted energy usage and the actual value per household. For instance, a single-step LSTM model with a training MAE of 10.081 for San Jose means that the model’s predictions are, on average, off by 10 kWh per month per household.
 
-		- Overall, the LSTM models appear to be overfitting quite a lot. The training mae for both the San Jose and 
-		San Francisco regions are much lower for both of the LSTM models that were designed (single-step and multi-step models). 
-		The test mae's for each model and each region are in the 30 mae range except for the San Francisco mae which is in the low 20's.
+		- To provide context, a kilowatt-hour represents the use of one kilowatt of power for one hour. For example, running a 100-watt light bulb for 10 hours or using a 50-watt LED TV for 20 hours both equate to one kWh of energy.
+
+		- Overall, the LSTM models show significant overfitting, as evidenced by the lower training MAE scores compared to their test MAE scores. In both regions, the training MAEs for the single-step and multi-step LSTM models are much lower than the validation and test MAE. The validation and test MAE's, for both models and both regions, are in the 30 kWh range, except for San Francisco multi-step model, where the test MAE is in the low 20s.
+
+		- Both regions have a dedicated LSTM and SARIMA model. When model performance is compared, we are comparing the SARIMA models with the multi-step LSTM models. The results are that the SARIMA models outperformed the LSTM multi-step models. Specifically, the SARIMA MAE scores were 22.895 for San Jose and 13.082 for San Francisco, while the LSTM multi-step models had test  MAE scores of 34.985 and 22.524, respectively.
 		
-		- Each region has its own LSTM and SARIMA prediction model. To compare the performance of the models between regions, we 
-		can look at the test mean absolute error (mae) scores for the SARIMA model and the multi-step LSTM model. 
-		- The SARIMA model outperformed the LSTM multi-step models in each region. The mae scores for SARIMA are 22.895 for San Jose 
-		and 13.082 for San Francisco. The corresponding mae scores for the multi-step LSTM models are 34.985 and 22.524. 
-		- This result was expected due to the nature of each model. To predict accurately, neural network models generally require 
-		much larger datasets than the datasets used in this project. Larger, more complex datasets allow the high number of 
-		LSTM parameters to be trained which allows LSTMs to capture highly complex and nonlinear relationships in the data. 
-		SARIMA models have fewer parameters than LSTM models and thus is less complex. It is a statistical model that is able 
-		to learn the underlying data patterns with relatively few data points. 
+		- These results align with expectations given the nature of each model. Neural network models, the LSTMs for this project, typically require large datasets to accurately learn and generalize complex, nonlinear relationships. The datasets in this project were fairly small, which may have limited the LSTM models’ performance. In contrast, SARIMA models have fewer parameters and are less complex which allow it to effectively learn underlying patterns with fewer data points.
 
 <!--- 
 ----------
