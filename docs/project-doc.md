@@ -348,11 +348,10 @@ The following sections should be used for the analysis outcome presentation. The
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
 
 			- Single-Step Evaluation Metrics:
-				| | Train | Validation | Test |
-				|:----------: |:----------: |:----------: |:----------: |
-				| San Jose | 10.081 | 25.707 | 35.506 |
-				|:----------------------------: |:----------------------------: |:----------------------------: |:----------------------------: |
-				| San Francisco | 9.049 | 26.773 | 32.527 |
+				|               | Train  | Validation | Test   |
+				| :-----------: | :----: | :--------: | :----: |
+				| San Jose      | 10.081 | 25.707     | 35.506 |
+				| San Francisco | 9.049  | 26.773     | 32.527 |
 
 			- Multi-Step Predictions
 				| San Jose | San Francisco |
