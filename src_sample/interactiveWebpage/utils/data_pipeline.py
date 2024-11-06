@@ -465,7 +465,6 @@ def processing_pipeline(df, loc):
     importances_df.reset_index(inplace = True)
     importances_df.columns = ['feature', 'importances']
     
-
     # joblib - dump all the data
     # Processed training and test data
     if not os.path.exists(joblib_filename_X_train) or not os.path.exists(joblib_filename_X_test) or not os.path.exists(joblib_filename_y_train) or not os.path.exists(joblib_filename_y_test):
@@ -491,44 +490,7 @@ def processing_pipeline(df, loc):
     if not os.path.exists(joblib_filename_importances):
         dump(importances_df, joblib_filename_importances)
 
-    # Need to figure out how to save the preprocessor for each model - giving an error during runtime
-    # if not os.path.exists(joblib_filename_preprocessor):
-    #     dump(preprocessor, joblib_filename_preprocessor)
-
-
     return importances_df
-
-# # Calculate SHAP values for plotting
-# def calc_shap(loc):
-#     joblib_filename_X_test = f'joblib_files/processed_data/{loc}_X_test_processed_df.joblib'
-#     joblib_filename_model = f'joblib_files/processed_data/{loc}_rf.joblib'
-#     joblib_filename_shap = f'joblib_files/shap/{loc}_shap_plot.joblib'
-
-#     X_test = None
-#     model = None
-
-#     X_test = load(joblib_filename_X_test)
-#     model = load(joblib_filename_model)
-
-#     explainer = shap.Explainer(model)
-#     shap_values = explainer(X_test)
-
-#     shap_values_array = shap_values.values
-#     feature_names = X_test.columns
-
-#     shap_df = pd.DataFrame(shap_values_array, columns = feature_names)
-
-#     # Compute the mean absolute SHAP values for each feature
-#     shap_mean_abs = shap_df.abs().mean().sort_values(ascending=False)
-
-#     # Convert to a DataFrame for plotting
-#     shap_plot_df = pd.DataFrame(shap_mean_abs).reset_index()
-#     shap_plot_df.columns = ['Feature', 'Mean SHAP Value']
-
-#     if not os.path.exists(joblib_filename_shap):
-#         dump(shap_plot_df, joblib_filename_shap)
-
-#     return shap_plot_df
 
 # Process the data for LSTM
 def lstm_data_processing(loc):
@@ -588,7 +550,10 @@ def lstm_data_processing(loc):
     return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder
 
 class DataWindow():
-    def __init__(self, input_width, label_width, shift, train_df_proc, val_df_proc, test_df_proc, label_columns=None):
+    def __init__(self, 
+                 input_width, label_width, shift, 
+                 train_df_proc, val_df_proc, test_df_proc, 
+                 label_columns = None):
         self.train_df = train_df_proc
         self.val_df = val_df_proc
         self.test_df = test_df_proc
@@ -613,20 +578,20 @@ class DataWindow():
         inputs = features[:, self.input_slice, :]
         labels = features[:, self.labels_slice, :]
         if self.label_columns is not None:
-            labels = tf.stack([labels[:, :, self.column_indices[name]] for name in self.label_columns], axis=-1)
+            labels = tf.stack([labels[:, :, self.column_indices[name]] for name in self.label_columns], axis = -1)
         inputs.set_shape([None, self.input_width, None])
         labels.set_shape([None, self.label_width, None])
         return inputs, labels
 
     def make_dataset(self, data):
-        data = np.array(data, dtype=np.float32)
+        data = np.array(data, dtype = np.float32)
         ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-            data=data,
-            targets=None,
-            sequence_length=self.total_window_size,
-            sequence_stride=1,
-            shuffle=True,
-            batch_size=32
+            data = data,
+            targets = None,
+            sequence_length = self.total_window_size,
+            sequence_stride = 1,
+            shuffle = True,
+            batch_size = 32
         )
         ds = ds.map(self.split_to_inputs_labels)
         return ds
@@ -705,14 +670,14 @@ def pred_lstm_single_step(loc, file_specifier, shift):
 
     # Initialize data windows
     wide_window = DataWindow(
-        input_width=12, label_width=12, shift=shift,
-        train_df_proc=train_df_processed, val_df_proc=val_df_processed, test_df_proc=test_df_processed,
-        label_columns=['averagekwh']
+        input_width = 12, label_width = 12, shift = shift,
+        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
+        label_columns = ['averagekwh']
     )
 
     # Build and train the LSTM model
     lstm_model = Sequential([
-        LSTM(32, return_sequences=True),
+        LSTM(32, return_sequences = True),
         Dense(units=1)
     ])
 
@@ -723,9 +688,9 @@ def pred_lstm_single_step(loc, file_specifier, shift):
     predictions = lstm_model(inputs)
 
     res = {
-        'train_score': lstm_model.evaluate(wide_window.train, verbose=0),
-        'val_score': lstm_model.evaluate(wide_window.val, verbose=0),
-        'test_score': lstm_model.evaluate(wide_window.test, verbose=0),
+        'train_score': lstm_model.evaluate(wide_window.train, verbose = 0),
+        'val_score': lstm_model.evaluate(wide_window.val, verbose = 0),
+        'test_score': lstm_model.evaluate(wide_window.test, verbose = 0),
         'inputs': inputs.numpy(),
         'labels': labels.numpy(),
         'predictions': predictions.numpy(),
@@ -765,7 +730,7 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     # Return model performance and predictions for further processing
     res = {
-        'train_score': ms_lstm_model.evaluate(multi_window.train, verbose=0),
+        'train_score': ms_lstm_model.evaluate(multi_window.train, verbose = 0),
         'val_score': ms_lstm_model.evaluate(multi_window.val, verbose = 0),
         'test_score': ms_lstm_model.evaluate(multi_window.test, verbose = 0),
         'inputs': inputs.numpy(),
@@ -810,7 +775,7 @@ def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR N
     return predictions_original_scale
 
 # SARIMA predictions
-def pred_sarima(loc, request_new_joblib, file_specifier):
+def pred_sarima(loc, file_specifier):
     joblib_filename_sarima_res = f'joblib_files/sarima/{loc}_sarima_{file_specifier}.joblib'
 
     df = load(f'joblib_files/base_data/{loc}_combined.joblib')
@@ -853,7 +818,6 @@ def pred_sarima(loc, request_new_joblib, file_specifier):
 
     test['SARIMA_pred'] = SARIMA_pred
 
-    
     # Calculate the mean absolute percentage error (MAE)
     def calc_mae(y_true, y_pred):
         return np.mean(np.abs(y_true - y_pred))

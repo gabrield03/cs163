@@ -497,28 +497,54 @@ shap_decision_plot_section = html.Div(
             [
                 dbc.Col(
                     [
-                        html.Img(
-                            src = 'assets/shap_plots/sj_shap.png',
-                            style = {
-                                'width': '100%',
-                                'height': 'auto',
-                            },
+                        dbc.Carousel(
+                            items=[
+                                {
+                                    'key': '1',
+                                    'src': 'assets/shap_plots/sj_shap_decision.png',
+                                },
+                                {
+                                    'key': '2',
+                                    'src': 'assets/shap_plots/sj_shap_decision_lowest.png',
+                                },
+                                {
+                                    'key': '3',
+                                    'src': 'assets/shap_plots/sj_shap_decision_highest.png',
+                                },
+                            ],
+                            controls = True,
+                            indicators = True,
+                            className = 'carousel-fade',
                         ),
                     ],
+                    width = 6,
                 ),
                 dbc.Col(
                     [
-                        html.Img(
-                            src = 'assets/shap_plots/sf_shap.png',
-                            style = {
-                                'width': '100%',
-                                'height': 'auto',
-                            },
+                        dbc.Carousel(
+                            items=[
+                                {
+                                    'key': '1',
+                                    'src': 'assets/shap_plots/sf_shap_decision.png',
+                                },
+                                {
+                                    'key': '2',
+                                    'src': 'assets/shap_plots/sf_shap_decision_lowest.png',
+                                },
+                                {
+                                    'key': '3',
+                                    'src': 'assets/shap_plots/sf_shap_decision_highest.png',
+                                },
+                            ],
+                            controls = True,
+                            indicators = True,
+                            className = 'carousel-fade',
                         ),
                     ],
+                    width = 6,
                 ),
-            ],
-        ),
+            ]
+        )
     ],
     className = 'mb-5',
 )
@@ -1497,7 +1523,7 @@ def update_sarima(region):
 
     # Load LSTM scores and predictions
     if request_new_joblib:
-        sarima_results = pred_sarima(region, request_new_joblib, file_specifier)
+        sarima_results = pred_sarima(region, file_specifier)
     else:
         if os.path.exists(joblib_filename_sarima_res):
             sarima_results = load(joblib_filename_sarima_res)
