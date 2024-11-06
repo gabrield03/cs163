@@ -347,16 +347,20 @@ The following sections should be used for the analysis outcome presentation. The
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
 
-			- Single-Step Evaluation Metrics:
-				|               | Train  | Validation | Test   |
-				| :-----------: | :----: | :--------: | :----: |
-				| San Jose      | 10.081 | 25.707     | 35.506 |
-				| San Francisco | 9.049  | 26.773     | 32.527 |
+				|               | Train MAE | Validation MAE | Test MAE |
+				| :-----------: | :-------: | :----------- : | :------: |
+				| San Jose      | 10.081    | 25.707         | 35.506   |
+				| San Francisco | 9.049     | 26.773         | 32.527   |
 
 			- Multi-Step Predictions
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_multi_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_multi_step.png"> |
+
+				|               | Train MAE | Validation MAE | Test MAE |
+				| :-----------: | :-------: | :----------- : | :------: |
+				| San Jose      | 11.094    | 29.911         | 34.985   |
+				| San Francisco | 4.749     | 18.827         | 22.524   |
 
 		- SARIMA Models:
 			- SARIMA modeling was chosen because of the small size of the dataset. The models were trained on the entire dataset, excluding the final 12 months 
@@ -368,6 +372,10 @@ The following sections should be used for the analysis outcome presentation. The
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sj_sarima.png"> | <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sf_sarima.png"> |
 
+				|               | MAE    |
+				| :-----------: | :----: |
+				| San Jose      | 22.895 |
+				| San Francisco | 13.082 |
 
 	- Comparing Model Performance
 		- Direct comparison between SARIMA and LSTM predictions is complicated due to differences in output scaling (scaled vs. unscaled). 
