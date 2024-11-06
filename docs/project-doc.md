@@ -337,7 +337,6 @@ The following sections should be used for the analysis outcome presentation. The
 				- Single-Step Prediction:
 					The single-step LSTM model forecasted energy consumption one month ahead for each region. It was trained using data 
 					from the previous 12-month data window to account for seasonal trends. The performance was evaluated using Mean Absolute Error (MAE). 
-					For San Jose, the test MAE was 0.739, and for San Francisco, the test MAE was 0.906.
 
 				- Multi-Step Prediction:
 					- The multi-step LSTM model was also trained on the preceding 12 months of data but it predicted energy consumption for the next 12 months.
@@ -347,6 +346,13 @@ The following sections should be used for the analysis outcome presentation. The
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
+
+			- Single-Step Evaluation Metrics:
+				| | Train | Validation | Test |
+				|:----------: |:----------: |:----------: |:----------: |
+				| San Jose | 10.081 | 25.707 | 35.506 |
+				|:----------------------------: |:----------------------------: |:----------------------------: |:----------------------------: |
+				| San Francisco | 9.049 | 26.773 | 32.527 |
 
 			- Multi-Step Predictions
 				| San Jose | San Francisco |
