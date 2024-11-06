@@ -380,10 +380,28 @@ The following sections should be used for the analysis outcome presentation. The
 				| San Jose      | 22.895 |
 				| San Francisco | 13.082 |
 
-	- Comparing Model Performance
-		- Direct comparison between SARIMA and LSTM predictions is complicated due to differences in output scaling (scaled vs. unscaled). 
-		Transforming the LSTM model's predictions from scaled back to unscaled values is still going. Once the output transformation is completed, 
-		I will be able to compare the models' (LSTM multi-step model and SARIMA model) performance to determine which method provides the most accurate 12-month forecasts.
+	- Evaluating Model Performance
+		- To understand what the mae scores mean for each region and each model, it is important to remember that the models 
+		are using two zip codes from the San Jose and San Francisco region. There, the average energy usage (kWh) per month is recorded. 
+		the average energy usage is specific for each household in each zipcode. The mae tells us the model's average error between 
+		its prediction and the actual energy usage *per customer (household)*. So, the single-step LSTM train mae for san jose being 10.081 indicates 
+		that the model's average absolute prediction error is off by 10 kWh per month for a customer.
+		- A kilowatt-hour (kWh) is a unit of measure for using one kilowatt of power for one hour. For instance, using a 100-watt light bulb 
+		for 10 hours is equivalent to one kilowatt-hour of energy. A more relatable example of 1 kWh would be using a 50-watt LED TV for 20 hours.
+
+		- Overall, the LSTM models appear to be overfitting quite a lot. The training mae for both the San Jose and 
+		San Francisco regions are much lower for both of the LSTM models that were designed (single-step and multi-step models). 
+		The test mae's for each model and each region are in the 30 mae range except for the San Francisco mae which is in the low 20's.
+		
+		- Each region has its own LSTM and SARIMA prediction model. To compare the performance of the models between regions, we 
+		can look at the test mean absolute error (mae) scores for the SARIMA model and the multi-step LSTM model. 
+		- The SARIMA model outperformed the LSTM multi-step models in each region. The mae scores for SARIMA are 22.895 for San Jose 
+		and 13.082 for San Francisco. The corresponding mae scores for the multi-step LSTM models are 34.985 and 22.524. 
+		- This result was expected due to the nature of each model. To predict accurately, neural network models generally require 
+		much larger datasets than the datasets used in this project. Larger, more complex datasets allow the high number of 
+		LSTM parameters to be trained which allows LSTMs to capture highly complex and nonlinear relationships in the data. 
+		SARIMA models have fewer parameters than LSTM models and thus is less complex. It is a statistical model that is able 
+		to learn the underlying data patterns with relatively few data points. 
 
 <!--- 
 ----------
