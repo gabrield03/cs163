@@ -343,24 +343,26 @@ The following sections should be used for the analysis outcome presentation. The
 					Similarly to the single-step LSTM model, performance was measured with MAE. San Jose's test MAE was 0.723, and San Francisco's test MAE was 0.750.
 
 			- Single-Step Predictions
-				| San Jose | San Francisco |
-				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| San Jose                                                                             | San Francisco                                                                        |
+				|:-----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
 				
-				|               | Train MAE | Validation MAE | Test MAE |
-				| :-----------: | :-------: | :----------- : | :------: |
-				| San Jose      | 10.081    | 25.707         | 35.506   |
-				| San Francisco | 9.049     | 26.773         | 32.527   |
+				- Evaluation Metrics:
+					|               | Train MAE | Validation MAE | Test MAE |
+					| :-----------: | :-------: | :----------- : | :------: |
+					| San Jose      | 10.081    | 25.707         | 35.506   |
+					| San Francisco | 9.049     | 26.773         | 32.527   |
 
 			- Multi-Step Predictions
-				| San Jose | San Francisco |
-				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| San Jose                                                                            | San Francisco                                                                       |
+				| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_multi_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_multi_step.png"> |
-				
-				|               | Train MAE | Validation MAE | Test MAE |
-				| :-----------: | :-------: | :----------- : | :------: |
-				| San Jose      | 11.094    | 29.911         | 34.985   |
-				| San Francisco | 4.749     | 18.827         | 22.524   |
+
+				- Evaluation Metrics:
+					|               | Train MAE | Validation MAE | Test MAE |
+					| :-----------: | :-------: | :----------- : | :------: |
+					| San Jose      | 11.094    | 29.911         | 34.985   |
+					| San Francisco | 4.749     | 18.827         | 22.524   |
 
 		- SARIMA Models:
 			- SARIMA modeling was chosen because of the small size of the dataset. The models were trained on the entire dataset, excluding the final 12 months 
@@ -368,14 +370,15 @@ The following sections should be used for the analysis outcome presentation. The
 			The SARIMA model achieved an MAE of 22.895 for San Jose and 13.082 for San Francisco.
 
 			- SARIMA 12-Month Predictions
-				| San Jose | San Francisco |
-				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
+				| San Jose                                                                     | San Francisco                                                                |
+				| :--------------------------------------------------------------------------: | :--------------------------------------------------------------------------: |
 				| <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sj_sarima.png"> | <img src="/src_sample/interactiveWebpage/assets/sarima_plots/sf_sarima.png"> |
 
-				|               | MAE    |
-				| :-----------: | :----: |
-				| San Jose      | 22.895 |
-				| San Francisco | 13.082 |
+				- Evaluation Metrics
+					|               | MAE    |
+					| :-----------: | :----: |
+					| San Jose      | 22.895 |
+					| San Francisco | 13.082 |
 
 	- Comparing Model Performance
 		- Direct comparison between SARIMA and LSTM predictions is complicated due to differences in output scaling (scaled vs. unscaled). 
