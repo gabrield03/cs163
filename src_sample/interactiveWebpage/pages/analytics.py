@@ -11,7 +11,6 @@ import numpy as np
 
 from  utils.data_pipeline import (
     processing_pipeline,
-    # calc_shap,
     lstm_predict,
     pred_lstm_single_step, pred_lstm_multi_step,
     inverse_transform_predictions, inverse_transform_categorical,
@@ -295,7 +294,10 @@ shap_intro_section = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'Feature Interpretability with SHapley Additive exPlanations (SHAP)',
+                            [
+                                html.Br(),
+                                'Feature Interpretability with SHapley Additive exPlanations (SHAP)',
+                            ],
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -557,7 +559,10 @@ pdp_section = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'Partial Dependence Plots (PDP)',
+                            [
+                                html.Br(),
+                                'Partial Dependence Plots (PDP)',
+                            ],
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -711,7 +716,10 @@ lstm_section = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'Time-Series Analysis to Forecast Energy Demand with LSTM and SARIMA',
+                            [
+                                html.Br(),
+                                'Time-Series Analysis to Forecast Energy Demand with LSTM and SARIMA',
+                            ],
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -919,7 +927,10 @@ sarima_section = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'Seasonal Autoregressive Integrated Moving Average (SARIMA)',
+                            [
+                                html.Br(),
+                                'Seasonal Autoregressive Integrated Moving Average (SARIMA)',
+                            ],
                             style = {
                                 'text-align': 'center',
                                 'font-size': '40px',
@@ -1040,10 +1051,26 @@ analysis_summary_section = html.Div(
                 dbc.Col(
                     [
                         html.P(
-                            'Summary of Analysis',
+                            [
+                                html.Br(),
+                                'Summary of Analysis',
+                                html.Br(),
+                            ],
                             style = {
                                 'text-align': 'center',
                                 'font-size': '60px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'Analysis of Features',
+                                html.Br(),
+                            ],
+                            style = {
+                                'text-align': 'left',
+                                'font-size': '35px',
                                 'font-variant': 'small-caps',
                                 'text-shadow': '2px 2px 4px #000000',
                             },
@@ -1081,7 +1108,6 @@ analysis_summary_section = html.Div(
 
                                 html.Br(), html.Br(),
 
-                                
                                 'These insights suggest a fundamental difference in climate sensitivity between ',
                                 'the two regions: San Francisco\'s energy demands are more heavily influenced by ',
                                 'shifts in temperature, possibly indicating a higher sensitivity to climate ',
@@ -1093,6 +1119,55 @@ analysis_summary_section = html.Div(
                                 'warranted to determine the relationship between seasonality and global temperature ',
                                 'shifts. This study suggests that regional energy planning could benefit from ',
                                 'tailored approaches that account for these differing sensitivities.',
+                            
+                                html.Br(), html.Br(),
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'Analysis of Time-Series Predictions',
+                                html.Br(),
+                            ],
+                            style = {
+                                'text-align': 'left',
+                                'font-size': '35px',
+                                'font-variant': 'small-caps',
+                                'text-shadow': '2px 2px 4px #000000',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'Overall, the LSTM models show significant overfitting, as evidenced by the lower ',
+                                'training MAE scores compared to their test MAE scores. In both regions, the ',
+                                'training MAEs for the single-step and multi-step LSTM models are much lower than ',
+                                'the validation and test MAE. The validation and test MAE\'s, for both models and ',
+                                'both regions, are in the 30 kWh range, except for San Francisco multi-step model, ',
+                                'where the test MAE is in the low 20s.',
+
+                                html.Br(), html.Br(),
+
+                                'Both regions have a dedicated LSTM and SARIMA model. When model performance is ',
+                                'compared, we are comparing the SARIMA models with the multi-step LSTM models. The ',
+                                'results are that the SARIMA models outperformed the LSTM multi-step models. ',
+                                'Specifically, the SARIMA MAE scores were 22.895 for San Jose and 13.082 for San ',
+                                'Francisco, while the LSTM multi-step models had test MAE scores of 34.985 and ',
+                                '22.524, respectively.',
+
+                                html.Br(), html.Br(),
+
+                                'These results align with expectations given the nature of each model. Neural ',
+                                'network models, the LSTMs for this project, typically require large datasets to ',
+                                'accurately learn and generalize complex, nonlinear relationships. The datasets ',
+                                'in this project were fairly small, which may have limited the LSTM models\' ',
+                                'performance. In contrast, SARIMA models have fewer parameters and are less complex ',
+                                'which allow it to effectively learn underlying patterns with fewer data points.',
+
+                                html.Br(), html.Br(),
                             ],
                             style = {
                                 'font-size': '25px',
