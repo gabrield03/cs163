@@ -348,9 +348,8 @@ The following sections should be used for the analysis outcome presentation. The
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
 				
 			- Evaluation Metrics:
-			
 				| Location      | Train MAE | Validation MAE | Test MAE |
-				| :-----------: | :-------: | :----------- : | :------: |
+				| :-----------: | :-------: | :------------: | :------: |
 				| San Jose      | 10.081    | 25.707         | 35.506   |
 				| San Francisco | 9.049     | 26.773         | 32.527   |
 
@@ -361,10 +360,10 @@ The following sections should be used for the analysis outcome presentation. The
 
 			- Evaluation Metrics:
 
-				| Location      | Train MAE | Validation MAE | Test MAE |
-				| :-----------: | :-------: | :----------- : | :------: |
-				| San Jose      | 11.094    | 29.911         | 34.985   |
-				| San Francisco | 4.749     | 18.827         | 22.524   |
+				| Location      | Train MAE | Validation MAE | Test MAE | 
+				| :-----------: | :-------: | :----------- : | :------: | 
+				| San Jose      | 11.094    | 29.911         | 34.985   | 
+				| San Francisco | 4.749     | 18.827         | 22.524   | 
 
 		- SARIMA Models:
 			- SARIMA modeling was chosen because of the small size of the dataset. The models were trained on the entire dataset, excluding the final 12 months 
