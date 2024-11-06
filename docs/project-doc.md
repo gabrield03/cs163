@@ -346,7 +346,7 @@ The following sections should be used for the analysis outcome presentation. The
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_single_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_single_step.png"> |
-
+				
 				|               | Train MAE | Validation MAE | Test MAE |
 				| :-----------: | :-------: | :----------- : | :------: |
 				| San Jose      | 10.081    | 25.707         | 35.506   |
@@ -356,7 +356,7 @@ The following sections should be used for the analysis outcome presentation. The
 				| San Jose | San Francisco |
 				|:---------------------------------------------------------------------: | :---------------------------------------------------------------------:|
 				| <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sj_lstm_multi_step.png"> | <img src="/src_sample/interactiveWebpage/assets/lstm_plots/sf_lstm_multi_step.png"> |
-
+				
 				|               | Train MAE | Validation MAE | Test MAE |
 				| :-----------: | :-------: | :----------- : | :------: |
 				| San Jose      | 11.094    | 29.911         | 34.985   |
