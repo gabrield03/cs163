@@ -1,7 +1,7 @@
-html, body {
+/* html, body {
     margin: 0;
     padding: 0;
-}
+} */
     /* height: 100%;
     background-attachment: fixed; */
     
@@ -138,8 +138,8 @@ html, body {
 
 
 .fade-word {
-    opacity: 0;  /* Start hidden */
-    transition: opacity 1s ease-in-out;  /* Fade effect */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
     font-size: 2rem;
     font-family: monospace;
     position: absolute;
@@ -149,6 +149,10 @@ html, body {
 .fade-word.visible {
     opacity: 1;  /* Visible when class added */
 }
+
+
+
+
 
 
 

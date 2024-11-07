@@ -22,16 +22,58 @@ navbar = dbc.Navbar(
     dbc.Container(
         [
             # Home link on the left
-            dbc.NavbarBrand("Home", href="/", className="ml-auto", style = {'color': '#000000'}),
+            dbc.NavbarBrand(
+                "Home", href="/",
+                className="ml-auto",
+                style = {
+                    'color': '#000000'
+                }
+            ),
             
             # Links on the right
             dbc.Nav(
                 [
-                    dbc.NavLink("Visualizations", href="/visualizations", active="exact", style = {'color': '#000000'}),
-                    dbc.NavLink("Analysis", href="/analytics", active="exact", style = {'color': '#000000'}),
-                    dbc.NavLink("Real-Time Analysis", href="/real_time_analysis", active="exact", style = {'color': '#000000'}),
-                    dbc.NavLink("Data", href="/data", active="exact", style = {'color': '#000000'}),
-                    #dbc.NavLink("Home (old)", href="/home", active="exact", style = {'color': '#000000'}),
+                    dbc.NavLink(
+                        "Visualizations",
+                        href="/visualizations",
+                        active="exact",
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    dbc.NavLink(
+                        "Analysis",
+                        href="/analytics",
+                        active="exact",
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    dbc.NavLink(
+                        "Real-Time Analysis",
+                        href="/real_time_analysis",
+                        active="exact",
+                        disabled = True,
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    dbc.NavLink(
+                        "Data",
+                        href="/data",
+                        active="exact",
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    # dbc.NavLink(
+                        # "Home (old)",
+                        # href="/home",
+                        # active="exact",
+                        # style = {
+                        # 'color': '#000000'
+                        # }
+                    # ),
                 ],
                 navbar=True,
                 className="ml-auto",
@@ -41,7 +83,7 @@ navbar = dbc.Navbar(
     ),
     color="transparent",
     dark=True,
-    className="mb-4",
+    className="mb-4 fixed-top",
 )
 
 # Main page layout
