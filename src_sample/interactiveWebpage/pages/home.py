@@ -101,7 +101,7 @@ home_front = html.Div(
 )
 
 
-# SHAP Dot plot function
+# SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
 def shap_parallel_coord_plot(loc):
     base_df = load(f'joblib_files/base_data/{loc}_combined.joblib')
 
@@ -122,7 +122,7 @@ def shap_parallel_coord_plot(loc):
     )
 
     fig.update_layout(
-        title = f'Data Distributions for {plot_title}',
+        #title = f'Data Distributions for {plot_title}',
         xaxis_title = 'Features',
         yaxis_title = 'Values',
     )
@@ -136,31 +136,69 @@ shap_parallel_coord_plot_section = html.Div(
             [
                 dbc.Col(
                     [
-                        dcc.Graph(
-                            id = 'shap_parallel_coord_plot',
-                            figure = shap_parallel_coord_plot('sj'),
-                        ),
+                        html.P(
+                            'San Jose Data Relationship',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                                'color': '#ffffff',
+                            }
+                        )
                     ],
-                    width = 12,
-                    align = 'center',
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        html.P(
+                            'San Francisco Data Relationship',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '25px',
+                                'font-variant': 'small-caps',
+                                'color': '#ffffff',
+                            }
+                        )
+                    ],
+                    width = 6,
                 ),
             ],
-            className = 'mb-3',
+            className = 'mb-1',
         ),
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        dcc.Graph(
-                            id = 'shap_parallel_coord_plot',
-                            figure = shap_parallel_coord_plot('sf'),
-                        ),
+                        html.Img(
+                            src="assets/shap_plots/sj_parallel_coord_plot.png",
+                            alt="SHAP Parallel Coord Plot for SJ",
+                            style={"width": "100%", "height": "auto"}
+                        )
+                        # dcc.Graph(
+                        #     id = 'shap_parallel_coord_plot',
+                        #     figure = shap_parallel_coord_plot('sj'),
+                        # ),
                     ],
-                    width = 12,
+                    width = 6,
+                    align = 'center',
+                ),
+                dbc.Col(
+                    [
+                        html.Img(
+                            src="assets/shap_plots/sf_parallel_coord_plot.png",
+                            alt="SHAP Parallel Coord Plot for SF",
+                            style={"width": "100%", "height": "auto"}
+                        )
+                        # dcc.Graph(
+                        #     id = 'shap_parallel_coord_plot',
+                        #     figure = shap_parallel_coord_plot('sf'),
+                        # ),
+                    ],
+                    width = 6,
                     align = 'center',
                 ),
             ],
-            className = 'mb-3',
+            className = 'mb-5',
         ),
     ],
 )
