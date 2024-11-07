@@ -1,132 +1,63 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, dcc, html
 
-from pages import home, visualizations, analytics, real_time_analysis, data
+from pages import (
+    home, home_old, visualizations, analytics, 
+    real_time_analysis, data
+)
 
-#### Set the App Properties ####
-# debating between LUX, MORPH, SLATE, SOLAR
+# Set the App Properties
 app = dash.Dash(
     __name__,
-    external_stylesheets = [dbc.themes.LUX],
-    meta_tags = [
-        {
-            'name': 'viewport',
-            'content': 'width=device-width, initial-scale=1'
-        }
+    external_stylesheets=[dbc.themes.LUX],
+    meta_tags=[
+        {'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}
     ],
-    suppress_callback_exceptions = True
+    suppress_callback_exceptions=True
 )
 
-#### Define the Container Partitions ####
-# Sidebar header
-sidebar_header = dbc.Row(
-    [
-        dbc.Col(
-            html.H2(
-                # 'Navigation',
-                'Explore',
-                style = {'color': '#ecf0f1'},
-            )
-        ),
-
-        dbc.Col(
-            [
-                html.Button(
-                    html.Span(className = 'navbar-toggler-icon'),
-                    className = 'navbar-toggler',
-                    style = {
-                        'color': 'rgba(0,0,0,.5)',
-                        'border-color': 'rgba(0,0,0,.1)',
-                    },
-                    id = 'navbar-toggle',
-                ),
-                
-                html.Button(
-                    html.Span(className = 'navbar-toggler-icon'),
-                    className = 'navbar-toggler',
-                    style = {
-                        'color': 'rgba(0,0,0,.5)',
-                        'border-color': 'rgba(0,0,0,.1)',
-                    },
-                    id = 'sidebar-toggle',
-                ),
-            ],
-            width = 'auto',
-            align = 'center',
-        ),
-    ],
-)
-
-# Side bar
-sidebar = html.Div(
-    [
-        sidebar_header,
-        dbc.Collapse(
+# Define the top navbar
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            # Home link on the left
+            dbc.NavbarBrand("Home", href="/", className="ml-auto", style = {'color': '#000000'}),
+            
+            # Links on the right
             dbc.Nav(
                 [
-                    dbc.NavLink(
-                        'Home',
-                        href = '/',
-                        active = 'exact',
-                        style = {'color': '#ecf0f1'},
-                    ),
-
-                    dbc.NavLink(
-                        'Visualizations',
-                        href = '/visualizations',
-                        active = 'exact',
-                        style = {'color': '#ecf0f1'},
-                    ),
-
-                    dbc.NavLink(
-                        'Analytics',
-                        href = '/analytics',
-                        active = 'exact',
-                        style = {'color': '#ecf0f1'},
-                    ),
-
-                    dbc.NavLink(
-                        'Real-Time Analysis',
-                        href = '/real_time_analysis',
-                        active = 'exact',
-                        style = {'color': '#ecf0f1'},
-                    ),
-
-                    dbc.NavLink(
-                        'Data',
-                        href = '/data',
-                        active = 'exact',
-                        style = {'color': '#ecf0f1'},
-                    ),
+                    dbc.NavLink("Visualizations", href="/visualizations", active="exact", style = {'color': '#000000'}),
+                    dbc.NavLink("Analysis", href="/analytics", active="exact", style = {'color': '#000000'}),
+                    dbc.NavLink("Real-Time Analysis", href="/real_time_analysis", active="exact", style = {'color': '#000000'}),
+                    dbc.NavLink("Data", href="/data", active="exact", style = {'color': '#000000'}),
+                    #dbc.NavLink("Home (old)", href="/home", active="exact", style = {'color': '#000000'}),
                 ],
-                vertical = True,
-                pills = True,
+                navbar=True,
+                className="ml-auto",
             ),
-            id = 'collapse',
-        ),
-    ],
-    id = 'sidebar',
+        ],
+        fluid=True,
+    ),
+    color="transparent",
+    dark=True,
+    className="mb-4",
 )
 
-content = html.Div(id = 'page-content')
-
-# Add the contents to the app layout
+# Main page layout
 app.layout = html.Div(
     [
-        dcc.Location(id = 'url'),
-        sidebar,
-        content,
-    ],
+        dcc.Location(id='url'),
+        navbar,  # Use navbar at the top
+        html.Div(id='page-content', className="container mt-4"),
+    ]
 )
 
-#### Plots ####
 # Callback to render page content dynamically
 @app.callback(
-        Output('page-content', 'children'),
-        Input('url', 'pathname')
+    Output('page-content', 'children'),
+    Input('url', 'pathname')
 )
-# Function to dynamically render the page
 def render_page_content(pathname):
     if pathname == '/':
         return home.layout
@@ -138,39 +69,17 @@ def render_page_content(pathname):
         return real_time_analysis.layout
     elif pathname == '/data':
         return data.layout
+    elif pathname == '/home':
+        return home_old.layout
     else:
         return html.Div(
             [
-                html.H1('404: Not found', className = 'text-danger'),
+                html.H1('404: Not found', className='text-danger'),
                 html.Hr(),
                 html.P(f'The pathname {pathname} was not recognized...'),
             ],
-            className = 'p-3 bg-light rounded-3',
+            className='p-3 bg-light rounded-3',
         )
-
-# Callback for sidebar toggling
-@app.callback(
-    Output('sidebar', 'className'),
-    Input('sidebar-toggle', 'n_clicks'),
-    State('sidebar', 'className'),
-)
-# Function for sidebar toggling
-def toggle_classname(n, classname):
-    if n and classname == '':
-        return 'collapsed'
-    return ''
-
-# Callback for collapsing sidebar
-@app.callback(
-    Output('collapse', 'is_open'),
-    Input('navbar-toggle', 'n_clicks'),
-    State('collapse', 'is_open'),
-)
-# Function for collapsing sidebar
-def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,21 +1,21 @@
-html, body {
+/* html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     background-attachment: fixed;
     
     /* Gray to blue */
-    background-image: linear-gradient(to right, #3C3B3F, #605C3C);
+    /* background-image: linear-gradient(to right, #3C3B3F, #605C3C); */
 
-    font-family: "sans-serif";
-}
+    /* font-family: "sans-serif"; */
+/* } */
 
-h1, h2, h3, h4, h5, h6, p {
-    color: #ecf0f1;
-}
+/* h1, h2, h3, h4, h5, h6, p {
+    color: #000000;
+} */
 
 
-#sidebar {
+/* #sidebar {
     text-align: center;
     padding: 2rem 1rem;
 
@@ -30,9 +30,9 @@ h1, h2, h3, h4, h5, h6, p {
     text-align: left;
     margin-bottom: 0;
 }
-  
+   */
 /* Hide the blurb on a small screen */
-#blurb {
+/* #blurb {
     display: none;
 }
   
@@ -42,23 +42,23 @@ h1, h2, h3, h4, h5, h6, p {
   
 #collapse *:first-child {
     margin-top: 1rem;
-}
+} */
   
 /* add the three horizontal bars icon for the toggle */
-.navbar-toggler-icon {
+/* .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
-  
-#page-content {
+} */
+
+/* #page-content {
     padding: 2rem 0.5rem 1rem 0rem;
     font-family: "sans-serif";
-    min-height: 100vh;
-    background-attachment: fixed;
+    min-height: 100vh; */
+    /* background-attachment: fixed; */
     
     /* Gray to blue */
-    background-image: linear-gradient(to right, #3C3B3F, #605C3C);
-}
-
+    /* background-image: linear-gradient(to right, #3C3B3F, #605C3C); */
+/* } */
+/* 
 @media (min-width: 48em) {
     #sidebar {
         position: fixed;
@@ -75,52 +75,82 @@ h1, h2, h3, h4, h5, h6, p {
         position: relative;
         top: 0;
         transition: top 0.3s ease-in-out;
-    }
+    } */
   
     /* add negative margin to sidebar to achieve the collapse */
-    #sidebar.collapsed {
+    /* #sidebar.collapsed {
         margin-left: -15.5rem;
         padding-right: 0.5rem;
     }
-  
+   */
     /* move the sidebar toggle up to the top left corner */
-    #sidebar.collapsed #sidebar-toggle {
+    /* #sidebar.collapsed #sidebar-toggle {
         top: -2rem;
-    }
+    } */
   
     /* also adjust margin of page content */
-    #sidebar.collapsed ~ #page-content {
+    /* #sidebar.collapsed ~ #page-content {
         margin-left: 6.5rem;
-    }
+    } */
   
     /* move all contents of navbar other than header (containing toggle) further
        off-screen */
-    #sidebar.collapsed > *:not(:first-child) {
+    /* #sidebar.collapsed > *:not(:first-child) {
         margin-left: 0rem;
         margin-right: 6rem;
-    }
+    } */
   
     /* reveal the blurb on a large screen */
-    #blurb {
+    /* #blurb {
         display: block;
-    }
+    } */
   
     /* Hide the toggle on a large screen */
-    #navbar-toggle {
+    /* #navbar-toggle {
         display: none;
     }
-  
-    #collapse {
+   */
+    /* #collapse {
         display: block;
-    }
+    } */
   
     /* set margins of the main content so that it doesn't overlap the sidebar */
-    #page-content {
+    /* #page-content {
         margin-left: 18rem;
         margin-right: 2rem;
         transition: margin-left 0.3s ease-in-out;
     }
+} */
+
+#home-front-video {
+    background-attachment: fixed;
+    /* background-repeat: no-repeat; */
 }
+#home-front-gradient {
+    background-attachment: fixed;
+    /* background-repeat: no-repeat; */
+}
+
+#home-page-content {
+    background-image: #000000 !important;
+}
+
+
+.fade-word {
+    opacity: 0;  /* Start hidden */
+    transition: opacity 1s ease-in-out;  /* Fade effect */
+    font-size: 2rem;
+    font-family: monospace;
+    position: absolute;
+}
+
+/* This class will make the words visible */
+.fade-word.visible {
+    opacity: 1;  /* Visible when class added */
+}
+
+
+
 
 /* Custom accordion */
 /* Button not clicked */
