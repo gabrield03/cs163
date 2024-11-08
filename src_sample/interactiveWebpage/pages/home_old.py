@@ -50,7 +50,7 @@ home_header = html.Div(
                     html.P(
                         'Effects of Weather on Energy Consumption in the Bay Area',
                     ),
-                    className = 'text-center mb-5',
+                    className = 'text-center mb-5 mt-5',
                     width = 12,
                     style = {
                         'font-size': '50px',

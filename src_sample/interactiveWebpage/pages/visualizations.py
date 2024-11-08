@@ -48,7 +48,7 @@ visualizations_header = html.Div(
                     html.P(
                         'Visualizations',
                     ),
-                    className = 'text-center mb-5',
+                    className = 'text-center mb-5 mt-5',
                     width = 12,
                     style = {
                         'font-size': '50px',

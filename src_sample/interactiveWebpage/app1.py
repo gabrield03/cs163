@@ -3,8 +3,9 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc, html
 
 from pages import (
-    home, home_old, visualizations, analytics, 
-    real_time_analysis, data
+    home, home_old,
+    project_objective, analytical_methods, 
+    visualizations, real_time_analysis
 )
 
 # Set the App Properties
@@ -34,6 +35,22 @@ navbar = dbc.Navbar(
             dbc.Nav(
                 [
                     dbc.NavLink(
+                        "Project Objective",
+                        href="/project-objective",
+                        active="exact",
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    dbc.NavLink(
+                        "Analytical Methods",
+                        href="/analytical-methods",
+                        active="exact",
+                        style = {
+                            'color': '#000000'
+                        }
+                    ),
+                    dbc.NavLink(
                         "Visualizations",
                         href="/visualizations",
                         active="exact",
@@ -41,31 +58,15 @@ navbar = dbc.Navbar(
                             'color': '#000000'
                         }
                     ),
-                    dbc.NavLink(
-                        "Analysis",
-                        href="/analytics",
-                        active="exact",
-                        style = {
-                            'color': '#000000'
-                        }
-                    ),
-                    dbc.NavLink(
-                        "Real-Time Analysis",
-                        href="/real_time_analysis",
-                        active="exact",
-                        disabled = True,
-                        style = {
-                            'color': '#000000'
-                        }
-                    ),
-                    dbc.NavLink(
-                        "Data",
-                        href="/data",
-                        active="exact",
-                        style = {
-                            'color': '#000000'
-                        }
-                    ),
+                    # dbc.NavLink(
+                    #     "Real-Time Analysis",
+                    #     href="/real-time-analysis",
+                    #     active="exact",
+                    #     disabled = True,
+                    #     style = {
+                    #         'color': '#000000'
+                    #     }
+                    # ),
                     # dbc.NavLink(
                         # "Home (old)",
                         # href="/home",
@@ -105,14 +106,14 @@ def render_page_content(pathname):
         return home.layout
     elif pathname == '/visualizations':
         return visualizations.layout
-    elif pathname == '/analytics':
-        return analytics.layout
-    elif pathname == '/real_time_analysis':
+    elif pathname == '/analytical-methods':
+        return analytical_methods.layout
+    elif pathname == '/real-time-analysis':
         return real_time_analysis.layout
-    elif pathname == '/data':
-        return data.layout
-    elif pathname == '/home':
-        return home_old.layout
+    elif pathname == '/project-objective':
+        return project_objective.layout
+    # elif pathname == '/home':
+    #     return home_old.layout
     else:
         return html.Div(
             [

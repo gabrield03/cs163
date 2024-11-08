@@ -20,105 +20,96 @@ if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
     
 # Define the layout for the home page
-home_front = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.P(
-                        'Weather Impact On Energy Usage',
-                        style = {
-                            'color': 'white',
-                            'textAlign': 'center',
-                            'fontSize': '4vw',
-                            'fontweight': 'bold',
-                            'fontFamily': 'roboto',
-                            'font-variant': 'small-caps',
-                            'height': '100%',
-                            'text-shadow': '2px 2px 4px #000000',
-                        },
-                    ),
-                    width = 12,
-                ),
-            ],
-            className = 'mt-5 p-5',
+home_front_section = html.Div(
+    children = [
+        # Looping sf video
+        html.Video(
+            id = 'home-front-video',
+            src = '/assets/visuals/sf-city1.mp4',
+            autoPlay = True,
+            loop = True,
+            muted = True,
+            controls = False,
+            style = {
+                'height': '75vh',
+                'width': '100vw',
+                'maxWidth': '100vw',
+                'objectFit': 'cover',
+                'position': 'absolute',
+                'top': '0',
+                'left': '0',
+                'zIndex': '-1',
+                'margin': 0,
+            },
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.Div(
-                        [
-                            html.Div("Energy Consumption", id="word-energy-consumption", className="fade-word"),
-                            html.Div("Max Temperature", id="word-max-temp", className="fade-word"),
-                            html.Div("Min Temperature", id="word-min-temp", className="fade-word"),
-                            html.Div("Precipitation", id="word-precipitation", className="fade-word"),
-                            html.Div("Wind Speed", id="word-wind-speed", className="fade-word"),
-                        ],
-                        style = {
-                            'color': 'white',
-                            'textAlign': 'center',
-                            'fontSize': '3vw',
-                            'fontWeight': 'bold',
-                            'fontFamily': 'monospace',
-                            'height': '100%',
-                            'display': 'flex',
-                            'flexDirection': 'column',
-                            'justifyContent': 'center',
-                            'alignItems': 'center',
-                        },
-                    ),
-                    width=12,
-                ),
-            ],
-        ),
-                
-        # Video background
+        # Home page title
         html.Div(
-            children = [
-                html.Video(
-                    id = 'home-front-video',
-                    src = '/assets/sky-video2.mp4',
-                    autoPlay = True,
-                    loop = False,
-                    muted = True,
-                    controls = False,
-                    style = {
-                        'width': '100vw',
-                        'maxWidth': '100vw',
-                        'height': '75vh',
-                        'objectFit': 'cover',
-                        'position': 'fixed',
-                        'top': '0',
-                        'left': '0',
-                        'zIndex': '-1',
-                        'margin': 0,
-                    },
-                ),
-            ],
+            html.P(
+                'Weather Impact On Energy Usage',
+                style = {
+                    'color': 'white',
+                    'textAlign': 'center',
+                    'fontSize': '3vw',
+                    'fontweight': 'bold',
+                    'fontFamily': 'roboto',
+                    'font-variant': 'small-caps',
+                    'height': '100%',
+                    'text-shadow': '2px 2px 4px #000000',
+                },
+            ),
+                style = {
+                'position': 'absolute',
+                'top': '10%',
+                'left': '50%',
+                'transform': 'translate(-50%, -50%)',
+                'zIndex': '1',
+            },
         ),
-        # Fade to black bottom section
+        # Home page looping list of words
+        html.Div(
+            [
+                html.Div('Energy Consumption', id = 'word-energy-consumption', className = 'fade-word'),
+                html.Div('Max Temperature', id = 'word-max-temp', className = 'fade-word'),
+                html.Div('Min Temperature', id = 'word-min-temp', className = 'fade-word'),
+                html.Div('Precipitation', id = 'word-precipitation', className = 'fade-word'),
+                html.Div('Wind Speed', id = 'word-wind-speed', className = 'fade-word'),
+            ],
+            style = {
+                'color': 'white',
+                'textAlign': 'center',
+                'fontSize': '2vw',
+                'fontWeight': 'bold',
+                'fontFamily': 'monospace',
+                'height': '100%',
+                'display': 'flex',
+                'flexDirection': 'column',
+                'justifyContent': 'center',
+                'alignItems': 'center',
+                'position': 'absolute',
+                'top': '20%',
+                'left': '50%',
+                'transform': 'translate(-50%, -50%)',
+                'zIndex': '1',
+            },
+        ),
+        # Dark gradient
         html.Div(
             id = 'home-front-gradient',
             style = {
                 'height': '35vh',
-                'background': 'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.3), rgba(0,0,0,.6), rgba(0,0,0,0.9), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1))',
                 'width': '100vw',
-                'position': 'fixed',
+                'maxWidth': '100vw',
+                'position': 'absolute',
+                'background': 'linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.3), rgba(0,0,0,.6), rgba(0,0,0,0.9), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1), rgba(0,0,0,1))',
                 'bottom': '0',
                 'left': '0',
                 'zIndex': '-1',
             },
         ),
 
-        dcc.Interval(id="page-load-interval", interval=3000, n_intervals=0),
+        dcc.Interval(id = 'page-load-interval', interval = 3000, n_intervals = 0),
     ],
-    style={
-        'height': '100vh',
-        #'position': 'relative',
-    },
 )
-
-
 
 # Random forest for feature importances
 feature_importances_section = html.Div(
@@ -171,17 +162,8 @@ feature_importances_section = html.Div(
                     ],
                     width = 5,
                 ),
-                dbc.Col(
-                    [
-
-                    ],
-                    width = 2
-                ),
-                dbc.Col(
-                    [
-                    ],
-                    width = 5,
-                ),
+                dbc.Col([], width = 2),
+                dbc.Col([], width = 5),
             ],
         ),
         dbc.Row(
@@ -205,16 +187,8 @@ feature_importances_section = html.Div(
                     width = 2,
                     align = 'center',
                 ),
-                dbc.Col(
-                    [
-                    ],
-                    width = 5
-                ),
-                dbc.Col(
-                    [
-                    ],
-                    width = 2,
-                ),
+                dbc.Col([], width = 5),
+                dbc.Col([], width = 2),
             ],
             className = 'mb-3',
         ),
@@ -229,16 +203,8 @@ feature_importances_section = html.Div(
                     width = 5,
                     align = 'center',
                 ),
-                dbc.Col(
-                    [
-                    ],
-                    width = 2
-                ),
-                dbc.Col(
-                    [
-                    ],
-                    width = 5,
-                ),
+                dbc.Col([], width = 2),
+                dbc.Col([], width = 5),
             ],
         ),
     ],
@@ -351,19 +317,57 @@ shap_parallel_coord_plot_section = html.Div(
 )
 
 
+why_care_section = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'Why should I care?',
+                            ],
+                            className = 'text-center',
+                            style = {
+                                'color': 'white',
+                                'font-size': '30px',
+                                'word-break': 'keep-all',
+                                'font-style': 'normal',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                    ],
+                    width = 12,
+                ),
+            ],
+        ),
+    ],
+    className = 'mb-5 p-5',
+)
+
+info_combined_section = html.Div(
+    [
+        feature_importances_section,
+        shap_parallel_coord_plot_section,
+        why_care_section,
+    ],
+    style = {
+        'position': 'relative',
+        'top': '75vh',
+        'zIndex': '1',
+    },
+)
 
 layout = dbc.Container(
     [
-        home_front,
-        feature_importances_section,
-        shap_parallel_coord_plot_section,
+        home_front_section,
+        info_combined_section,
         html.Div(
             id = 'home-page-content',
         ),
     ],
-    # fluid = True,
+    fluid = True,
 )
-
 
 # Client-side callback for fading in and out words
 clientside_callback(
