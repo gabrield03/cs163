@@ -745,6 +745,45 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     return res
 
+# LSTM - Make predictions from given user input
+def preprocess_user_data(user_data, num_features, cat_features, cyclical_features, scaler, encoder):
+    # Scale numerical features
+    num_data_scaled = scaler.transform(user_data[num_features])
+    
+    # Encode categorical features
+    cat_data_encoded = encoder.transform(user_data[cat_features])
+    
+    # Put into DF
+    num_data_scaled_df = pd.DataFrame(num_data_scaled, columns=num_features)
+    cat_data_encoded_df = pd.DataFrame(cat_data_encoded, columns=cat_features)
+    
+    # Keep the cyclical features as they are (unscaled)
+    cyclical_data_df = user_data[cyclical_features].reset_index(drop=True)
+    
+    # Concatenate all dataframes
+    combined_data = pd.concat([num_data_scaled_df, cat_data_encoded_df, cyclical_data_df], axis=1)
+    
+    return combined_data
+
+def predict_on_user_data(lstm_model, user_data, num_features, cat_features, cyclical_features, scaler, encoder):
+    # Preprocess user data
+    processed_data = preprocess_user_data(user_data, num_features, cat_features, cyclical_features, scaler, encoder)
+    
+    # Reshape for LSTM input - need 3D input: [samples, time_steps, features])
+    processed_data_reshaped = processed_data.values.reshape((1, -1, processed_data.shape[1]))
+    
+    # Predict
+    predictions = lstm_model.predict(processed_data_reshaped)
+    
+    # Inverse transform predictions to original scale
+    predictions_original_scale = scaler.inverse_transform(predictions)
+    
+    return predictions_original_scale
+
+
+
+
+
 # work in progress
 # LSTM Future Predictions
 def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR NOW

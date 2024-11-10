@@ -1,6 +1,7 @@
 from dash import html, dcc, Input, Output, callback, clientside_callback
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 
 from  utils.data_pipeline import processing_pipeline
@@ -18,7 +19,20 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
-    
+
+
+sj_df = load('joblib_files/base_data/sj_combined.joblib')
+sf_df = load('joblib_files/base_data/sf_combined.joblib')
+
+sj_df.drop(columns = ['awnd', 'wdf2', 'wdf5', 'wsf2', 'wsf5'], inplace = True)
+# Adding a unique identifier for each dataframe to keep track of the region
+sj_df['region'] = 'sj'
+sf_df['region'] = 'sf'
+
+# Concatenating the dataframes
+combined_df = pd.concat([sj_df, sf_df], axis=0).reset_index(drop=True)
+
+
 # Define the layout for the home page
 home_front_section = html.Div(
     children = [
@@ -111,8 +125,91 @@ home_front_section = html.Div(
     ],
 )
 
+# Calculate extreme weather events for each region
+def calc_extreme_events():
+    tmax_90th = combined_df.groupby('region')['tmax'].quantile(0.90).to_dict()
+    tmin_10th = combined_df.groupby('region')['tmin'].quantile(0.10).to_dict()
+
+    # Set tmax threshold to 90th percentile and tmin threshold to 10th percentile
+    combined_df['is_hot_extreme'] = combined_df.apply(lambda row: row['tmax'] >= tmax_90th[row['region']], axis=1)
+    combined_df['is_cold_extreme'] = combined_df.apply(lambda row: row['tmin'] <= tmin_10th[row['region']], axis=1)
+
+    # tmax - Calc yearly frequency
+    yearly_hot_extreme_counts = combined_df[combined_df['is_hot_extreme']].groupby(['region', 'year']).size()
+    yearly_hot_total_counts = combined_df.groupby(['region', 'year']).size()
+    yearly_hot_extreme_frequency = (yearly_hot_extreme_counts / yearly_hot_total_counts * 100).fillna(0)
+    # tmax - Calc yearly frequency
+    yearly_cold_extreme_counts = combined_df[combined_df['is_cold_extreme']].groupby(['region', 'year']).size()
+    yearly_cold_total_counts = combined_df.groupby(['region', 'year']).size()
+    yearly_cold_extreme_frequency = (yearly_cold_extreme_counts / yearly_cold_total_counts * 100).fillna(0)
+
+
+    # Prepare figure
+    fig = go.Figure()
+
+    # Add lines for San Jose (deep red for tmax, deep blue for tmin)
+    fig.add_trace(go.Scatter(
+        x=yearly_hot_extreme_frequency.loc['sj'].index,
+        y=yearly_hot_extreme_frequency.loc['sj'].values,
+        mode='lines',
+        name='San Jose - Hot Extremes (tmax)',
+        line=dict(color='darkred', width=3)
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=yearly_cold_extreme_frequency.loc['sj'].index,
+        y=yearly_cold_extreme_frequency.loc['sj'].values,
+        mode='lines',
+        name='San Jose - Cold Extremes (tmin)',
+        line=dict(color='darkblue', width=3)
+    ))
+
+    # Add lines for San Francisco (lighter red for tmax, lighter blue for tmin)
+    fig.add_trace(go.Scatter(
+        x=yearly_hot_extreme_frequency.loc['sf'].index,
+        y=yearly_hot_extreme_frequency.loc['sf'].values,
+        mode='lines',
+        name='San Francisco - Hot Extremes (tmax)',
+        line=dict(color='red', width=3, dash='dash')
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=yearly_cold_extreme_frequency.loc['sf'].index,
+        y=yearly_cold_extreme_frequency.loc['sf'].values,
+        mode='lines',
+        name='San Francisco - Cold Extremes (tmin)',
+        line=dict(color='lightblue', width=3, dash='dash')
+    ))
+
+    fig.update_layout(
+        xaxis_title = None,
+        yaxis_title = "Occurrence % per Year",
+        #xaxis_showticklabels = False,
+        plot_bgcolor = 'rgba(0, 0, 0, 0)',
+        paper_bgcolor = 'rgba(0, 0, 0, 0)',
+        #showlegend = False,
+        xaxis = dict(showgrid = True, gridcolor = 'rgba(0,0,0,0)', color = 'white'),
+        yaxis = dict(color = 'white'),
+        margin = dict(l = 0, r = 0),
+
+        legend = dict(
+            yanchor="top",
+            y=1.3,
+            xanchor="left",
+            x=0.01,
+            font=dict(
+                family="Courier",
+                size=12,
+                color="white"
+            )
+        )
+    )
+    fig.update_xaxes(range=[2013, 2025])
+
+    return fig
+
 # Random forest for feature importances
-feature_importances_section = html.Div(
+feature_importances_extreme_weather_section = html.Div(
     [
         dbc.Row(
             [
@@ -163,8 +260,78 @@ feature_importances_section = html.Div(
                     width = 5,
                 ),
                 dbc.Col([], width = 2),
-                dbc.Col([], width = 5),
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'Shifts in Climate',
+                            ],
+                            style = {
+                                'color': 'white',
+                                'font-size': '22px',
+                                'word-break': 'keep-all',
+                                'font-style': 'normal',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'San Jose has experienced more extreme hot ',
+                                'events in recent years.',
+                                # html.Span(
+                                #     'seasonality ',
+                                #     style = {
+                                #         'font-weight': 'bold',
+                                #         'color': 'red',
+                                #     },
+                                # ),
+
+                                # 'whereas San Francisco is most sensitive to ',
+                                # html.Span(
+                                #     'temperature extremes',
+                                #     id = 'tmax_tooltip',
+                                #     style = {
+                                #         'font-weight': 'bold',
+                                #         'color': 'red',
+                                #     },
+                                # ),
+                            ],
+                            style = {
+                                'color': 'white',
+                                'font-size': '18px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                    ],
+                    width = 5,
+                ),
             ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'feature_importances_section',
+                        ),
+                    ],
+                    width = 5,
+                    align = 'center',
+                ),
+                #dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'extreme_weather',
+                            figure = calc_extreme_events(),
+                        )
+                    ],
+                    width = 6,
+                ),
+            ],
+            justify = 'between',
         ),
         dbc.Row(
             [
@@ -191,21 +358,6 @@ feature_importances_section = html.Div(
                 dbc.Col([], width = 2),
             ],
             className = 'mb-3',
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            id = 'feature_importances_section',
-                        ),
-                    ],
-                    width = 5,
-                    align = 'center',
-                ),
-                dbc.Col([], width = 2),
-                dbc.Col([], width = 5),
-            ],
         ),
     ],
     className = 'mb-5',
@@ -347,14 +499,18 @@ why_care_section = html.Div(
 
 info_combined_section = html.Div(
     [
-        feature_importances_section,
+        feature_importances_extreme_weather_section,
         shap_parallel_coord_plot_section,
         why_care_section,
     ],
+    # className = 'home-page-content',
     style = {
+        'backgroundColor': 'black',
         'position': 'relative',
         'top': '75vh',
         'zIndex': '1',
+        'padding': '0px 100px',
+        'width': '100vw',
     },
 )
 
@@ -362,9 +518,6 @@ layout = dbc.Container(
     [
         home_front_section,
         info_combined_section,
-        html.Div(
-            id = 'home-page-content',
-        ),
     ],
     fluid = True,
 )

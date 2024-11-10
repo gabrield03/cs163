@@ -27,7 +27,7 @@ navbar = dbc.Navbar(
                 "Home", href="/",
                 className="ml-auto",
                 style = {
-                    'color': '#000000'
+                    'color': '#6d6b6b'
                 }
             ),
             
@@ -39,7 +39,7 @@ navbar = dbc.Navbar(
                         href="/project-objective",
                         active="exact",
                         style = {
-                            'color': '#000000'
+                            'color': '#6d6b6b'
                         }
                     ),
                     dbc.NavLink(
@@ -47,7 +47,7 @@ navbar = dbc.Navbar(
                         href="/analytical-methods",
                         active="exact",
                         style = {
-                            'color': '#000000'
+                            'color': '#6d6b6b'
                         }
                     ),
                     dbc.NavLink(
@@ -55,7 +55,7 @@ navbar = dbc.Navbar(
                         href="/visualizations",
                         active="exact",
                         style = {
-                            'color': '#000000'
+                            'color': '#6d6b6b'
                         }
                     ),
                     # dbc.NavLink(
@@ -64,7 +64,7 @@ navbar = dbc.Navbar(
                     #     active="exact",
                     #     disabled = True,
                     #     style = {
-                    #         'color': '#000000'
+                    #         'color': '#6d6b6b'
                     #     }
                     # ),
                     # dbc.NavLink(
@@ -72,7 +72,7 @@ navbar = dbc.Navbar(
                         # href="/home",
                         # active="exact",
                         # style = {
-                        # 'color': '#000000'
+                        # 'color': '#6d6b6b'
                         # }
                     # ),
                 ],
@@ -90,10 +90,16 @@ navbar = dbc.Navbar(
 # Main page layout
 app.layout = html.Div(
     [
-        dcc.Location(id='url'),
-        navbar,  # Use navbar at the top
-        html.Div(id='page-content', className="container mt-4"),
-    ]
+        dcc.Location(
+            id = 'url'
+        ),
+        navbar,
+        html.Div(
+            id = 'page-content',
+            # className = 'container mt-4',
+            className = 'mt-4',
+        ),
+    ],
 )
 
 # Callback to render page content dynamically
