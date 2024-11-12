@@ -318,9 +318,7 @@ feature_importances_extreme_weather_section = html.Div(
                         ),
                     ],
                     width = 5,
-                    align = 'center',
                 ),
-                #dbc.Col([], width = 2),
                 dbc.Col(
                     [
                         dcc.Graph(
@@ -352,7 +350,6 @@ feature_importances_extreme_weather_section = html.Div(
                         ),
                     ],
                     width = 2,
-                    align = 'center',
                 ),
                 dbc.Col([], width = 5),
                 dbc.Col([], width = 2),
@@ -360,7 +357,7 @@ feature_importances_extreme_weather_section = html.Div(
             className = 'mb-3',
         ),
     ],
-    className = 'mb-5',
+    className = 'mb-5 pb-5',
 )
 
 
@@ -463,9 +460,10 @@ shap_parallel_coord_plot_section = html.Div(
                     #align = 'center',
                 ),
             ],
-            className = 'mb-5',
+            className = 'mb-3',
         ),
     ],
+    className = 'mb-5 pb-5',
 )
 
 
@@ -505,7 +503,7 @@ info_combined_section = html.Div(
     ],
     style = {
         'backgroundColor': 'black',
-        'position': 'relative',
+        'position': 'absolute',
         'top': '75vh',
         'left': 0,
         'zIndex': '1',
