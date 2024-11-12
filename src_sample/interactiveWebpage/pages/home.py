@@ -148,38 +148,46 @@ def calc_extreme_events():
     fig = go.Figure()
 
     # Add lines for San Jose (deep red for tmax, deep blue for tmin)
-    fig.add_trace(go.Scatter(
-        x=yearly_hot_extreme_frequency.loc['sj'].index,
-        y=yearly_hot_extreme_frequency.loc['sj'].values,
-        mode='lines',
-        name='San Jose - Hot Extremes (tmax)',
-        line=dict(color='darkred', width=3)
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = yearly_hot_extreme_frequency.loc['sj'].index,
+            y = yearly_hot_extreme_frequency.loc['sj'].values,
+            mode = 'lines',
+            name = 'SJ - Hot Extremes',
+            line = dict(color = 'darkred', width = 3),
+        )
+    )
 
-    fig.add_trace(go.Scatter(
-        x=yearly_cold_extreme_frequency.loc['sj'].index,
-        y=yearly_cold_extreme_frequency.loc['sj'].values,
-        mode='lines',
-        name='San Jose - Cold Extremes (tmin)',
-        line=dict(color='darkblue', width=3)
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = yearly_cold_extreme_frequency.loc['sj'].index,
+            y = yearly_cold_extreme_frequency.loc['sj'].values,
+            mode = 'lines',
+            name = 'SJ - Cold Extremes',
+            line = dict(color = 'darkblue', width = 3),
+        )
+    )
 
     # Add lines for San Francisco (lighter red for tmax, lighter blue for tmin)
-    fig.add_trace(go.Scatter(
-        x=yearly_hot_extreme_frequency.loc['sf'].index,
-        y=yearly_hot_extreme_frequency.loc['sf'].values,
-        mode='lines',
-        name='San Francisco - Hot Extremes (tmax)',
-        line=dict(color='red', width=3, dash='dash')
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = yearly_hot_extreme_frequency.loc['sf'].index,
+            y = yearly_hot_extreme_frequency.loc['sf'].values,
+            mode = 'lines',
+            name = 'SF - Hot Extremes',
+            line = dict(color = 'red', width = 3, dash = 'dash'),
+        )
+    )
 
-    fig.add_trace(go.Scatter(
-        x=yearly_cold_extreme_frequency.loc['sf'].index,
-        y=yearly_cold_extreme_frequency.loc['sf'].values,
-        mode='lines',
-        name='San Francisco - Cold Extremes (tmin)',
-        line=dict(color='lightblue', width=3, dash='dash')
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x = yearly_cold_extreme_frequency.loc['sf'].index,
+            y = yearly_cold_extreme_frequency.loc['sf'].values,
+            mode = 'lines',
+            name = 'SF - Cold Extremes',
+            line = dict(color = 'lightblue', width = 3, dash = 'dash'),
+        )
+    )
 
     fig.update_layout(
         xaxis_title = None,
@@ -193,18 +201,18 @@ def calc_extreme_events():
         margin = dict(l = 0, r = 0),
 
         legend = dict(
-            yanchor="top",
-            y=1.3,
-            xanchor="left",
-            x=0.01,
-            font=dict(
-                family="Courier",
-                size=12,
-                color="white"
+            yanchor = "top",
+            y = 1.3,
+            xanchor = "left",
+            x = 0.01,
+            font = dict(
+                family = "Courier",
+                size = 12,
+                color = "white",
             )
         )
     )
-    fig.update_xaxes(range=[2013, 2025])
+    fig.update_xaxes(range = [2013, 2025])
 
     return fig
 
@@ -276,25 +284,23 @@ feature_importances_extreme_weather_section = html.Div(
                         ),
                         html.P(
                             [
-                                'San Jose has experienced more extreme hot ',
-                                'events in recent years.',
-                                # html.Span(
-                                #     'seasonality ',
-                                #     style = {
-                                #         'font-weight': 'bold',
-                                #         'color': 'red',
-                                #     },
-                                # ),
-
-                                # 'whereas San Francisco is most sensitive to ',
-                                # html.Span(
-                                #     'temperature extremes',
-                                #     id = 'tmax_tooltip',
-                                #     style = {
-                                #         'font-weight': 'bold',
-                                #         'color': 'red',
-                                #     },
-                                # ),
+                                'San Jose has experienced an ',
+                                html.Span(
+                                    'increase in extreme hot ',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'color': 'red',
+                                    },
+                                ),
+                                'events and San Francisco has experienced an ',
+                                html.Span(
+                                    'increase in extreme cold ',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'color': 'lightblue',
+                                    },
+                                ),
+                                'events.',
                             ],
                             style = {
                                 'color': 'white',
@@ -587,43 +593,54 @@ def update_feature_importances_section(loc):
     importances_df['feature'] = importances_df['feature'].replace(rename_cols)
     importances_df.sort_values(by = ['importances'], ascending = True, inplace = True)
     importances_df['color_group'] = ['Top' if i > 3 else 'Other' for i in range(len(importances_df))]
-    
-    # importances_df.reset_index(drop = True, inplace = True)
 
+    # Separate data for top and other bars
+    top_df = importances_df[importances_df['color_group'] == 'Top'].reset_index(drop = True)
+    other_df = importances_df[importances_df['color_group'] == 'Other'].reset_index(drop = True)
+
+    # Create bar traces for top and other groups
     fig = px.bar(
-        importances_df,
+        other_df,
         y = 'feature',
         x = 'importances',
         color = 'color_group',
         color_discrete_map = {
             'Top': 'green',
-            'Other': 'gray',
+            'Other': 'gray'
         },
         range_x = [0, 0.48],
+        orientation = 'h',
+    )
+    fig.add_bar(
+        y = top_df['feature'],
+        x = top_df['importances'],
+        text = top_df['importances'].round(3),
+        textposition = 'outside',
+        textfont = dict(
+            color = 'white'
+        ),
+        marker_color = 'green',
+        orientation = 'h',
     )
 
     fig.update_layout(
-        xaxis_title = None, # Importances
-        yaxis_title = None, # Features
+        xaxis_title = None,
+        yaxis_title = None,
         xaxis_showticklabels = False,
         plot_bgcolor = 'rgba(0, 0, 0, 0)',
         paper_bgcolor = 'rgba(0, 0, 0, 0)',
         showlegend = False,
-        xaxis = dict(showgrid = True, gridcolor = 'rgba(0,0,0,0)'),
-        yaxis = dict(color = 'white'),
-        margin = dict(l = 0, r = 0),
-    )
-
-    # top_df = importances_df[importances_df['color_group'] == 'Top'].reset_index(drop = True)
-    # print(top_df)
-
-    # Display values to the right of the top feature bars
-    fig.update_traces(
-        # text = top_df['importances'].round(3),
-        text = importances_df['importances'].round(3),
-        textposition = 'outside',
-        insidetextanchor = 'start',
-        textfont = dict(color = 'white')
+        xaxis = dict(
+            showgrid = True,
+            gridcolor = 'rgba(0,0,0,0)'
+        ),
+        yaxis = dict(
+            color = 'white'
+        ),
+        margin = dict(
+            l = 0,
+            r = 0
+        ),
     )
 
     return [fig]

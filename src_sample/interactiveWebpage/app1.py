@@ -27,7 +27,8 @@ navbar = dbc.Navbar(
                 "Home", href="/",
                 className="ml-auto",
                 style = {
-                    'color': '#6d6b6b'
+                    'color': '#ffffff',
+                    'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                 }
             ),
             
@@ -39,7 +40,8 @@ navbar = dbc.Navbar(
                         href="/project-objective",
                         active="exact",
                         style = {
-                            'color': '#6d6b6b'
+                            'color': '#ffffff',
+                            'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                     dbc.NavLink(
@@ -47,7 +49,8 @@ navbar = dbc.Navbar(
                         href="/analytical-methods",
                         active="exact",
                         style = {
-                            'color': '#6d6b6b'
+                            'color': '#ffffff',
+                            'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                     dbc.NavLink(
@@ -55,7 +58,8 @@ navbar = dbc.Navbar(
                         href="/visualizations",
                         active="exact",
                         style = {
-                            'color': '#6d6b6b'
+                            'color': '#ffffff',
+                            'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                     # dbc.NavLink(
