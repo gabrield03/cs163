@@ -192,14 +192,20 @@ def calc_extreme_events():
     fig.update_layout(
         xaxis_title = None,
         yaxis_title = "Occurrence % per Year",
-        #xaxis_showticklabels = False,
         plot_bgcolor = 'rgba(0, 0, 0, 0)',
         paper_bgcolor = 'rgba(0, 0, 0, 0)',
-        #showlegend = False,
-        xaxis = dict(showgrid = True, gridcolor = 'rgba(0,0,0,0)', color = 'white'),
-        yaxis = dict(color = 'white'),
-        margin = dict(l = 0, r = 0),
-
+        xaxis = dict(
+            showgrid = True,
+            gridcolor = 'rgba(0,0,0,0)',
+            color = 'white'
+        ),
+        yaxis = dict(
+            color = 'white'
+        ),
+        margin = dict(
+            l = 0,
+            r = 0
+        ),
         legend = dict(
             yanchor = "top",
             y = 1.3,
@@ -212,7 +218,36 @@ def calc_extreme_events():
             )
         )
     )
-    fig.update_xaxes(range = [2013, 2025])
+
+    fig.update_xaxes(
+        range = [2013, 2025]
+    )
+
+    fig.update_yaxes(
+        showgrid = False,
+    )
+
+    # fig.update_layout(
+    #     xaxis_title = None,
+    #     yaxis_title = None,
+    #     xaxis_showticklabels = False,
+    #     plot_bgcolor = 'rgba(0, 0, 0, 0)',
+    #     paper_bgcolor = 'rgba(0, 0, 0, 0)',
+    #     showlegend = False,
+    #     xaxis = dict(
+    #         showgrid = True,
+    #         gridcolor = 'rgba(0,0,0,0)'
+    #     ),
+    #     yaxis = dict(
+    #         color = 'white'
+    #     ),
+    #     margin = dict(
+    #         l = 0,
+    #         r = 0
+    #     ),
+    # )
+
+
 
     return fig
 
