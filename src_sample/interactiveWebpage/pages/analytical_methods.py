@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from plotly.tools import mpl_to_plotly
 import plotly.express as px
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 import random
 import numpy as np
 
@@ -818,21 +819,21 @@ lstm_section = html.Div(
                             id = 'lstm_train_score',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                         html.Div(
                             id = 'lstm_val_score',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                         html.Div(
                             id = 'lstm_test_score',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                     ],
@@ -894,21 +895,21 @@ lstm_section = html.Div(
                             id = 'lstm_train_score_multi',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                         html.Div(
                             id = 'lstm_val_score_multi',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                         html.Div(
                             id = 'lstm_test_score_multi',
                             style = {
                                 'marginTop': 20,
-                                'color': 'white',
+                                'color': 'black',
                             },
                         ),
                     ],
@@ -1186,18 +1187,25 @@ analysis_summary_section = html.Div(
 
 layout = dbc.Container(
     [
-        analytics_header_section,
-        analytics_info_section,
-        feature_importances_section,
-        shap_intro_section,
-        shap_dot_plot_section,
-        shap_decision_plot_section,
-        pdp_section,
-        lstm_section,
-        sarima_section,
-        analysis_summary_section, 
+        html.Div(
+            [
+                analytics_header_section,
+                analytics_info_section,
+                feature_importances_section,
+                shap_intro_section,
+                shap_dot_plot_section,
+                shap_decision_plot_section,
+                pdp_section,
+                lstm_section,
+                sarima_section,
+                analysis_summary_section,
+            ],
+            style = {
+                'padding': '0px 100px',
+            },
+        ),
     ],
-    fluid = True,
+    #fluid = True,
 )
 
 # Callback to toggle visibility of each collapse
@@ -1285,8 +1293,6 @@ def update_lstm_single_step(region):
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
 
-    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
-
     lstm_results = None
 
     # Load LSTM scores and predictions
@@ -1299,14 +1305,8 @@ def update_lstm_single_step(region):
     train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    inputs = lstm_results['inputs']
-    labels = lstm_results['labels']
-    predictions = lstm_results['predictions']
     scaler = lstm_results['scaler']
-    encoder = lstm_results['encoder']
-
-    # Inverse transform numerical data
-    original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
+    fig = lstm_results['fig']
 
     lstm_train_score = train_score[1]
     lstm_val_score = val_score[1] 
@@ -1327,66 +1327,6 @@ def update_lstm_single_step(region):
     lstm_train_score = f'Train - Mean Absolute Error (MAE): {train_score_original:.3f}'
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score_original:.3f}'
     lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score_original:.3f}'
-
-    # Extract the first value from each inner array of inputs - skip the first inner array
-    first_input_values = inputs[1:, :, 0]
-    first_input_values_flat = first_input_values.flatten()
-
-    # Prep input array for inverse transformation
-    full_input_array = np.zeros((first_input_values_flat.shape[0], scaler.scale_.shape[0]))
-    full_input_array[:, 0] = first_input_values_flat
-
-    # Inverse scale the first input values
-    original_input_values = scaler.inverse_transform(full_input_array)[:, 0]
-
-    fig = go.Figure()
-
-    # Adjust the x-axis for the input values
-    input_x_values = list(range(11, 11 + len(original_input_values)))
-
-    # Plot the input points
-    for i in range(1, len(original_input_values), 12):
-        if i + 12 <= len(original_input_values):
-            fig.add_trace(
-                go.Scatter(
-                    x = input_x_values[i:i + 11],
-                    y = original_input_values[i:i + 11],
-                    mode = 'lines',
-                    line = dict(color = 'blue'),
-                    showlegend = False
-                )
-            )
-
-    # Plot label points (o)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(original_labels))),
-            y = original_labels,
-            mode = 'markers',
-            name = 'Labels',
-            marker = dict(size = 10, color = 'green', symbol = 'circle'),
-        )
-    )
-
-    # Plot prediction points (x)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(original_predictions))),
-            y = original_predictions,
-            mode = 'markers',
-            name = 'Predictions',
-            marker = dict(size = 10, color = 'red', symbol = 'x'),
-        )
-    )
-
-    x_range = random.randint(1,30) * 12
-    fig.update_layout(
-        title = f'Single-Step LSTM Prediction for {plot_title}',
-        xaxis_title = 'Time Steps (Months)',
-        yaxis_title = 'Average Energy Usage (kWh)',
-        xaxis_range = [x_range - 0.5, x_range + 12 - 0.5],
-        legend = dict(x = 0.8, y = 1.3),
-    )
 
     return lstm_train_score, lstm_val_score, lstm_test_score, fig
 
@@ -1405,11 +1345,9 @@ def update_lstm_single_step(region):
 def update_lstm_multi_step(region):
     request_new_joblib = False  # Change to True for new lstm file
     file_specifier = 1
-    shift = 1
+    shift = 12
 
     joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
-
-    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
     lstm_results = None
 
@@ -1423,14 +1361,9 @@ def update_lstm_multi_step(region):
     train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
-    inputs = lstm_results['inputs']
-    labels = lstm_results['labels']
-    predictions = lstm_results['predictions']
     scaler = lstm_results['scaler']
-    encoder = lstm_results['encoder']
+    fig = lstm_results['fig']
 
-    # Inverse transform numerical data
-    original_predictions, original_labels = inverse_transform_predictions(predictions, labels, scaler)
 
     lstm_train_score = train_score[1]
     lstm_val_score = val_score[1] 
@@ -1452,70 +1385,7 @@ def update_lstm_multi_step(region):
     lstm_val_score = f'Validation - Mean Absolute Error (MAE): {val_score_original:.3f}'
     lstm_test_score = f'Test - Mean Absolute Error (MAE): {test_score_original:.3f}'
 
-    # Extract the first value from each inner array of inputs - skip the first inner array
-    first_input_values = inputs[1:, :, 0]
-    first_input_values_flat = first_input_values.flatten()
-
-    # Prep for inverse transformation
-    full_input_array = np.zeros((first_input_values_flat.shape[0], scaler.scale_.shape[0]))
-    full_input_array[:, 0] = first_input_values_flat
-
-    # Inverse scale the first input values
-    original_input_values = scaler.inverse_transform(full_input_array)[:, 0]
-
-    fig = go.Figure()
-
-    # Shift x-axis for inputs
-    input_x_values = list(range(11, 11 + len(original_input_values)))  
-
-    # Plot the input points with disjoint connections
-    for i in range(1, len(original_input_values)+1, 12):
-        if i + 12 <= len(original_input_values):
-            fig.add_trace(
-                go.Scatter(
-                    x = input_x_values[i:i + 12],
-                    y = original_input_values[i:i + 12],
-                    mode = 'lines',
-                    line = dict(color = 'blue'),
-                    showlegend = False
-                )
-            )
-
-    # Plot label points (o)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(original_labels))),
-            y = original_labels,
-            mode = 'markers',
-            name = 'Labels',
-            marker = dict(size = 10, color = 'green', symbol = 'circle'),
-        )
-    )
-
-    # Plot prediction points (x)
-    fig.add_trace(
-        go.Scatter(
-            x = list(range(len(original_predictions))),
-            y = original_predictions,
-            mode = 'markers',
-            name = 'Predictions',
-            marker = dict(size = 10, color = 'red', symbol = 'x'),
-        )
-    )
-
-    x_range = random.randint(1,30) * 12
-    # Update layout
-    fig.update_layout(
-        title = f'Multi-Step LSTM Prediction for {plot_title}',
-        xaxis_title = 'Time Steps (Months)',
-
-        yaxis_title = 'Average Energy Usage (kWh)',
-        xaxis_range = [360 - 0.5, 383 + 0.5],
-        legend = dict(x = 0.8, y = 1.3),
-    )
-
     return lstm_train_score, lstm_val_score, lstm_test_score, fig
-
 
 # Work in progress
 # LSTM Future Predictions callback
@@ -1597,7 +1467,7 @@ def update_sarima(region):
 
     sarima_results = None
 
-    # Load LSTM scores and predictions
+    # Load SARIMA scores and predictions
     if request_new_joblib:
         sarima_results = pred_sarima(region, file_specifier)
     else:

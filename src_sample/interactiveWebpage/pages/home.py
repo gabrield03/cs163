@@ -226,32 +226,11 @@ def calc_extreme_events():
     fig.update_yaxes(
         showgrid = False,
     )
-
-    # fig.update_layout(
-    #     xaxis_title = None,
-    #     yaxis_title = None,
-    #     xaxis_showticklabels = False,
-    #     plot_bgcolor = 'rgba(0, 0, 0, 0)',
-    #     paper_bgcolor = 'rgba(0, 0, 0, 0)',
-    #     showlegend = False,
-    #     xaxis = dict(
-    #         showgrid = True,
-    #         gridcolor = 'rgba(0,0,0,0)'
-    #     ),
-    #     yaxis = dict(
-    #         color = 'white'
-    #     ),
-    #     margin = dict(
-    #         l = 0,
-    #         r = 0
-    #     ),
-    # )
-
-
-
     return fig
 
 # Random forest for feature importances
+#### Need to do statistical tests to see if sj increase in hot events ####
+#### and sf increase in cold events is true/statistically significant ####
 feature_importances_extreme_weather_section = html.Div(
     [
         dbc.Row(

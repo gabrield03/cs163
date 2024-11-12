@@ -553,10 +553,11 @@ class DataWindow():
     def __init__(self, 
                  input_width, label_width, shift, 
                  train_df_proc, val_df_proc, test_df_proc, 
-                 label_columns = None):
+                 label_columns = None, scaler = None):
         self.train_df = train_df_proc
         self.val_df = val_df_proc
         self.test_df = test_df_proc
+        self.scaler = scaler
 
         self.label_columns = label_columns
         if label_columns is not None:
@@ -582,6 +583,82 @@ class DataWindow():
         inputs.set_shape([None, self.input_width, None])
         labels.set_shape([None, self.label_width, None])
         return inputs, labels
+
+    def plot(self, model = None, plot_col = 'averagekwh', max_subplots = 1, loc = 'sj'):
+        inputs, labels = self.sample_batch
+
+        plot_col_index = self.column_indices[plot_col]
+        max_n = min(max_subplots, len(inputs))
+
+        # Inverse-transform inputs for plotting
+        averagekwh_index = self.column_indices[plot_col]
+        input_values_flat = inputs[:, :, averagekwh_index].numpy().flatten()
+
+        # Prepare for inverse transformation
+        batch_size, time_steps, _ = inputs.shape
+        n_features = self.scaler.scale_.shape[0]
+
+        # Full input array for inverse transformation
+        full_input_array = np.zeros((input_values_flat.shape[0], n_features))
+        full_input_array[:, averagekwh_index] = input_values_flat
+
+        # Inverse scale
+        original_inputs_flat = self.scaler.inverse_transform(full_input_array)[:, averagekwh_index]
+        original_inputs = original_inputs_flat.reshape(batch_size, time_steps, 1)
+
+        # Inverse transform labels similarly
+        original_labels = inverse_transform_predictions(labels.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
+
+        plot_title = 'San Jose' if loc == 'sj' else 'San Francisco'
+
+        fig = go.Figure()
+
+        for n in range(max_n):
+            # Add inputs line plot
+            fig.add_trace(go.Scatter(
+                x=self.input_indices,
+                y=original_inputs[n, :, plot_col_index],
+                mode='lines+markers',
+                name='Inputs',
+                line=dict(color='blue'),
+                marker=dict(symbol='circle')
+            ))
+
+            # Determine label column index for scatter plots
+            label_col_index = self.label_columns_indices.get(plot_col, plot_col_index)
+
+            # Add original labels as scatter plot
+            fig.add_trace(go.Scatter(
+                x=self.label_indices,
+                y=original_labels[n, :, label_col_index],
+                mode='markers',
+                name='Labels',
+                marker=dict(symbol='square', color='green', size=8, line=dict(color='black', width=1))
+            ))
+
+            # If model is provided, generate predictions and plot them
+            if model is not None:
+                predictions = model(inputs)
+                original_predictions = inverse_transform_predictions(predictions.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
+
+                fig.add_trace(go.Scatter(
+                    x=self.label_indices,
+                    y=original_predictions[n, :, label_col_index],
+                    mode='markers',
+                    name='Predictions',
+                    marker=dict(symbol='x', color='red', size=8, line=dict(color='black', width=1))
+                ))
+
+        fig.update_layout(
+            title = f'LSTM Predictions for {plot_title}',
+            xaxis_title = 'Time Steps (Months)',
+            yaxis_title = 'Average Energy Usage (kWh)',
+            legend_title="Legend",
+            # legend = dict(x = 0.8, y = 1.3),
+            height=500
+        )
+
+        return fig
 
     def make_dataset(self, data):
         data = np.array(data, dtype = np.float32)
@@ -633,28 +710,23 @@ def compile_and_fit(model, window, patience = 10, max_epochs = 100):
     return history
 
 # Inverse transformation functions
-def inverse_transform_predictions(predictions, labels, scaler):
-    # Reshape predictions to match the scaler's input shape
-    predictions_reshaped = predictions.reshape(-1, 1)
-    labels_reshaped = labels.reshape(-1, 1)
+def inverse_transform_predictions(data, scaler):
+    # Reshape data to match the scaler's input shape
+    data_reshaped = data.reshape(-1, 1)
 
     # Create an array for inverse_transform
     n_features = scaler.scale_.shape[0] 
 
     # Create full input arrays for predictions and labels
-    full_input_predictions = np.zeros((predictions_reshaped.shape[0], n_features))
-    full_input_labels = np.zeros((labels_reshaped.shape[0], n_features))
+    full_predictions = np.zeros((data_reshaped.shape[0], n_features))
 
     # averagekwh - first feature
-    full_input_predictions[:, 0] = predictions_reshaped.flatten()  
-    full_input_labels[:, 0] = labels_reshaped.flatten()  
+    full_predictions[:, 0] = data_reshaped.flatten()
 
     # Inverse transformation
-    original_predictions = scaler.inverse_transform(full_input_predictions)[:, 0]
-    original_labels = scaler.inverse_transform(full_input_labels)[:, 0]
+    original_data = scaler.inverse_transform(full_predictions)[:, 0]
 
-    return original_predictions, original_labels
-
+    return original_data
 
 def inverse_transform_categorical(encoded_data, encoder, cat_columns):
     # Inverse encoding
@@ -672,7 +744,8 @@ def pred_lstm_single_step(loc, file_specifier, shift):
     wide_window = DataWindow(
         input_width = 12, label_width = 12, shift = shift,
         train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
-        label_columns = ['averagekwh']
+        label_columns = ['averagekwh'],
+        scaler = scaler
     )
 
     # Build and train the LSTM model
@@ -686,6 +759,9 @@ def pred_lstm_single_step(loc, file_specifier, shift):
     # Gather predictions
     inputs, labels = wide_window.sample_batch
     predictions = lstm_model(inputs)
+    
+    # Get the plot figure
+    fig = wide_window.plot(model = lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
 
     res = {
         'train_score': lstm_model.evaluate(wide_window.train, verbose = 0),
@@ -695,7 +771,8 @@ def pred_lstm_single_step(loc, file_specifier, shift):
         'labels': labels.numpy(),
         'predictions': predictions.numpy(),
         'scaler': scaler,
-        'encoder': encoder
+        'encoder': encoder,
+        'fig': fig,
     }
 
     if not os.path.exists(joblib_filename_lstm_res):
@@ -713,7 +790,8 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
     multi_window = DataWindow(
         input_width = 12, label_width = 12, shift = shift,
         train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
-        label_columns = ['averagekwh']
+        label_columns = ['averagekwh'],
+        scaler = scaler
     )
     # Build the LSTM model
     ms_lstm_model = Sequential([
@@ -728,6 +806,9 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
     inputs, labels = multi_window.sample_batch
     predictions = ms_lstm_model(inputs)
 
+    # Get the plot figure
+    fig = multi_window.plot(model = ms_lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
+
     # Return model performance and predictions for further processing
     res = {
         'train_score': ms_lstm_model.evaluate(multi_window.train, verbose = 0),
@@ -738,6 +819,7 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
         'predictions': predictions.numpy(),
         'scaler': scaler,
         'encoder': encoder,
+        'fig': fig,
     }
 
     if not os.path.exists(joblib_filename_lstm_res):
@@ -814,6 +896,8 @@ def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR N
     return predictions_original_scale
 
 # SARIMA predictions
+#### What we're doing:  fitting a set of predefined functions of a certain order (p,d,q)(P,D,Q)m, ####
+#### and finding out which order resulted in the best fit. ####
 def pred_sarima(loc, file_specifier):
     joblib_filename_sarima_res = f'joblib_files/sarima/{loc}_sarima_{file_specifier}.joblib'
 
