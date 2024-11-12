@@ -503,14 +503,15 @@ info_combined_section = html.Div(
         shap_parallel_coord_plot_section,
         why_care_section,
     ],
-    # className = 'home-page-content',
     style = {
         'backgroundColor': 'black',
         'position': 'relative',
         'top': '75vh',
+        'left': 0,
         'zIndex': '1',
         'padding': '0px 100px',
         'width': '100vw',
+        'margin': 0,
     },
 )
 
@@ -589,6 +590,8 @@ def update_feature_importances_section(loc):
     importances_df.sort_values(by = ['importances'], ascending = True, inplace = True)
     importances_df['color_group'] = ['Top' if i > 3 else 'Other' for i in range(len(importances_df))]
     
+    # importances_df.reset_index(drop = True, inplace = True)
+
     fig = px.bar(
         importances_df,
         y = 'feature',
@@ -613,8 +616,12 @@ def update_feature_importances_section(loc):
         margin = dict(l = 0, r = 0),
     )
 
+    # top_df = importances_df[importances_df['color_group'] == 'Top'].reset_index(drop = True)
+    # print(top_df)
+
     # Display values to the right of the top feature bars
     fig.update_traces(
+        # text = top_df['importances'].round(3),
         text = importances_df['importances'].round(3),
         textposition = 'outside',
         insidetextanchor = 'start',

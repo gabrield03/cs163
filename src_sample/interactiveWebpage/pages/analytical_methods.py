@@ -1195,7 +1195,7 @@ layout = dbc.Container(
         pdp_section,
         lstm_section,
         sarima_section,
-        analysis_summary_section,
+        analysis_summary_section, 
     ],
     fluid = True,
 )
