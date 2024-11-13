@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import math
 
 from  utils.data_pipeline import processing_pipeline
 
@@ -155,6 +156,7 @@ def calc_extreme_events():
             mode = 'lines',
             name = 'SJ - Hot Extremes',
             line = dict(color = 'darkred', width = 3),
+            # line = dict(color = '#8B008B', width = 3),
         )
     )
 
@@ -165,6 +167,7 @@ def calc_extreme_events():
             mode = 'lines',
             name = 'SJ - Cold Extremes',
             line = dict(color = 'darkblue', width = 3),
+            # line = dict(color = '#2694ab', width = 3, dash = 'dash'),
         )
     )
 
@@ -176,6 +179,8 @@ def calc_extreme_events():
             mode = 'lines',
             name = 'SF - Hot Extremes',
             line = dict(color = 'red', width = 3, dash = 'dash'),
+            # line = dict(color = '#ff4d4d', width = 3),
+            
         )
     )
 
@@ -186,6 +191,7 @@ def calc_extreme_events():
             mode = 'lines',
             name = 'SF - Cold Extremes',
             line = dict(color = 'lightblue', width = 3, dash = 'dash'),
+            # line = dict(color = '#4dbedf', width = 3, dash = 'dash'),
         )
     )
 
@@ -239,11 +245,11 @@ feature_importances_extreme_weather_section = html.Div(
                     [
                         html.P(
                             [
-                                'What Influences Energy Usage the Most?',
+                                'What Influences Energy Usage?',
                             ],
                             style = {
                                 'color': 'white',
-                                'font-size': '22px',
+                                'font-size': '27px',
                                 'word-break': 'keep-all',
                                 'font-style': 'normal',
                                 'font-variant': 'small-caps',
@@ -290,7 +296,7 @@ feature_importances_extreme_weather_section = html.Div(
                             ],
                             style = {
                                 'color': 'white',
-                                'font-size': '22px',
+                                'font-size': '27px',
                                 'word-break': 'keep-all',
                                 'font-style': 'normal',
                                 'font-variant': 'small-caps',
@@ -377,13 +383,90 @@ feature_importances_extreme_weather_section = html.Div(
             className = 'mb-3',
         ),
     ],
-    className = 'mb-5 pb-5',
+    className = 'mb-20 mt-5',
 )
 
 hypothetical_input_section = html.Div(
     [
         dbc.Row(
             [
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'Why Should I Care?',
+                            ],
+                            className = 'text-center',
+                            style = {
+                                'color': 'white',
+                                'font-size': '27px',
+                                'word-break': 'keep-all',
+                                'font-style': 'normal',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                    ],
+                    width = 12,
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'Similar temperature values ',
+                                'impact energy usage in each region ',
+                                html.Span(
+                                    'differently ',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'color': '#8B008B',
+                                    },
+                                ),
+
+                                html.Br(),
+
+                                'As temp increases, San Jose\'s energy usage ',
+                                html.Span(
+                                    'increases ',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'color': 'red',
+                                    },
+                                ),
+
+                                'and San Francisco\'s ',
+                                html.Span(
+                                    'decreases ',
+                                    style = {
+                                        'font-weight': 'bold',
+                                        'color': 'lightblue',
+                                    },
+                                ),
+                                '(at these scales)',
+                                
+                            ],
+                            style = {
+                                'color': 'white',
+                                'font-size': '18px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                    ],
+                    width = 8,
+                ),
+                dbc.Col([], width = 2),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col([], width = 1),
                 dbc.Col(
                     [
                         html.P(
@@ -394,21 +477,21 @@ hypothetical_input_section = html.Div(
                             }
                         ),
                         dcc.Slider(
-                            60.0, 110.0,
+                            60, 110,
                             step = None,
                             marks = {
-                                60.0: {'label': '60', 'style': {'color': 'white'}},
-                                70.0: {'label': '70', 'style': {'color': 'white'}},
-                                80.0: {'label': '80', 'style': {'color': 'white'}},
-                                90.0: {'label': '90', 'style': {'color': 'white'}},
-                                100.0: {'label': '100', 'style': {'color': 'white'}},
-                                110.0: {'label': '110', 'style': {'color': 'white'}},
+                                60: {'label': '60', 'style': {'color': 'white'}},
+                                70: {'label': '70', 'style': {'color': 'white'}},
+                                80: {'label': '80', 'style': {'color': 'white'}},
+                                90: {'label': '90', 'style': {'color': 'white'}},
+                                100: {'label': '100', 'style': {'color': 'white'}},
+                                110: {'label': '110', 'style': {'color': 'white'}},
                             },
                             id = 'tmax-slider',
-                            value = 60.0,
+                            value = 60,
                         ),
                     ],
-                    width = 6,
+                    width = 5,
                 ),
                 dbc.Col(
                     [
@@ -420,22 +503,23 @@ hypothetical_input_section = html.Div(
                             }
                         ),
                         dcc.Slider(
-                            0.0, 50.0,
+                            0, 50,
                             step = None,
                             marks = {
-                                0.0: '0',
-                                10.0: '10',
-                                20.0: '20',
-                                30.0: '30',
-                                40.0: '40',
-                                50.0: '50'
+                                0: {'label': '0', 'style': {'color': 'white'}},
+                                10: {'label': '10', 'style': {'color': 'white'}},
+                                20: {'label': '20', 'style': {'color': 'white'}},
+                                30: {'label': '30', 'style': {'color': 'white'}},
+                                40: {'label': '40', 'style': {'color': 'white'}},
+                                50: {'label': '50', 'style': {'color': 'white'}}
                             },
                             id = 'tmin-slider',
-                            value = 0.0,
+                            value = 0,
                         ),
                     ],
-                    width = 6,
+                    width = 5,
                 ),
+                dbc.Col([], width = 1),
             ],
             className = 'mb-5',
         ),
@@ -444,7 +528,7 @@ hypothetical_input_section = html.Div(
                 dbc.Col(
                     [
                         html.H4(
-                            'San Jose Average kWh Prediction',
+                            'San Jose Average kWh Prediction:',
                             style = {
                                 'textAlign': 'center',
                                 'color': 'white',
@@ -464,7 +548,7 @@ hypothetical_input_section = html.Div(
                 dbc.Col(
                     [
                         html.H4(
-                            'San Francisco Average kWh Prediction',
+                            'San Francisco Average kWh Prediction:',
                             style = {
                                 'textAlign': 'center',
                                 'color': 'white',
@@ -484,7 +568,7 @@ hypothetical_input_section = html.Div(
             ],
         ),
     ],
-    className = 'mb-5 pb-5',
+    className = 'mb-20',
 )
 
 # SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
@@ -592,41 +676,11 @@ shap_parallel_coord_plot_section = html.Div(
     className = 'mb-5 pb-5',
 )
 
-
-why_care_section = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.P(
-                            [
-                                'Why should I care?',
-                            ],
-                            className = 'text-center',
-                            style = {
-                                'color': 'white',
-                                'font-size': '30px',
-                                'word-break': 'keep-all',
-                                'font-style': 'normal',
-                                'font-variant': 'small-caps',
-                            },
-                        ),
-                    ],
-                    width = 12,
-                ),
-            ],
-        ),
-    ],
-    className = 'mb-5 p-5',
-)
-
 info_combined_section = html.Div(
     [
         feature_importances_extreme_weather_section,
         hypothetical_input_section,
         shap_parallel_coord_plot_section,
-        why_care_section,
     ],
     style = {
         'backgroundColor': 'black',
@@ -789,7 +843,7 @@ def update_predictions(tmax, tmin):
     sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
     
     # Format outputs
-    sj_output = f"Predicted Average kWh: {sj_value}"
-    sf_output = f"Predicted Average kWh: {sf_value}"
+    sj_output = f'{math.ceil(sj_value)} kWh'
+    sf_output = f'{math.ceil(sf_value)} kWh'
     
     return sj_output, sf_output
