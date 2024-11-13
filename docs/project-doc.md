@@ -402,5 +402,65 @@ The following sections should be used for the visualization planning. These are 
 ## Visualization Plan
 <!--- List and explain what types of plots you plan to provide and what you are trying to show through the diagrams. You should explore the best way to visualize the information and message based on the lectures on visualization and related topics. It is required to have at least two interactive graphing and five static plots. -->
 
+- The purpose of my visualizations is to communicate my project's main goals effectively. I aim for anyone visiting my webpage to quickly grasp the core ideas, outcomes, and methodology, regardless of their familiarity with the topic. I'll keep more detailed analysis and statistical methods on a separate page to avoid overwhelming visitors on the home page.
+
+- The home page's primary goal is to capture visitors' attention, visually introduce the project, and spark interest. It opens with a scenic drone view of the San Francisco Bay Area, with a succinct title overlaid and key feature variables related to the project fading in and out below it. The video gradually fades to black at the bottom, hinting for visitors to scroll down. Here, a few initial plots summarize the project's objectives and findings. My goal is to keep these visuals clean and focused, letting the plots speak for themselves, with only essential information displayed.
+
+- Since my project's two main objectives are (1) identifying weather features that most affect energy usage in San Jose and San Francisco and (2) exploring how climate shifts impact each region differently, my visuals will focus on these points.
+
+    - First Plot: A simple horizontal bar graph displays each region's key features impacting energy consumption. A dropdown menu allows users to toggle between San Jose and San Francisco, updating the graph accordingly.
+
+    - Second Plot: A line graph showing extreme weather occurrences in both regions by year, defined as temperatures in the top 90th percentile (tmax) or bottom 10th percentile (tmin). I'm refining this plot, as the current version appears a bit cluttered, making it challenging to interpret.
+
+- Each plot has a concise title and a brief description emphasizing the main takeaway. For example, the bar graph's description notes that San Jose is most sensitive to seasonality, while San Francisco is more affected by temperature extremes. Words like "seasonality" and "temperature extremes" are highlighted to add visual impact and clarity. Similarly, the line graph highlights key phrases to focus visitors on the plot's significance.
+
+- The two plots mentioned previously are aligned in the same row. Under them is another visualization/interactive section. With my project, I want to implore how changes in temperature (max and min) affect each region. The component to do this is still being worked on, but currently I have two dash sliders. One is max temperature and the other is min temperature. They each have 6 tick marks. The user can click on any combination of tick marks and a "prediction of average energy consumption" will be shown for each region. It is titled as "why should I care?" It has a short sentence that explains that changes in average temperatures have real affects on the energy usage. I am working on the best way to phrase this section to really grab the attention of any visitors.
+
+	- The predictions displayed here are pre-calculated using two separate LSTM models trained on regional data. While both models used the same hypothetical input data, the San Jose LSTM also included additional features (e.g., awnd, wsf2, wsf5, wdf2, and wdf5) unavailable in the San Francisco data. Common features such as year, month, and total customers were standardized as 2025, January, and 4000, but I am considering making these values adjustable, though too many sliders may clutter the layout.
+
+	- A more ambitious version of this visualization might use a geo-map for each region, with color-coded energy usage predictions based on the selected temperature values. Higher predictions would show as darker red, and lower ones as darker blue. I'm also debating whether to display model performance metrics here to validate the predictions, though this might fit better on a separate page with model details.
+
+- One final home page visualization — a parallel coordinate plot showing feature interactions in each region — will likely be removed. Although it's interesting to see weather features interact, the plot is currently too complex to read and might distract or disengage visitors.
+
+- Additional visualizations are located on other web pages:
+
+    - The exploratory data analysis section includes bar graphs for each region, illustrating the distribution of significant features like temperature and energy usage, along with interactive heatmaps.
+
+    - The analytical methods page includes bar plots, SHAP bubble plots, SHAP decision plots, partial dependence plots, and line graphs, all of which support the statistical analyses and methods used to investigate the project’s claims visually.
+
 ## Web Page Plan
 <!--- Explain how many pages you will have in total and what content will be shown in each page. (Each diagram discussed above should be given a proper location in this section. Also, it is required to have (1) "Project Objective" page, which explains the main goals and data sources, and (2) "Analytical Methods" page, where you explain the major techniques used in the project and provide further references. -->
+
+- My project website will include a Home Page, Project Objective Page, Analytical Methods Page, Data Exploration Page, and potentially an About Me Page. Here's how each page will be structured and the types of visuals they will include:
+
+    - Home Page
+        The home page is designed to attract visitor attention and provide a visual summary of the project's goals in a clean, uncluttered layout.
+
+        - This page will feature 3-4 key visuals:
+            - A horizontal bar graph and a line plot, which efficiently convey the main objectives and results of the project.
+            - An interactive slider section that allows users to see predicted energy consumption for each region based on maximum and minimum temperatures.
+            - Optionally, a plot showing relationships within each dataset to help visitors understand data interconnections.
+
+    - Project Objective Page
+        - This page will introduce the project's main goals, the reasons behind it, tables summarizing the regional datasets, and the data sources.
+
+        - Visuals on this page will be minimal, but it will include two interactive tables showing data samples. Each numerical feature will also have a distribution overview to help visitors understand the data composition.
+
+    - Analytical Methods Page
+        - This page focuses on the two primary analytical techniques in the project - feature analysis and time-series analysis. The page will offer an in-depth explanation of the methods, with academic-level detail.
+
+        - The page will contain various static and interactive visuals:
+            - A feature importance bar graph, SHAP bubble plots, SHAP decision plots, and partial dependence plots (PDP) for each region.
+            - Regional LSTM single-step and multi-step line plots showing predictions for different time intervals, as well as an interactive SARIMA prediction line plot to compare model performance against LSTM predictions.
+
+    - Data Exploration Page
+        - This page focuses on exploratory data analysis (EDA) to provide a visual understanding of the data and highlight key features related to energy usage and temperature patterns.
+        
+		- All visuals on this page will be interactive:
+            - Bar plots and heatmaps for temperature extremes (maximum and minimum) and average energy usage distributions in each region.
+            - Heatmaps offer an alternative view of data distribution patterns to enrich the EDA insights.
+
+    - About Me Page
+        - This page may or may not be included, depending on the project timeline. If included, it will provide a brief overview of my background, possibly a photo, and links to my social profiles.
+
+        - I do not anticipate including any diagrams on this page.
