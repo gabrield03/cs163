@@ -380,6 +380,112 @@ feature_importances_extreme_weather_section = html.Div(
     className = 'mb-5 pb-5',
 )
 
+hypothetical_input_section = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            'Max Temperature (°F)',
+                            style = {
+                                'textAlign': 'center',
+                                'color': 'white'
+                            }
+                        ),
+                        dcc.Slider(
+                            60.0, 110.0,
+                            step = None,
+                            marks = {
+                                60.0: {'label': '60', 'style': {'color': 'white'}},
+                                70.0: {'label': '70', 'style': {'color': 'white'}},
+                                80.0: {'label': '80', 'style': {'color': 'white'}},
+                                90.0: {'label': '90', 'style': {'color': 'white'}},
+                                100.0: {'label': '100', 'style': {'color': 'white'}},
+                                110.0: {'label': '110', 'style': {'color': 'white'}},
+                            },
+                            id = 'tmax-slider',
+                            value = 60.0,
+                        ),
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        html.P(
+                            'Min Temperature (°F)',
+                            style = {
+                                'textAlign': 'center',
+                                'color': 'white'
+                            }
+                        ),
+                        dcc.Slider(
+                            0.0, 50.0,
+                            step = None,
+                            marks = {
+                                0.0: '0',
+                                10.0: '10',
+                                20.0: '20',
+                                30.0: '30',
+                                40.0: '40',
+                                50.0: '50'
+                            },
+                            id = 'tmin-slider',
+                            value = 0.0,
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+            className = 'mb-5',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H4(
+                            'San Jose Average kWh Prediction',
+                            style = {
+                                'textAlign': 'center',
+                                'color': 'white',
+                            },
+                        ),
+                        html.Div(
+                            id = 'sj-prediction-output',
+                            style = {
+                                'fontSize': '24px',
+                                'textAlign': 'center',
+                                'color': 'white',
+                            },
+                        ),
+                    ],
+                    width = 6,
+                ),
+                dbc.Col(
+                    [
+                        html.H4(
+                            'San Francisco Average kWh Prediction',
+                            style = {
+                                'textAlign': 'center',
+                                'color': 'white',
+                            },
+                        ),
+                        html.Div(
+                            id = 'sf-prediction-output',
+                            style = {
+                                'fontSize': '24px',
+                                'textAlign': 'center',
+                                'color': 'white',
+                            },
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+        ),
+    ],
+    className = 'mb-5 pb-5',
+)
 
 # SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
 def shap_parallel_coord_plot(loc):
@@ -518,6 +624,7 @@ why_care_section = html.Div(
 info_combined_section = html.Div(
     [
         feature_importances_extreme_weather_section,
+        hypothetical_input_section,
         shap_parallel_coord_plot_section,
         why_care_section,
     ],
@@ -658,3 +765,31 @@ def update_feature_importances_section(loc):
     )
 
     return [fig]
+
+
+# Callback and function for energy predictions
+@callback(
+    [
+        Output('sj-prediction-output', 'children'),
+        Output('sf-prediction-output', 'children')
+    ],
+    [
+        Input('tmax-slider', 'value'),
+        Input('tmin-slider', 'value')
+    ]
+)
+def update_predictions(tmax, tmin):
+    tmax = float(tmax)
+    tmin = float(tmin)
+    # Access prediction values from preloaded data
+    sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
+    sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
+
+    sj_value = sj_pred.item() if hasattr(sj_pred, 'item') else sj_pred
+    sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
+    
+    # Format outputs
+    sj_output = f"Predicted Average kWh: {sj_value}"
+    sf_output = f"Predicted Average kWh: {sf_value}"
+    
+    return sj_output, sf_output

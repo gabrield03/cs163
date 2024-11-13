@@ -12,7 +12,6 @@ import numpy as np
 
 from  utils.data_pipeline import (
     processing_pipeline,
-    lstm_predict,
     pred_lstm_single_step, pred_lstm_multi_step,
     inverse_transform_predictions, inverse_transform_categorical,
     pred_sarima
@@ -1387,65 +1386,7 @@ def update_lstm_multi_step(region):
 
     return lstm_train_score, lstm_val_score, lstm_test_score, fig
 
-# Work in progress
-# LSTM Future Predictions callback
-@callback(
-    [
-        Output('future-prediction-graph', 'figure'),
-        Output('prediction-output', 'children'),
-    ],
-    [
-        Input('predict-button', 'n_clicks'),
-    ],
-    [
-        State('region-dropdown', 'value'),
-    ],
-)
-def update_future_prediction(n_clicks, region): # BASICALLY PASS FOR NOW
-    fig = go.Figure()
-    return fig, []
 
-    # skip for now
-    if n_clicks is None:
-        return dash.no_update
-
-    # Load  model
-    with open('pickle_files/lstm_model.pkl', 'rb') as f:
-        model = pickle.load(f)
-
-    # Load data
-    X_test = None
-    y_test = None
-
-    pickle_filename_X_test = f'pickle_files/{region}_X_test_step.pkl'
-    pickle_filename_y_test = f'pickle_files/{region}_y_test.pkl'
-
-    with open(pickle_filename_X_test, 'rb') as f:
-        X_test = pickle.load(f)
-    with open(pickle_filename_y_test, 'rb') as f:
-        y_test = pickle.load(f)
-
-    # Prepare the last known input data point
-    last_known_data = X_test[-1][-5:]  # Last 10 sequences from X_test
-    
-    last_known_data = last_known_data.reshape((1, last_known_data.shape[0], last_known_data.shape[1]))  # Now (1, 5, 1)
-
-    # Make future predictions
-    future_steps = 2  # Predicting 2 months ahead
-    predictions = lstm_predict(model, last_known_data, future_steps)
-
-    # Prepare the plot
-    future_dates = pd.date_range(start='2024-07', periods=future_steps, freq='ME')
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(
-        x=future_dates,
-        y=predictions,
-        mode='lines',
-        name='Predicted Future'))
-
-    # Return the updated figure and output text
-    return fig, f"Predicted Values: {predictions}"
 
 # SARIMA
 @callback(

@@ -827,73 +827,31 @@ def pred_lstm_multi_step(loc, file_specifier, shift):
 
     return res
 
-# LSTM - Make predictions from given user input
-def preprocess_user_data(user_data, num_features, cat_features, cyclical_features, scaler, encoder):
-    # Scale numerical features
-    num_data_scaled = scaler.transform(user_data[num_features])
-    
-    # Encode categorical features
-    cat_data_encoded = encoder.transform(user_data[cat_features])
-    
-    # Put into DF
-    num_data_scaled_df = pd.DataFrame(num_data_scaled, columns=num_features)
-    cat_data_encoded_df = pd.DataFrame(cat_data_encoded, columns=cat_features)
-    
-    # Keep the cyclical features as they are (unscaled)
-    cyclical_data_df = user_data[cyclical_features].reset_index(drop=True)
-    
-    # Concatenate all dataframes
-    combined_data = pd.concat([num_data_scaled_df, cat_data_encoded_df, cyclical_data_df], axis=1)
-    
-    return combined_data
 
-def predict_on_user_data(lstm_model, user_data, num_features, cat_features, cyclical_features, scaler, encoder):
-    # Preprocess user data
-    processed_data = preprocess_user_data(user_data, num_features, cat_features, cyclical_features, scaler, encoder)
-    
-    # Reshape for LSTM input - need 3D input: [samples, time_steps, features])
-    processed_data_reshaped = processed_data.values.reshape((1, -1, processed_data.shape[1]))
-    
-    # Predict
-    predictions = lstm_model.predict(processed_data_reshaped)
-    
-    # Inverse transform predictions to original scale
-    predictions_original_scale = scaler.inverse_transform(predictions)
-    
-    return predictions_original_scale
-
-
-
-
-
-# work in progress
-# LSTM Future Predictions
-def lstm_predict(model, last_known_data, future_steps=4): # BASICALLY PASS FOR NOW
+# Make predictions on user input
+def make_predictions():
     return 1
-    future_predictions = []
+
+
+
+
+# Predict with hypothetical data
+def predict_with_hypothetial(model, hypothetical_df, data_window):
+    # Process hypothetical data
+    hypothetical_processed = data_window.process_hypothetical_input(hypothetical_df)
+
+    # Convert to numpy array and reshape to (batch_size, time_steps, features)
+    hypothetical_input = hypothetical_processed.to_numpy().reshape(1, data_window.input_width, -1)
+
+    # Make predictions
+    predictions = model.predict(hypothetical_input)
+
+    # Inverse-transform predictions for interpretability
+    original_predictions = inverse_transform_predictions(predictions, data_window.scaler)
     
-    # Reshape the last known data for LSTM input
-    input_data = last_known_data#.reshape((1, last_known_data.shape[0], last_known_data.shape[1]))
-    
-    for _ in range(future_steps):
-        # Predict
-        prediction = model.predict(input_data)
-        
-        # Store the predicted value
-        future_predictions.append(prediction[0, 0])
-        
-        prediction_reshaped = prediction.reshape((1, 1, 1))  # Shape it to (1, 1, features)
+    return original_predictions
 
-        # Concatenate along the time axis
-        input_data = np.append(input_data[:, 1:, :], prediction_reshaped, axis=1)
 
-    future_predictions = np.array(future_predictions)
-
-    # Inverse transform the predictions to get them back to the original scale
-    #sc = preprocessor_gl.named_transformers_['num'] # need to load from joblib
-    predictions_original_scale = sc.inverse_transform(future_predictions.reshape(-1, 1).repeat(9, axis=1))
-
-    return predictions_original_scale
 
 # SARIMA predictions
 #### What we're doing:  fitting a set of predefined functions of a certain order (p,d,q)(P,D,Q)m, ####
