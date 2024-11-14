@@ -11,8 +11,8 @@
 .fade-word {
     opacity: 0;
     transition: opacity 1s ease-in-out;
-    font-size: 2rem; 
-    font-family: monospace;
+    font-size: 2vw; 
+    font-family: sans-serif;
     position: absolute;
 }
 

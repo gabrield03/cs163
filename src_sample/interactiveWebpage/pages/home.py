@@ -9,6 +9,7 @@ from  utils.data_pipeline import processing_pipeline
 
 import os
 from joblib import load
+import json
 
 
 ### Load Data ###
@@ -32,6 +33,8 @@ sf_df['region'] = 'sf'
 
 # Concatenating the dataframes
 combined_df = pd.concat([sj_df, sf_df], axis=0).reset_index(drop=True)
+
+token = open('assets/.mapbox_token').read()
 
 
 # Define the layout for the home page
@@ -59,26 +62,35 @@ home_front_section = html.Div(
         ),
         # Home page title
         html.Div(
-            html.P(
-                'Weather Impact On Energy Usage',
-                style = {
-                    'color': 'white',
-                    'textAlign': 'center',
-                    'fontSize': '3vw',
-                    'fontweight': 'bold',
-                    'fontFamily': 'roboto',
-                    'font-variant': 'small-caps',
-                    'height': '100%',
-                    'text-shadow': '2px 2px 4px #000000',
-                },
-            ),
-                style = {
-                'position': 'absolute',
-                'top': '10%',
-                'left': '50%',
-                'transform': 'translate(-50%, -50%)',
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.P(
+                                    'Weather Impact On Bay Area Energy',
+                                    style = {
+                                        'color': 'white',
+                                        
+                                        'fontSize': '3vw',
+                                        'fontweight': 'bold',
+                                        'fontFamily': 'serif',
+                                        'font-variant': 'small-caps',
+                                        'height': '100%',
+                                        'text-shadow': '2px 2px 4px #000000',
+                                    },
+                                ),
+                            ],
+                            width = 12,
+                        ),
+                    ],
+                ),
+            ],
+            style = {
+                'textAlign': 'center',
                 'zIndex': '1',
             },
+            className = 'mt-5',
         ),
         # Home page looping list of words
         html.Div(
@@ -94,7 +106,7 @@ home_front_section = html.Div(
                 'textAlign': 'center',
                 'fontSize': '2vw',
                 'fontWeight': 'bold',
-                'fontFamily': 'monospace',
+                'fontFamily': 'sans-serif',
                 'height': '100%',
                 'display': 'flex',
                 'flexDirection': 'column',
@@ -386,6 +398,7 @@ feature_importances_extreme_weather_section = html.Div(
     className = 'mb-20 mt-5',
 )
 
+### Chloropleth map based on slider input
 hypothetical_input_section = html.Div(
     [
         dbc.Row(
@@ -480,12 +493,7 @@ hypothetical_input_section = html.Div(
                             60, 110,
                             step = None,
                             marks = {
-                                60: {'label': '60', 'style': {'color': 'white'}},
-                                70: {'label': '70', 'style': {'color': 'white'}},
-                                80: {'label': '80', 'style': {'color': 'white'}},
-                                90: {'label': '90', 'style': {'color': 'white'}},
-                                100: {'label': '100', 'style': {'color': 'white'}},
-                                110: {'label': '110', 'style': {'color': 'white'}},
+                                i: '{}'.format(i + 60) for i in range(0, 60, 10)
                             },
                             id = 'tmax-slider',
                             value = 60,
@@ -506,12 +514,7 @@ hypothetical_input_section = html.Div(
                             0, 50,
                             step = None,
                             marks = {
-                                0: {'label': '0', 'style': {'color': 'white'}},
-                                10: {'label': '10', 'style': {'color': 'white'}},
-                                20: {'label': '20', 'style': {'color': 'white'}},
-                                30: {'label': '30', 'style': {'color': 'white'}},
-                                40: {'label': '40', 'style': {'color': 'white'}},
-                                50: {'label': '50', 'style': {'color': 'white'}}
+                                i: '{}'.format(i) for i in range(0, 60, 10)
                             },
                             id = 'tmin-slider',
                             value = 0,
@@ -528,18 +531,59 @@ hypothetical_input_section = html.Div(
                 dbc.Col(
                     [
                         html.H4(
-                            'San Jose Average kWh Prediction:',
+                            'Chloropleth map:',
                             style = {
                                 'textAlign': 'center',
                                 'color': 'white',
                             },
                         ),
-                        html.Div(
-                            id = 'sj-prediction-output',
+                    ],
+                    width = 12,
+                ),
+            ],
+        ),
+        dbc.Row(
+             [
+                 dbc.Col([], width = 1),
+                 dbc.Col(
+                     [
+                        dcc.Graph(
+                            id = 'chloropleth-output',
                             style = {
-                                'fontSize': '24px',
+                                'display': 'flex',
+                                'justify-content': 'center'
+                            },
+                        )
+                    ],
+                    width = 10,
+                ),
+                dbc.Col([], width = 1),
+            ],
+            className = 'mb-5',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Div(
+                            [
+                                html.P(
+                                    'SF Prediction: ',
+                                    style = {
+                                        'display': 'inline',
+                                    }
+                                ),
+                                html.Span(
+                                    id = 'sf-prediction-output',
+                                    style = {
+                                        'display': 'inline',
+                                    },
+                                ),
+                            ],
+                            style = {
                                 'textAlign': 'center',
                                 'color': 'white',
+                                'fontSize': '24px',
                             },
                         ),
                     ],
@@ -547,19 +591,25 @@ hypothetical_input_section = html.Div(
                 ),
                 dbc.Col(
                     [
-                        html.H4(
-                            'San Francisco Average kWh Prediction:',
-                            style = {
-                                'textAlign': 'center',
-                                'color': 'white',
-                            },
-                        ),
                         html.Div(
-                            id = 'sf-prediction-output',
+                            [
+                                html.P(
+                                    'SJ Prediction: ',
+                                    style = {
+                                        'display': 'inline',
+                                    }
+                                ),
+                                html.Span(
+                                    id = 'sj-prediction-output',
+                                    style = {
+                                        'display': 'inline',
+                                    },
+                                ),
+                            ],
                             style = {
-                                'fontSize': '24px',
                                 'textAlign': 'center',
                                 'color': 'white',
+                                'fontSize': '24px',
                             },
                         ),
                     ],
@@ -570,6 +620,9 @@ hypothetical_input_section = html.Div(
     ],
     className = 'mb-20',
 )
+
+
+
 
 # SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
 def shap_parallel_coord_plot(loc):
@@ -820,30 +873,81 @@ def update_feature_importances_section(loc):
 
     return [fig]
 
-
 # Callback and function for energy predictions
 @callback(
     [
+        Output('chloropleth-output', 'figure'),
+        Output('sf-prediction-output', 'children'),
         Output('sj-prediction-output', 'children'),
-        Output('sf-prediction-output', 'children')
+        
     ],
     [
         Input('tmax-slider', 'value'),
         Input('tmin-slider', 'value')
     ]
 )
-def update_predictions(tmax, tmin):
+def update_chloropleth(tmax, tmin):
     tmax = float(tmax)
     tmin = float(tmin)
-    # Access prediction values from preloaded data
+
+    # Access predictions
     sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
     sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
 
     sj_value = sj_pred.item() if hasattr(sj_pred, 'item') else sj_pred
     sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
-    
-    # Format outputs
+
+    # Format output
     sj_output = f'{math.ceil(sj_value)} kWh'
     sf_output = f'{math.ceil(sf_value)} kWh'
+
+    bay_area = None
+    with open('assets/geojson_bay_area.json', 'r') as resp:
+        bay_area = json.load(resp)
+
+    county_ids = ['06085', '06075']
+    vals = [int(sj_value), int(sf_value)]
+
+    df = pd.DataFrame(data = (county_ids, vals))
+
+    fig = px.choropleth_mapbox(
+        df,
+        geojson = bay_area,
+        locations = county_ids,
+        color = vals,
+        featureidkey = 'id',
+        color_continuous_scale = 'Sunsetdark',
+        range_color = [275, 450],
+        zoom = 7.9,
+        center = {
+            'lat': 37.397574,
+            'lon': -121.808050
+        },
+        opacity = 0.5,
+        labels = {
+            'color': 'Avg Energy (kWh)'
+        }
+    )
+
+    fig.update_layout(
+        legend = dict(
+            font = dict(
+                size = 12
+            ),
+            x = 1,
+            xanchor = 'right',
+            y = 0.5,
+            yanchor = 'middle',
+        ),
+        width = 1020,
+        height = 600,
+        margin = {
+            'r':0,
+            't':0,
+            'l':0,
+            'b':0
+        },
+        mapbox_accesstoken = token,
+    )
     
-    return sj_output, sf_output
+    return fig, sf_output, sj_output
