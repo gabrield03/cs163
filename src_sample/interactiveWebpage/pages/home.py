@@ -398,7 +398,7 @@ feature_importances_extreme_weather_section = html.Div(
     className = 'mb-20 mt-5',
 )
 
-### Chloropleth map based on slider input
+# Slider input for chloropleth plot + predictions
 hypothetical_input_section = html.Div(
     [
         dbc.Row(
@@ -436,7 +436,7 @@ hypothetical_input_section = html.Div(
                                     'differently ',
                                     style = {
                                         'font-weight': 'bold',
-                                        'color': '#8B008B',
+                                        'color': '#00FF7F',
                                     },
                                 ),
 
@@ -447,7 +447,7 @@ hypothetical_input_section = html.Div(
                                     'increases ',
                                     style = {
                                         'font-weight': 'bold',
-                                        'color': 'red',
+                                        'color': '#8B008B',
                                     },
                                 ),
 
@@ -456,7 +456,7 @@ hypothetical_input_section = html.Div(
                                     'decreases ',
                                     style = {
                                         'font-weight': 'bold',
-                                        'color': 'lightblue',
+                                        'color': '#FFD700',
                                     },
                                 ),
                                 '(at these scales)',
@@ -524,43 +524,28 @@ hypothetical_input_section = html.Div(
                 ),
                 dbc.Col([], width = 1),
             ],
-            className = 'mb-5',
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.H4(
-                            'Chloropleth map:',
-                            style = {
-                                'textAlign': 'center',
-                                'color': 'white',
-                            },
-                        ),
-                    ],
-                    width = 12,
-                ),
-            ],
+    ],
+    className = 'mb-5',
+)
+
+# Chloropleth plot
+chloropleth_map_section = html.Div(
+    [
+        dcc.Graph(
+            id = 'chloropleth-output',
         ),
-        dbc.Row(
-             [
-                 dbc.Col([], width = 1),
-                 dbc.Col(
-                     [
-                        dcc.Graph(
-                            id = 'chloropleth-output',
-                            style = {
-                                'display': 'flex',
-                                'justify-content': 'center'
-                            },
-                        )
-                    ],
-                    width = 10,
-                ),
-                dbc.Col([], width = 1),
-            ],
-            className = 'mb-5',
-        ),
+    ],
+    style = {
+        'display': 'flex',
+        'justify-content': 'center',
+        'align-items': 'center', 
+    }
+)
+
+# Hypothetical input predictions
+prediction_output_section = html.Div(
+    [
         dbc.Row(
             [
                 dbc.Col(
@@ -618,11 +603,8 @@ hypothetical_input_section = html.Div(
             ],
         ),
     ],
-    className = 'mb-20',
+    className = 'mb-20 mt-5',
 )
-
-
-
 
 # SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
 def shap_parallel_coord_plot(loc):
@@ -733,7 +715,9 @@ info_combined_section = html.Div(
     [
         feature_importances_extreme_weather_section,
         hypothetical_input_section,
-        shap_parallel_coord_plot_section,
+        chloropleth_map_section,
+        prediction_output_section,
+        #shap_parallel_coord_plot_section,
     ],
     style = {
         'backgroundColor': 'black',
