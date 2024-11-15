@@ -33,6 +33,16 @@ sf_df['region'] = 'sf'
 
 # Concatenating the dataframes
 combined_df = pd.concat([sj_df, sf_df], axis=0).reset_index(drop=True)
+# Calculate 90th quantile
+q90_tmax = combined_df.groupby('region')['tmax'].quantile(0.90).to_dict()
+# Set tmax threshold to 90th quantile
+combined_df['is_hot_extreme'] = combined_df.apply(lambda row: row['tmax'] >= q90_tmax[row['region']], axis=1)
+# Calculate 10th quantile
+q10_tmin = combined_df.groupby('region')['tmin'].quantile(0.10).to_dict()
+# Set tmin threshold to 10th quantile
+combined_df['is_cold_extreme'] = combined_df.apply(lambda row: row['tmin'] <= q10_tmin[row['region']], axis=1)
+combined_df['year'] = combined_df['year'].astype(str)
+
 
 token = open('assets/.mapbox_token').read()
 
@@ -360,8 +370,7 @@ feature_importances_extreme_weather_section = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                            id = 'extreme_weather',
-                            figure = calc_extreme_events(),
+                            id = 'extreme-weather',
                         )
                     ],
                     width = 6,
@@ -389,10 +398,44 @@ feature_importances_extreme_weather_section = html.Div(
                     ],
                     width = 2,
                 ),
-                dbc.Col([], width = 5),
-                dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+                        dcc.Tabs(
+                            id = 'extreme-weather-tabs',
+                            value = 'hot_events',
+                            children = [
+                                dcc.Tab(
+                                    label = 'Hot Events',
+                                    value = 'hot_events',
+                                    style = {
+                                        'backgroundColor': 'transparent',
+                                        'color': 'white',
+                                    }, 
+                                    selected_style={
+                                        'backgroundColor': 'transparent',
+                                        'color': 'red',
+                                    },
+                                ),
+                                dcc.Tab(
+                                    label = 'Cold Events',
+                                    value = 'cold_events',
+                                    style = {
+                                        'backgroundColor': 'transparent',
+                                        'color': 'white',
+                                    }, 
+                                    selected_style={
+                                        'backgroundColor': 'transparent',
+                                        'color': 'lightblue',
+                                    },
+                                ),
+                            ],
+                            className = 'mb-2',
+                        ),
+                    ],
+                    width = 6,
+                ),
             ],
-            className = 'mb-3',
+            justify = 'between',
         ),
     ],
     className = 'mb-20 mt-5',
@@ -431,14 +474,7 @@ hypothetical_input_section = html.Div(
                         html.P(
                             [
                                 'Similar temperature values ',
-                                'impact energy usage in each region ',
-                                html.Span(
-                                    'differently ',
-                                    style = {
-                                        'font-weight': 'bold',
-                                        'color': '#00FF7F',
-                                    },
-                                ),
+                                'impact energy usage in each region differently.',
 
                                 html.Br(),
 
@@ -935,3 +971,79 @@ def update_chloropleth(tmax, tmin):
     )
     
     return fig, sf_output, sj_output
+
+# Callback for extreme weather bar plots
+@callback(
+    [
+        Output('extreme-weather', 'figure')
+    ],
+    Input('extreme-weather-tabs', 'value')
+)
+# Function for the extreme weather bar plots
+def update_extreme_weather(selected_tab):
+    yearly_extreme_counts = combined_df[combined_df['is_hot_extreme']].groupby(['region', 'year']).size()
+    yearly_total_counts = combined_df.groupby(['region', 'year']).size()
+    yearly_extreme_frequency = (yearly_extreme_counts / yearly_total_counts * 100).fillna(0).reset_index()
+    
+    yearly_extreme_frequency.columns = ['region', 'year', 'occurrence_percentage']
+
+    if selected_tab == 'cold_events':
+        yearly_extreme_counts = combined_df[combined_df['is_cold_extreme']].groupby(['region', 'year']).size()
+        yearly_total_counts = combined_df.groupby(['region', 'year']).size()
+        yearly_extreme_frequency = (yearly_extreme_counts / yearly_total_counts * 100).fillna(0).reset_index()
+        
+        yearly_extreme_frequency.columns = ['region', 'year', 'occurrence_percentage']
+
+    yearly_extreme_frequency = yearly_extreme_frequency[yearly_extreme_frequency['year'] != '2024']
+
+    fig = px.bar(
+        yearly_extreme_frequency,
+        x = 'year',
+        y = 'occurrence_percentage',
+        color = 'region',
+        barmode = 'group',
+        labels = {
+            'occurrence_percentage': 'Occurrence %',
+            'year': 'Year'
+        },
+        title = f"{'Hot' if selected_tab == 'hot_events' else 'Cold'} Events Occurrence Percentage by Year",
+        color_discrete_sequence = ['#710280', '#808000']
+    )
+
+    fig.update_layout(
+        title_font_color = 'white',
+        xaxis_title = None,
+        yaxis_title = "Occurrence %",
+        plot_bgcolor = 'rgba(0, 0, 0, 0)',
+        paper_bgcolor = 'rgba(0, 0, 0, 0)',
+        xaxis = dict(
+            showgrid = True,
+            gridcolor = 'rgba(0,0,0,0)',
+            color = 'white',
+            tickangle = 45,
+        ),
+        yaxis = dict(
+            color = 'white'
+        ),
+        margin = dict(
+            l = 0,
+            r = 0,
+        ),
+        legend = dict(
+            yanchor = "top",
+            y = 1.0,
+            xanchor = "right",
+            x = 1.1,
+            font = dict(
+                family = "Courier",
+                size = 12,
+                color = "white",
+            )
+        )
+    )
+
+    fig.update_yaxes(
+        showgrid = False,
+    )
+
+    return [fig]
