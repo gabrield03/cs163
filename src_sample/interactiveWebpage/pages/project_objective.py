@@ -98,55 +98,7 @@ goals_and_sources_section = html.Div(
             ],
         ),
     ],
-    className = 'mb-5',
-)
-
-data_sources = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.P(
-                        'Data Sources',
-                        style = {
-                            'text-align': 'center',
-                            'font-size': '40px',
-                            'font-variant': 'small-caps',
-                            #'text-shadow': '2px 2px 4px #000000',
-                        },
-                    ),
-                    width = 12,
-                    className = 'mb-2 text-center',
-                ),
-            ],
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.P(
-                        [
-                            '',
-                            '',
-                            '',
-
-                            html.Br(), html.Br(),
-
-                            '',
-                            '',
-                            '',
-                        
-                        ],
-                        style = {
-                            'text-align': 'left',
-                        },
-                    ),
-                    width = 12,
-                    className = 'mb-2 text-center',
-                ),
-            ],
-        ),
-    ],
-    className = 'mb-5',
+    className = 'mb-10',
 )
 
 data_table1 = html.Div(
@@ -201,7 +153,6 @@ data_table1 = html.Div(
             style = {'marginBottom': '30px'},
         ),
     ],
-    className = 'mb-5',
 )
 
 data_table2 = html.Div(
@@ -256,6 +207,96 @@ data_table2 = html.Div(
             style = {'marginBottom': '30px'},
         ),
     ],
+    className = 'mb-10',
+)
+
+data_sources = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        'Data Sources',
+                        style = {
+                            'text-align': 'center',
+                            'font-size': '40px',
+                            'font-variant': 'small-caps',
+                        },
+                    ),
+                    width = 12,
+                    className = 'mb-2 text-center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                html.Span(
+                                    'Electricity Data (PG&E)',
+                                    style = {
+                                        'font-size': '32px',
+                                        'font-variant': 'small-caps',
+                                    },
+                                ),
+
+                                # )
+                                html.Br(), html.Br(),
+                                'The PG&E data contains quarterly electricity consumption by ZIP code ',
+                                'for northern and central California. Data consists of customer types ',
+                                '(residential, commercial, etc.), average kilowatt-hours per customer ',
+                                '(kWh) consumed, total kilowatt-hours (kWh) consumed, and the number of ',
+                                'customers per ZIP code.',
+                                html.Br(),
+                                'Source: ',
+                                dcc.Link(
+                                    href = 'https://pge-energydatarequest.com/public_datasets',
+                                    title = 'PG&E Link'
+                                )
+                            ],
+                            style = {
+                                'text-align': 'left',
+                            },
+                            className = 'mb-5',
+                        ),
+                        html.P(
+                            [
+                                html.Span(
+                                    'Weather Data (NOAA)',
+                                    style = {
+                                        'font-size': '32px',
+                                        'font-variant': 'small-caps',
+                                    },
+                                ),
+
+                                # )
+                                html.Br(), html.Br(),
+                                'This National Oceanic and Atmospheric Administration (NOAA), consists of ',
+                                'daily maximum and minimum temperatures, precipitation, and wind speed ',
+                                'measurements from various Bay Area (San Jose and San Francisco) weather ',
+                                'stations. The records are provided daily but were aggregated to monthly ',
+                                'records to align with the eletricity data.',
+                                html.Br(),
+                                'Source: ',
+                                dcc.Link(
+                                    href = 'https://www.ncei.noaa.gov/cdo-web/search',
+                                    title = 'NOAA Link'
+                                )
+                            ],
+                            style = {
+                                'text-align': 'left',
+                            },
+                        ),
+                    ],
+                    width = 12,
+                    className = 'mb-2 text-center',
+                ),
+            ],
+        ),
+    ],
+    className = 'mb-5',
 )
 
 layout = dbc.Container(
@@ -264,9 +305,9 @@ layout = dbc.Container(
             [
                 data_header,
                 goals_and_sources_section,
-                data_sources,
                 data_table1,
                 data_table2,
+                data_sources,
             ],
             style = {
                 'padding': '0px 100px',

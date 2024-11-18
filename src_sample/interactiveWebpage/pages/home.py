@@ -478,7 +478,7 @@ hypothetical_input_section = html.Div(
 
                                 html.Br(),
 
-                                'As temp increases, San Jose\'s energy usage ',
+                                'As local temperatures increase, San Jose\'s energy usage ',
                                 html.Span(
                                     'increases ',
                                     style = {
@@ -495,7 +495,7 @@ hypothetical_input_section = html.Div(
                                         'color': '#FFD700',
                                     },
                                 ),
-                                '(at these scales)',
+                                '.',
                                 
                             ],
                             style = {
@@ -933,14 +933,12 @@ def update_chloropleth(tmax, tmin):
 
     df = pd.DataFrame(data = (county_ids, vals))
     
-    #print(df)
     # Change sj
     df.iloc[1, 0] = df.iloc[1, 0] - sj_temp_at_low
 
     # Change sf
     df.iloc[1, 1] = df.iloc[1, 1] - sf_temp_at_low
 
-    #print(df)
 
     vals = [int(df.iloc[1, 0]), int(df.iloc[1, 1])]
 
@@ -951,7 +949,6 @@ def update_chloropleth(tmax, tmin):
         color = vals,
         featureidkey = 'id',
         color_continuous_scale = 'Sunsetdark',
-        # range_color = [270, 452],
         range_color = [-30, 30],
         zoom = 7.9,
         center = {
@@ -962,6 +959,22 @@ def update_chloropleth(tmax, tmin):
         labels = {
             'color': 'Avg Energy (kWh)'
         }
+    )
+
+    # note = 'NYSE Trading Days After Announcement<br>Source:<a href="https://www.nytimes.com/"">The NY TIMES</a> Data: <a href="https://www.yahoofinance.com/">Yahoo! Finance</a>'
+    note = 'Regional color shows the difference of average energy (kWh) usage as temperatures change<br> \
+            from the base temperatures: Max Temperature (°F): 60 and Min Temperature (°F): 0'
+    fig.add_annotation(
+        # showarrow = False,
+        text = note,
+        font = dict(
+            size = 10,
+            color = 'white',
+        ), 
+        xref = 'x domain',
+        x = 0.5,
+        yref = 'y domain',
+        y = -0.5
     )
 
     fig.update_layout(
