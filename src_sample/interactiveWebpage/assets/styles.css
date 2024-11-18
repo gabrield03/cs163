@@ -2,9 +2,10 @@
     background-color: #000000 !important;
     /* min-height: 100vh; */
     position: absolute;
-    /* left: 0; */
-    /* width: 100vw; */
-    /* max-width: 100vw; */
+}
+
+.pages-content {
+    background-color: #FAF9F6 !important;
 }
 
 

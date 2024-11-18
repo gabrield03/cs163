@@ -910,6 +910,9 @@ def update_chloropleth(tmax, tmin):
     tmax = float(tmax)
     tmin = float(tmin)
 
+    sj_temp_at_low = 431 # sj low 431, high: 449
+    sf_temp_at_low = 305 # sf low 305, high: 275
+
     # Access predictions
     sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
     sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
@@ -918,8 +921,8 @@ def update_chloropleth(tmax, tmin):
     sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
 
     # Format output
-    sj_output = f'{math.ceil(sj_value)} kWh'
-    sf_output = f'{math.ceil(sf_value)} kWh'
+    sj_output = f'{math.floor(sj_value)} kWh'
+    sf_output = f'{math.floor(sf_value)} kWh'
 
     bay_area = None
     with open('assets/geojson_bay_area.json', 'r') as resp:
@@ -929,6 +932,17 @@ def update_chloropleth(tmax, tmin):
     vals = [int(sj_value), int(sf_value)]
 
     df = pd.DataFrame(data = (county_ids, vals))
+    
+    #print(df)
+    # Change sj
+    df.iloc[1, 0] = df.iloc[1, 0] - sj_temp_at_low
+
+    # Change sf
+    df.iloc[1, 1] = df.iloc[1, 1] - sf_temp_at_low
+
+    #print(df)
+
+    vals = [int(df.iloc[1, 0]), int(df.iloc[1, 1])]
 
     fig = px.choropleth_mapbox(
         df,
@@ -937,7 +951,8 @@ def update_chloropleth(tmax, tmin):
         color = vals,
         featureidkey = 'id',
         color_continuous_scale = 'Sunsetdark',
-        range_color = [275, 450],
+        # range_color = [270, 452],
+        range_color = [-30, 30],
         zoom = 7.9,
         center = {
             'lat': 37.397574,

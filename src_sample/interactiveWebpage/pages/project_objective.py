@@ -35,7 +35,7 @@ data_header = html.Div(
                     style = {
                         'font-size': '50px',
                         'height': '100%',
-                        'text-shadow': '2px 2px 4px #000000',
+                        #'text-shadow': '2px 2px 4px #000000',
                     },
                 ),
             ],
@@ -50,8 +50,98 @@ goals_and_sources_section = html.Div(
             [
                 dbc.Col(
                     html.P(
-                        '<Explanation of project goals and data sources...>',
+                        'Project Goals',
+                        style = {
+                            'text-align': 'center',
+                            'font-size': '40px',
+                            'font-variant': 'small-caps',
+                            #'text-shadow': '2px 2px 4px #000000',
+                        },
                     ),
+                    width = 12,
+                    className = 'mb-2 text-center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        [
+                            'There are two major goals for this project.',
+
+                            html.Br(), html.Br(),
+                            'First, I wanted to identify the weather features that affect ',
+                            'energy consumption in San Jose and San Francisco. I was curious to ',
+                            'to see if each region was disproportionately affected by certain weather ',
+                            'variables. For instance, is San Jose severely impacted by high temperatures ',
+                            'wind speed, precipitation, or some other factors or combination of factors?',
+
+                            html.Br(), html.Br(),
+                            'The second goal of this project was to explore how shifts in climate ',
+                            '(e.g., increased frequency of extreme temperatures) affect energy usage. ',
+                            'How do extreme weather events affect the energy usage of each region? ',
+
+                            html.Br(), html.Br(),
+                            'A related sub-goal was to build a model that accurately predicts the ',
+                            'energy usage of each region based on varying weather variables such as ',
+                            'maximum temperature and minimum temperature.',
+                        
+                        ],
+                        style = {
+                            'text-align': 'left',
+                        },
+                    ),
+                    width = 12,
+                    className = 'mb-2 text-center',
+                ),
+            ],
+        ),
+    ],
+    className = 'mb-5',
+)
+
+data_sources = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        'Data Sources',
+                        style = {
+                            'text-align': 'center',
+                            'font-size': '40px',
+                            'font-variant': 'small-caps',
+                            #'text-shadow': '2px 2px 4px #000000',
+                        },
+                    ),
+                    width = 12,
+                    className = 'mb-2 text-center',
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.P(
+                        [
+                            '',
+                            '',
+                            '',
+
+                            html.Br(), html.Br(),
+
+                            '',
+                            '',
+                            '',
+                        
+                        ],
+                        style = {
+                            'text-align': 'left',
+                        },
+                    ),
+                    width = 12,
+                    className = 'mb-2 text-center',
                 ),
             ],
         ),
@@ -70,7 +160,7 @@ data_table1 = html.Div(
                             'text-align': 'center',
                             'font-size': '40px',
                             'font-variant': 'small-caps',
-                            'text-shadow': '2px 2px 4px #000000',
+                            #'text-shadow': '2px 2px 4px #000000',
                         },
                     ),
                     width = 12,
@@ -125,7 +215,7 @@ data_table2 = html.Div(
                             'text-align': 'center',
                             'font-size': '40px',
                             'font-variant': 'small-caps',
-                            'text-shadow': '2px 2px 4px #000000'
+                            #'text-shadow': '2px 2px 4px #000000'
                         },
                     ),
                     width = 12,
@@ -168,13 +258,21 @@ data_table2 = html.Div(
     ],
 )
 
-
 layout = dbc.Container(
     [
-        data_header,
-        goals_and_sources_section,
-        data_table1,
-        data_table2,
+        html.Div(
+            [
+                data_header,
+                goals_and_sources_section,
+                data_sources,
+                data_table1,
+                data_table2,
+            ],
+            style = {
+                'padding': '0px 100px',
+                'backgroundColor': '#FAF9F6',
+            },
+        ),
     ],
     fluid = True,
 )

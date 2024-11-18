@@ -43,7 +43,7 @@ analytics_header_section = html.Div(
                     style = {
                         'font-size': '50px',
                         'height': '100%',
-                        'text-shadow': '2px 2px 4px #000000',
+                        #'text-shadow': '2px 2px 4px #000000',
                         
                     },
                 ),
@@ -211,7 +211,7 @@ feature_importances_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000'
+                                #'text-shadow': '2px 2px 4px #000000'
                             },
                         ),
                         html.P(
@@ -303,7 +303,7 @@ shap_intro_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -568,7 +568,7 @@ pdp_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -725,7 +725,7 @@ lstm_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -772,7 +772,7 @@ lstm_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                     ],
@@ -850,7 +850,7 @@ lstm_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                     ],
@@ -936,7 +936,7 @@ sarima_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -986,7 +986,7 @@ sarima_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                     ],
@@ -1061,7 +1061,7 @@ analysis_summary_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '60px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -1073,7 +1073,7 @@ analysis_summary_section = html.Div(
                                 'text-align': 'left',
                                 'font-size': '35px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -1138,7 +1138,7 @@ analysis_summary_section = html.Div(
                                 'text-align': 'left',
                                 'font-size': '35px',
                                 'font-variant': 'small-caps',
-                                'text-shadow': '2px 2px 4px #000000',
+                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -1201,10 +1201,11 @@ layout = dbc.Container(
             ],
             style = {
                 'padding': '0px 100px',
+                'backgroundColor': '#FAF9F6',
             },
         ),
     ],
-    #fluid = True,
+    fluid = True,
 )
 
 # Callback to toggle visibility of each collapse

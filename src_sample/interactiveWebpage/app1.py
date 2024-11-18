@@ -11,7 +11,7 @@ from pages import (
 # Set the App Properties
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.LUX],
+    external_stylesheets=[dbc.themes.LUX, '/assets/styles.css'],
     meta_tags=[
         {'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}
     ],
@@ -62,23 +62,6 @@ navbar = dbc.Navbar(
                             'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
-                    # dbc.NavLink(
-                    #     "Real-Time Analysis",
-                    #     href="/real-time-analysis",
-                    #     active="exact",
-                    #     disabled = True,
-                    #     style = {
-                    #         'color': '#6d6b6b'
-                    #     }
-                    # ),
-                    # dbc.NavLink(
-                        # "Home (old)",
-                        # href="/home",
-                        # active="exact",
-                        # style = {
-                        # 'color': '#6d6b6b'
-                        # }
-                    # ),
                 ],
                 navbar=True,
                 className="ml-auto",
@@ -100,7 +83,6 @@ app.layout = html.Div(
         navbar,
         html.Div(
             id = 'page-content',
-            # className = 'container mt-4',
             className = 'mt-4',
         ),
     ],
@@ -122,8 +104,6 @@ def render_page_content(pathname):
         return real_time_analysis.layout
     elif pathname == '/project-objective':
         return project_objective.layout
-    # elif pathname == '/home':
-    #     return home_old.layout
     else:
         return html.Div(
             [

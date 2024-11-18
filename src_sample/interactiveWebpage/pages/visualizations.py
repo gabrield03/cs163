@@ -53,7 +53,7 @@ visualizations_header = html.Div(
                     style = {
                         'font-size': '50px',
                         'height': '100%',
-                        'text-shadow': '2px 2px 4px #000000',
+                        #'text-shadow': '2px 2px 4px #000000',
                     },
                 ),
             ],
@@ -73,7 +73,7 @@ sj_histplots_1 = html.Div(
                         'text-align': 'center',
                         'font-size': '40px',
                         'font-variant': 'small-caps',
-                        'text-shadow': '2px 2px 4px #000000'
+                        #'text-shadow': '2px 2px 4px #000000'
                     },
                 ),
             ],
@@ -145,7 +145,7 @@ sf_histplots_1 = html.Div(
                         'text-align': 'center',
                         'font-size': '40px',
                         'font-variant': 'small-caps',
-                        'text-shadow': '2px 2px 4px #000000',
+                        #'text-shadow': '2px 2px 4px #000000',
                     },
                 ),
             ],
@@ -216,7 +216,7 @@ comb_heatmaps = html.Div(
                         'text-align': 'center',
                         'font-size': '40px',
                         'font-variant': 'small-caps',
-                        'text-shadow': '2px 2px 4px #000000',
+                        #'text-shadow': '2px 2px 4px #000000',
                     },
                 ),
             ],
@@ -323,10 +323,18 @@ comb_heatmaps = html.Div(
 # Add the contents to the app layout
 layout = dbc.Container(
     [
-        visualizations_header,
-        sj_histplots_1,
-        sf_histplots_1,
-        comb_heatmaps,
+        html.Div(
+            [
+                visualizations_header,
+                sj_histplots_1,
+                sf_histplots_1,
+                comb_heatmaps,
+            ],
+            style = {
+                'padding': '0px 100px',
+                'backgroundColor': '#FAF9F6',
+            },
+        ),
     ],
     fluid = True
 )
