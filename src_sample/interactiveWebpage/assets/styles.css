@@ -8,6 +8,11 @@
     background-color: #FAF9F6 !important;
 }
 
+/* Fix the small margins */
+body {
+    margin: 0;
+}
+
 
 .fade-word {
     opacity: 0;
@@ -17,10 +22,32 @@
     position: absolute;
 }
 
-/* This class will make the words visible */
+
 .fade-word.visible {
-    opacity: 1;  /* Visible when class added */
+    opacity: 1;
 }
+
+@keyframes fadeInOut {
+    0%, 30% { 
+        opacity: 0; 
+        color: white; 
+    }
+    50%, 80% { 
+        opacity: 1; 
+        color: yellow;
+    }
+    100% { 
+        opacity: 0; 
+        color: white; 
+    }
+}
+
+.fade-sentence {
+    animation: fadeInOut 6s infinite;
+    text-align: center;
+    font-size: 20px;
+}
+
 
 
 /* Custom accordion */

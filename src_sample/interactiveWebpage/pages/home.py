@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import math
+import numpy as np
 
 from  utils.data_pipeline import processing_pipeline
 
@@ -147,114 +148,6 @@ home_front_section = html.Div(
         dcc.Interval(id = 'page-load-interval', interval = 3000, n_intervals = 0),
     ],
 )
-
-# Calculate extreme weather events for each region
-def calc_extreme_events():
-    tmax_90th = combined_df.groupby('region')['tmax'].quantile(0.90).to_dict()
-    tmin_10th = combined_df.groupby('region')['tmin'].quantile(0.10).to_dict()
-
-    # Set tmax threshold to 90th percentile and tmin threshold to 10th percentile
-    combined_df['is_hot_extreme'] = combined_df.apply(lambda row: row['tmax'] >= tmax_90th[row['region']], axis=1)
-    combined_df['is_cold_extreme'] = combined_df.apply(lambda row: row['tmin'] <= tmin_10th[row['region']], axis=1)
-
-    # tmax - Calc yearly frequency
-    yearly_hot_extreme_counts = combined_df[combined_df['is_hot_extreme']].groupby(['region', 'year']).size()
-    yearly_hot_total_counts = combined_df.groupby(['region', 'year']).size()
-    yearly_hot_extreme_frequency = (yearly_hot_extreme_counts / yearly_hot_total_counts * 100).fillna(0)
-    # tmax - Calc yearly frequency
-    yearly_cold_extreme_counts = combined_df[combined_df['is_cold_extreme']].groupby(['region', 'year']).size()
-    yearly_cold_total_counts = combined_df.groupby(['region', 'year']).size()
-    yearly_cold_extreme_frequency = (yearly_cold_extreme_counts / yearly_cold_total_counts * 100).fillna(0)
-
-
-    # Prepare figure
-    fig = go.Figure()
-
-    # Add lines for San Jose (deep red for tmax, deep blue for tmin)
-    fig.add_trace(
-        go.Scatter(
-            x = yearly_hot_extreme_frequency.loc['sj'].index,
-            y = yearly_hot_extreme_frequency.loc['sj'].values,
-            mode = 'lines',
-            name = 'SJ - Hot Extremes',
-            line = dict(color = 'darkred', width = 3),
-            # line = dict(color = '#8B008B', width = 3),
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x = yearly_cold_extreme_frequency.loc['sj'].index,
-            y = yearly_cold_extreme_frequency.loc['sj'].values,
-            mode = 'lines',
-            name = 'SJ - Cold Extremes',
-            line = dict(color = 'darkblue', width = 3),
-            # line = dict(color = '#2694ab', width = 3, dash = 'dash'),
-        )
-    )
-
-    # Add lines for San Francisco (lighter red for tmax, lighter blue for tmin)
-    fig.add_trace(
-        go.Scatter(
-            x = yearly_hot_extreme_frequency.loc['sf'].index,
-            y = yearly_hot_extreme_frequency.loc['sf'].values,
-            mode = 'lines',
-            name = 'SF - Hot Extremes',
-            line = dict(color = 'red', width = 3, dash = 'dash'),
-            # line = dict(color = '#ff4d4d', width = 3),
-            
-        )
-    )
-
-    fig.add_trace(
-        go.Scatter(
-            x = yearly_cold_extreme_frequency.loc['sf'].index,
-            y = yearly_cold_extreme_frequency.loc['sf'].values,
-            mode = 'lines',
-            name = 'SF - Cold Extremes',
-            line = dict(color = 'lightblue', width = 3, dash = 'dash'),
-            # line = dict(color = '#4dbedf', width = 3, dash = 'dash'),
-        )
-    )
-
-    fig.update_layout(
-        xaxis_title = None,
-        yaxis_title = "Occurrence % per Year",
-        plot_bgcolor = 'rgba(0, 0, 0, 0)',
-        paper_bgcolor = 'rgba(0, 0, 0, 0)',
-        xaxis = dict(
-            showgrid = True,
-            gridcolor = 'rgba(0,0,0,0)',
-            color = 'white'
-        ),
-        yaxis = dict(
-            color = 'white'
-        ),
-        margin = dict(
-            l = 0,
-            r = 0
-        ),
-        legend = dict(
-            yanchor = "top",
-            y = 1.3,
-            xanchor = "left",
-            x = 0.01,
-            font = dict(
-                family = "Courier",
-                size = 12,
-                color = "white",
-            )
-        )
-    )
-
-    fig.update_xaxes(
-        range = [2013, 2025]
-    )
-
-    fig.update_yaxes(
-        showgrid = False,
-    )
-    return fig
 
 # Random forest for feature importances
 #### Need to do statistical tests to see if sj increase in hot events ####
@@ -635,6 +528,35 @@ prediction_output_section = html.Div(
                         ),
                     ],
                     width = 6,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Div(
+                            [
+                                html.P(
+                                    [
+                                        '1 kWh is equivalent to running an LED (10-watt) ',
+                                        'lightbulb for ',
+                                        
+                                        html.Span(
+                                            '100 hours.',
+                                            className = 'fade-sentence',
+                                        )
+                                    ],
+                                    style = {
+                                        'textAlign': 'center',
+                                        'color': 'white',
+                                        'fontSize': '20px',
+                                    },
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
             ],
         ),
@@ -1025,6 +947,7 @@ def update_extreme_weather(selected_tab):
 
     yearly_extreme_frequency = yearly_extreme_frequency[yearly_extreme_frequency['year'] != '2024']
 
+    # Add regional bars
     fig = px.bar(
         yearly_extreme_frequency,
         x = 'year',
@@ -1038,6 +961,30 @@ def update_extreme_weather(selected_tab):
         title = f"{'Hot' if selected_tab == 'hot_events' else 'Cold'} Events Occurrence Percentage by Year",
         color_discrete_sequence = ['#710280', '#808000']
     )
+
+    # Add regional regression lines
+    for region in yearly_extreme_frequency['region'].unique():
+        region_data = yearly_extreme_frequency[yearly_extreme_frequency['region'] == region]
+        
+        # Regression coefficients
+        x = region_data['year'].values.astype(float)
+        y = region_data['occurrence_percentage'].values
+        coeffs = np.polyfit(x, y, 1)
+        trendline = coeffs[0] * x + coeffs[1]
+        
+        fig.add_trace(
+            go.Scatter(
+                x = region_data['year'],
+                y = trendline,
+                mode = 'lines',
+                name = f'{region} reg line',
+                line = dict(
+                    width = 2,
+                    dash = 'dash',
+                    color = '#F9F902' if region == 'sj' else '#E100FF'
+                )
+            )
+        )
 
     fig.update_layout(
         title_font_color = 'white',
@@ -1060,9 +1007,9 @@ def update_extreme_weather(selected_tab):
         ),
         legend = dict(
             yanchor = "top",
-            y = 1.0,
+            y = 1.2,
             xanchor = "right",
-            x = 1.1,
+            x = 1.25,
             font = dict(
                 family = "Courier",
                 size = 12,
