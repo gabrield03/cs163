@@ -24,19 +24,10 @@ if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
 # Descriptions for each plot
-sj_averagekwh = html.P(['Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Jose (kWh)."])
-sf_averagekwh = html.P(['Plot Description:', html.Br(), html.Br(), "This histogram shows the distribution of average monthly energy usage in San Francisco (kWh)."])
-sj_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
-sf_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
-
-sj_totalkwh = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Jose over the months (kWh).'])
-sf_totalkwh = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram displays the distribution of total energy usage in San Francisco over the months (kWh).'])
-
-sj_max_min_temp = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Jose (°F).'])
-sf_max_min_temp = html.P(['Plot Description:', html.Br(), html.Br(), 'This histogram presents the average monthly maximum and minimum temperatures in San Francisco (°F).'])
 sj_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F).'])
 sf_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F).'])
-
+sj_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
+sf_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
 
 #### Define the Container Partitions ####
 # Visualizations page header
@@ -53,7 +44,6 @@ visualizations_header = html.Div(
                     style = {
                         'font-size': '50px',
                         'height': '100%',
-                        #'text-shadow': '2px 2px 4px #000000',
                     },
                 ),
             ],
@@ -63,115 +53,61 @@ visualizations_header = html.Div(
 )
 
 # Histogram plots - SJ
-sj_histplots_1 = html.Div(
+data_distribution_section = html.Div(
     [
         dbc.Row(
             [
                 html.P(
-                    'San Jose Energy Usage and Weather History',
+                    'Regional Data Distributions',
                     style = {
                         'text-align': 'center',
                         'font-size': '40px',
                         'font-variant': 'small-caps',
-                        #'text-shadow': '2px 2px 4px #000000'
                     },
                 ),
             ],
             className = 'mb-2 text-center',
         ),
-
         dbc.Row(
             [
                 dbc.Col(
                     [
                         dcc.Dropdown(
-                            id = 'select_sj_option',
+                            id = 'select_energy_option',
                             options = [
-                                {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
-                                {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
-                                {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}
+                                {'label': 'SJ Avg Energy', 'value': 'sj'},
+                                {'label': 'SF Avg Energy', 'value': 'sf'},
                             ],
                             multi = False,
-                            value = 'averagekwh',
+                            value = 'sj',
                             style = {
                                 'backgroundColor': '#bdc3c7',
                                 'color': '#2c3e50'
                             }, 
                         ),
                     ],
-                    width = {'size': 3},
+                    width = 3,
                     className = 'mb-2'
                 ),
-            ]
-        ),
-
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            id = 'sj_data',
-                            figure = {},
-                        ),
-                    ],
-                    width = 7,
-                ),
-                dbc.Col(
-                    [
-                        html.Div(
-                            id = 'sj_output_container',
-                            children = [],
-                            style = {
-                                'color': '#0f0f0f',
-                                # other stuff width, height, background-color, etc.
-                            },
-                        ),
-                    ],
-                ), 
-            ],
-        ),
-    ],
-    className = 'mb-5',
-)
-
-# Histogram plots - SF
-sf_histplots_1 = html.Div(
-    [
-        dbc.Row(
-            [
-                html.P(
-                    'San Francisco Energy Usage and Weather History',
-                    style = {
-                        'text-align': 'center',
-                        'font-size': '40px',
-                        'font-variant': 'small-caps',
-                        #'text-shadow': '2px 2px 4px #000000',
-                    },
-                ),
-            ],
-            className = 'mb-2 text-center',
-        ),
-
-        dbc.Row(
-            [
+                dbc.Col([], width = 3),
                 dbc.Col(
                     [
                         dcc.Dropdown(
-                            id = 'select_sf_option',
+                            id = 'select_weather_option',
                             options = [
-                                {'label': 'Avg Energy Usage (kWh)', 'value': 'averagekwh'},
-                                {'label': 'Total Energy Usage (kWh)', 'value': 'totalkwh'},
-                                {'label': 'Average Monthly Max and Min Temperatures', 'value': 'max_min_temp'}
+                                {'label': 'SJ Weather', 'value': 'sj'},
+                                {'label': 'SF Weather', 'value': 'sf'},
                             ],
                             multi = False,
-                            value = 'averagekwh',
-                            style={
+                            value = 'sj',
+                            style = {
                                 'backgroundColor': '#bdc3c7',
                                 'color': '#2c3e50'
                             }, 
                         ),
                     ],
-                    width = {'size': 3}, className = 'mb-2',
+                    width = 3,
+                    className = 'mb-2'
                 ),
             ],
         ),
@@ -181,28 +117,52 @@ sf_histplots_1 = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                            id = 'sf_data',
+                            id = 'energy_data',
                             figure = {},
                         ),
                     ],
-                    width = 7,
+                    width = 6,
                 ),
+                #dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id = 'weather_data',
+                            figure = {},
+                        ),
+                    ],
+                    width = 6,
+                ),
+            ],
+        ),
+        dbc.Row(
+            [
+                dbc.Col([], width = 1),
                 dbc.Col(
                     [
                         html.Div(
-                            id = 'sf_output_container',
-                            children = [],
-                            style = {
-                                'color': '#0f0f0f',
-                                # other stuff width, height, background-color, etc.
-                            },
+                            id = 'energy_output_container',
                         ),
                     ],
-                ), 
+                    width = 4,
+                ),
+                dbc.Col([], width = 2),
+                dbc.Col(
+                    [
+                        html.Div(
+                            id = 'weather_output_container',
+                        ),
+                    ],
+                    width = 4,
+                ),
             ],
+            style = {
+                'color': '#0f0f0f',
+                'font-size': '12px',
+            }
         ),
     ],
-    className = 'mb-5',
+    className = 'mb-10',
 )
 
 # Heatmap plots - Both regions
@@ -326,8 +286,7 @@ layout = dbc.Container(
         html.Div(
             [
                 visualizations_header,
-                sj_histplots_1,
-                sf_histplots_1,
+                data_distribution_section,
                 comb_heatmaps,
             ],
             style = {
@@ -340,384 +299,224 @@ layout = dbc.Container(
 )
 
 #### Plots ####
-# Callback for SJ Histograms
+# Callback for energy usage histograms
 @callback(
     [
-        Output(component_id = 'sj_output_container', component_property = 'children'),
-        Output(component_id = 'sj_data', component_property = 'figure')
+        Output(component_id = 'energy_output_container', component_property = 'children'),
+        Output(component_id = 'energy_data', component_property = 'figure')
     ],
-    Input(component_id = 'select_sj_option', component_property = 'value')
+    Input(component_id = 'select_energy_option', component_property = 'value')
 )
 # Function for SJ Histograms
-def update_sj_graph(option_selected):
-    container = ''
-    plot_title = ''
+def update_energy_usage(option_selected):
+    container = None
+    plot_title = None
+    df = sj_df if option_selected == 'sj' else sf_df
 
-    # Plot energy
-    if 'average' in option_selected or 'total' in option_selected:
-        if 'average' in option_selected:
-            plot_title = 'Avg Energy Usage by Month (SJ - 95110)'
-            column = 'averagekwh'
-            color = '#6600CC'
-            kde_color = '#000000'
-            x_range = [250, 625]
+    if option_selected == 'sj':
+        plot_title = 'Avg Monthly Energy Usage - SJ'
+        column = 'averagekwh'
+        color = '#6600CC'
+        kde_color = '#000000'
+        x_range = [280, 575]
 
-            container = sj_averagekwh
-
-        else:
-            plot_title = 'Total Energy Usage by Month (SJ - 95110)'
-            column = 'totalkwh'
-            color = '#4C9900'
-            kde_color = '#000000'
-            x_range = [1750000, 4000000]
-
-            container = sj_totalkwh
-
-        # Create histogram - using try except because of strange non-rendering error
-        try:
-            fig = px.histogram(
-                sj_df,
-                x = column,
-                nbins = 40,
-                title = plot_title,
-                color_discrete_sequence = [color],
-            )
-        except:
-            fig = px.histogram(
-                sj_df,
-                x = column,
-                nbins = 40,
-                title = plot_title,
-                color_discrete_sequence = [color],
-            )
-
-        # Update the figure to set white outlines for the bars
-        fig.update_traces(
-            marker_line_color = 'white',
-            marker_line_width = 1.5)
-
-        # Calculate KDE
-        kde = gaussian_kde(sj_df[column].dropna())
-        kde_range = np.linspace(sj_df[column].min(), sj_df[column].max(), 100)
-
-        # Add KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = kde_range,
-                y = kde(kde_range) * len(sj_df[column]) * (sj_df[column].max() - sj_df[column].min()) / 40,
-                mode = 'lines',
-                name = f'{column} KDE',
-                line = dict(
-                    color = kde_color,
-                    width = 2,
-                    dash = 'dash'
-                )
-            )
-        )
-
-        # Adjust layout
-        fig.update_layout(
-            title = plot_title,
-            barmode = 'overlay',
-            yaxis_title = 'Frequency',
-            xaxis_range = x_range,
-            legend = dict(
-                x = 1,
-                y = 1,
-                xanchor = 'right',
-                yanchor = 'top',
-                bgcolor = 'rgba(255, 255, 255, 0.7)',
-                bordercolor = 'black',
-                borderwidth = 1,
-            ),
-            paper_bgcolor='#ecf0f1',  # Outside the plot area background
-        )
-
-        if column == 'averagekwh':
-            fig.update_layout(xaxis_title = 'Avg Energy Usage (kWh)')
-        else:
-            fig.update_layout(xaxis_title = 'Total Energy Usage (kWh)')
-
-        return container, fig
-
-    # Plot weather
+        container = html.P('Distribution of average monthly energy usage in San Jose (kWh)')
+    
     else:
-        plot_title = 'Avg Max and Min Temps by Month (SJ - 95110)'
-        container = sj_max_min_temp
+        plot_title = 'Avg Monthly Energy Usage - SF'
+        column = 'averagekwh'
+        color = '#CC00CC'
+        kde_color = '#000000'
+        x_range = [215, 410]
 
-        fig = go.Figure()
-
-        # tmax histogram
-        fig.add_trace(
-            go.Histogram(
-                x = sj_df['tmax'],
-                nbinsx = 40,
-                name = 'Max Temp (tmax)',
-                marker_color = '#8B0000',
-                opacity = 0.75
-            )
-        )
-
-        # tmin histogram
-        fig.add_trace(
-            go.Histogram(
-                x = sj_df['tmin'],
-                nbinsx = 40,
-                name = 'Min Temp (tmin)',
-                marker_color = '#003FFF',
-                opacity = 0.75
-            )
-        )
-
-        # Calculate tmax KDE
-        tmax_kde = gaussian_kde(sj_df['tmax'].dropna())
-        tmax_range = np.linspace(sj_df['tmax'].min(), sj_df['tmax'].max(), 100)
-
-        # Add tmax KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = tmax_range,
-                y = tmax_kde(tmax_range) * len(sj_df['tmax']) * (sj_df['tmax'].max() - sj_df['tmax'].min()) / 40,
-                mode = 'lines',
-                name = 'Max Temp KDE',
-                line = dict(
-                    color = '#FFCCCB',
-                    width = 2,
-                    dash = 'dash'
-                )
-            )
-        )
-
-        # Calculate tmin KDE
-        tmin_kde = gaussian_kde(sj_df['tmin'].dropna())
-        tmin_range = np.linspace(sj_df['tmin'].min(), sj_df['tmin'].max(), 100)
-
-        # Add tmin KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = tmin_range,
-                y = tmin_kde(tmin_range) * len(sj_df['tmin']) * (sj_df['tmin'].max() - sj_df['tmin'].min()) / 40,
-                mode = 'lines',
-                name = 'Min Temp KDE',
-                line = dict(color = '#A5E5FF', width = 2, dash = 'dash')
-            )
-        )
-
-        # Update layout for the plot
-        fig.update_layout(
+        container = html.P('Distribution of average monthly energy usage in San Francisco (kWh)')
+    
+    # Create histogram - using try except because of strange non-rendering error
+    try:
+        fig = px.histogram(
+            df,
+            x = column,
+            nbins = 40,
             title = plot_title,
-            barmode = 'overlay',
-            xaxis_title = 'Temperature (F)',
-            yaxis_title = 'Frequency',
-            xaxis_range = [30, 90],
-            legend = dict(
-                x = 1,
-                y = 1,
-                xanchor = 'right',
-                yanchor = 'top',
-                bgcolor = 'rgba(255, 255, 255, 0.7)',
-                bordercolor = 'black',
-                borderwidth = 1,
-            ),
-            paper_bgcolor='#ecf0f1',  # Outside the plot area background
+            color_discrete_sequence = [color],
+        )
+    except:
+        fig = px.histogram(
+            df,
+            x = column,
+            nbins = 40,
+            title = plot_title,
+            color_discrete_sequence = [color],
         )
 
-        fig.update_traces(
-            marker_line_color = 'white',
-            marker_line_width = 1.5)
+    # Update the figure to set white outlines for the bars
+    fig.update_traces(
+        marker_line_color = 'white',
+        marker_line_width = 1.5
+    )
 
-        return container, fig
+    # Calculate KDE
+    kde = gaussian_kde(df[column].dropna())
+    kde_range = np.linspace(df[column].min(), df[column].max(), 100)
 
+    # Add KDE line
+    fig.add_trace(
+        go.Scatter(
+            x = kde_range,
+            y = kde(kde_range) * len(df[column]) * (df[column].max() - df[column].min()) / 40,
+            mode = 'lines',
+            name = f'{column} KDE',
+            line = dict(
+                color = kde_color,
+                width = 2,
+                dash = 'dash'
+            )
+        )
+    )
 
-# Callback for SF histograms
+    # Adjust layout
+    fig.update_layout(
+        title = plot_title,
+        barmode = 'overlay',
+        yaxis_title = 'Frequency',
+        xaxis_title = 'Avg Energy Usage (kWh)',
+        xaxis_range = x_range,
+        legend = dict(
+            x = 1,
+            y = 1,
+            xanchor = 'right',
+            yanchor = 'top',
+            bgcolor = 'rgba(255, 255, 255, 0.7)',
+            bordercolor = 'black',
+            borderwidth = 1,
+        ),
+        paper_bgcolor = '#ecf0f1',
+        margin = dict(
+            l = 0,
+            r = 0,
+        ),
+    )
+
+    return container, fig
+
+# Callback for weather histograms
 @callback(
     [
-        Output(component_id = 'sf_output_container', component_property = 'children'),
-        Output(component_id = 'sf_data', component_property = 'figure')
+        Output(component_id = 'weather_output_container', component_property = 'children'),
+        Output(component_id = 'weather_data', component_property = 'figure')
     ],
-    Input(component_id = 'select_sf_option', component_property = 'value')
+    Input(component_id = 'select_weather_option', component_property = 'value')
 )
-# Function for SF Histograms
-def update_sf_graph(option_selected):
-    container = ''
-    plot_title = ''
+# Function for SJ Histograms
+def update_weather(option_selected):
+    df = sj_df if option_selected == 'sj' else sf_df
 
-    # Plot energy
-    if 'average' in option_selected or 'total' in option_selected:
-        if 'average' in option_selected:
-            plot_title = 'Avg Energy Usage by Month (SF - 94102)'
-            column = 'averagekwh'
-            color = '#CC00CC'
-            kde_color = '#000000'
-            x_range = [200, 450]
+    container = None
+    plot_title = None
+    tmax_color = None
+    tmin_color = None
+    x_range = None
 
-            container = sf_averagekwh
-
-        else:
-            plot_title = 'Total Energy Usage by Month (SF - 94102)'
-            column = 'totalkwh'
-            color = '#999900'
-            kde_color = '#000000'
-            x_range = [2500000, 5000000]
-
-            container = sf_totalkwh
-
-
-        # Create histogram - using try except because of strange non-rendering error
-        try:
-            fig = px.histogram(
-                sf_df,
-                x = column,
-                nbins = 40,
-                title = plot_title,
-                color_discrete_sequence = [color],
-            )
-        except:
-                fig = px.histogram(
-                sf_df,
-                x = column,
-                nbins = 40,
-                title = plot_title,
-                color_discrete_sequence = [color],
-            )
-
-        # Update the figure to set white outlines for the bars
-        fig.update_traces(
-            marker_line_color = 'white',
-            marker_line_width = 1.5
-        )
-
-        # Calculate KDE
-        kde = gaussian_kde(sf_df[column].dropna())
-        kde_range = np.linspace(sf_df[column].min(), sf_df[column].max(), 100)
-
-        # Add KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = kde_range,
-                y = kde(kde_range) * len(sf_df[column]) * (sf_df[column].max() - sf_df[column].min()) / 40,
-                mode = 'lines',
-                name = f'{column} KDE',
-                line = dict(
-                    color = kde_color,
-                    width = 2,
-                    dash = 'dash'
-                )
-            )
-        )
-
-        # Adjust layout
-        fig.update_layout(
-            title = plot_title,
-            barmode = 'overlay',
-            yaxis_title = 'Frequency',
-            xaxis_range = x_range,
-            legend = dict(
-                x = 1,
-                y = 1,
-                xanchor = 'right',
-                yanchor = 'top',
-                bgcolor = 'rgba(255, 255, 255, 0.7)',
-                bordercolor = 'black',
-                borderwidth = 1,
-            ),
-            paper_bgcolor='#ecf0f1',  # Outside the plot area background
-        )
-
-        if column == 'averagekwh':
-            fig.update_layout(xaxis_title = 'Avg Energy Usage (kWh)')
-        else:
-            fig.update_layout(xaxis_title = 'Total Energy Usage (kWh)')
-
-        return container, fig
-
-    # Plot weather
+    if option_selected == 'sj':
+        plot_title = 'Monthly Avg Max and Min Temp - SJ'
+        container = html.P('Distribution of average monthly maximum and minimum temperatures in San Jose (°F).')
+        tmax_color = '#8B0000'
+        tmin_color = '#003FFF'
+        x_range = [30, 90]
+    
     else:
-        plot_title = 'Avg Max and Min Temps by Month (SF - 94102)'
-        container = sf_max_min_temp
+        plot_title = 'Monthly Avg Max and Min Temp - SF'
+        container = html.P('Distribution of average monthly maximum and minimum temperatures in San Francisco (°F).')
+        tmax_color = '#8B0000'
+        tmin_color = '#003FFF'
+        x_range = [39, 80]
 
-        fig = go.Figure()
+    fig = go.Figure()
 
-        # tmax histogram
-        fig.add_trace(
-            go.Histogram(
-                x = sf_df['tmax'],
-                nbinsx = 40,
-                name = 'Max Temp (tmax)',
-                marker_color = '#8B0000',
-                opacity = 0.75
+    # tmax histogram
+    fig.add_trace(
+        go.Histogram(
+            x = df['tmax'],
+            nbinsx = 40,
+            name = 'Max Temp (tmax)',
+            marker_color = tmax_color,
+            opacity = 0.75
+        )
+    )
+
+    # tmin histogram
+    fig.add_trace(
+        go.Histogram(
+            x = df['tmin'],
+            nbinsx = 40,
+            name = 'Min Temp (tmin)',
+            marker_color = tmin_color,
+            opacity = 0.75
+        )
+    )
+
+    # Calculate tmax KDE
+    tmax_kde = gaussian_kde(df['tmax'].dropna())
+    tmax_range = np.linspace(df['tmax'].min(), df['tmax'].max(), 100)
+
+    # Add tmax KDE line
+    fig.add_trace(
+        go.Scatter(
+            x = tmax_range,
+            y = tmax_kde(tmax_range) * len(df['tmax']) * (df['tmax'].max() - df['tmax'].min()) / 40,
+            mode = 'lines',
+            name = 'Max Temp KDE',
+            line = dict(
+                color = '#FFCCCB',
+                width = 2,
+                dash = 'dash'
             )
         )
+    )
 
-        # tmin histogram
-        fig.add_trace(
-            go.Histogram(
-                x = sf_df['tmin'],
-                nbinsx = 30,
-                name = 'Min Temp (tmin)',
-                marker_color = '#003FFF',
-                opacity = 0.75
-            )
+    # Calculate tmin KDE
+    tmin_kde = gaussian_kde(df['tmin'].dropna())
+    tmin_range = np.linspace(df['tmin'].min(), df['tmin'].max(), 100)
+
+    # Add tmin KDE line
+    fig.add_trace(
+        go.Scatter(
+            x = tmin_range,
+            y = tmin_kde(tmin_range) * len(df['tmin']) * (df['tmin'].max() - df['tmin'].min()) / 40,
+            mode = 'lines',
+            name = 'Min Temp KDE',
+            line = dict(color = '#A5E5FF', width = 2, dash = 'dash')
         )
+    )
 
-        # Calculate tmax KDE
-        tmax_kde = gaussian_kde(sf_df['tmax'].dropna())
-        tmax_range = np.linspace(sf_df['tmax'].min(), sf_df['tmax'].max(), 100)
+    # Update layout for the plot
+    fig.update_layout(
+        title = plot_title,
+        barmode = 'overlay',
+        xaxis_title = 'Temperature (°F)',
+        yaxis_title = 'Frequency',
+        xaxis_range = x_range,
+        legend = dict(
+            x = 1,
+            y = 1.3,
+            xanchor = 'right',
+            yanchor = 'top',
+            bgcolor = 'rgba(255, 255, 255, 0.7)',
+            bordercolor = 'black',
+            borderwidth = 1,
+        ),
+        paper_bgcolor='#ecf0f1',
+        margin = dict(
+            l = 0,
+            r = 0,
+        ),
+    )
 
-        # Add tmax KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = tmax_range,
-                y = tmax_kde(tmax_range) * len(sf_df['tmax']) * (sf_df['tmax'].max() - sf_df['tmax'].min()) / 40,
-                mode = 'lines',
-                name = 'Max Temp KDE',
-                line = dict(
-                    color = '#FFCCCB',
-                    width = 2,
-                    dash = 'dash'
-                )
-            )
-        )
+    fig.update_traces(
+        marker_line_color = 'white',
+        marker_line_width = 1.5)
 
-        # Calculate tmin KDE
-        tmin_kde = gaussian_kde(sf_df['tmin'].dropna())
-        tmin_range = np.linspace(sf_df['tmin'].min(), sf_df['tmin'].max(), 100)
-
-        # Add tmin KDE line
-        fig.add_trace(
-            go.Scatter(
-                x = tmin_range,
-                y = tmin_kde(tmin_range) * len(sf_df['tmin']) * (sf_df['tmin'].max() - sf_df['tmin'].min()) / 30,
-                mode = 'lines',
-                name = 'Min Temp KDE',
-                line = dict(color = '#A5E5FF', width = 2, dash = 'dash')
-            )
-        )
-
-        # Update layout for the plot
-        fig.update_layout(
-            title = plot_title,
-            barmode = 'overlay',
-            xaxis_title = 'Temperature (F)',
-            yaxis_title = 'Frequency',
-            xaxis_range = [30, 90],
-            legend = dict(
-                x = 1,
-                y = 1,
-                xanchor = 'right',
-                yanchor = 'top',
-                bgcolor = 'rgba(255, 255, 255, 0.7)',
-                bordercolor = 'black',
-                borderwidth = 1,
-            ),
-            paper_bgcolor='#ecf0f1',  # Outside the plot area background
-        )
-
-        fig.update_traces(
-            marker_line_color = 'white',
-            marker_line_width = 1.5)
-
-        return container, fig
+    return container, fig
 
 
 # Callback for heatmaps

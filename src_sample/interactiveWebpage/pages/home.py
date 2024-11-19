@@ -961,6 +961,7 @@ def update_chloropleth(tmax, tmin):
         }
     )
 
+    # Why doesn't my annotation show?
     # note = 'NYSE Trading Days After Announcement<br>Source:<a href="https://www.nytimes.com/"">The NY TIMES</a> Data: <a href="https://www.yahoofinance.com/">Yahoo! Finance</a>'
     note = 'Regional color shows the difference of average energy (kWh) usage as temperatures change<br> \
             from the base temperatures: Max Temperature (°F): 60 and Min Temperature (°F): 0'
