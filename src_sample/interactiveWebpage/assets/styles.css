@@ -30,7 +30,7 @@ body {
 @keyframes fadeInOut {
     0%, 30% { 
         opacity: 0; 
-        color: white; 
+        color: white;
     }
     50%, 80% { 
         opacity: 1; 

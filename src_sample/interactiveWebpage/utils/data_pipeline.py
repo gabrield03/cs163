@@ -17,7 +17,7 @@ from joblib import dump, load
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import mean_absolute_error, mean_squared_error
@@ -410,11 +410,7 @@ def processing_pipeline(df, loc):
     joblib_filename_importances = f'joblib_files/processed_data/{loc}_importances_df.joblib'
     joblib_filename_X_test_unscaled_df = f'joblib_files/processed_data/{loc}_X_test_unscaled_df.joblib'
 
-    drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month']
-
-    # test making regions have the same columns
-    drop_list2 = ['wdf5', 'wsf5', 'awnd', 'wdf2', 'wsf2']
-    drop_list.extend(drop_list2)
+    drop_list = ['zipcode', 'totalkwh', 'customerclass', 'combined', 'region', 'month-numeric', 'year-month', 'wdf5', 'wsf5', 'awnd', 'wdf2', 'wsf2']
 
     for col in drop_list:
         if col in df.columns:
@@ -431,7 +427,7 @@ def processing_pipeline(df, loc):
 
     # Create pipeline for numerical and categorical preprocessing
     preprocessor = ColumnTransformer(
-        transformers=[
+        transformers = [
             ('num', StandardScaler(), num_col_list),
             ('cat', Pipeline(steps=[('encode', OrdinalEncoder()), ('reshape', ReshapeTransformer())]), cat_col_list)
         ]

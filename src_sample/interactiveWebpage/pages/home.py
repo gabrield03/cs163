@@ -23,7 +23,6 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
-
 sj_df = load('joblib_files/base_data/sj_combined.joblib')
 sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
@@ -544,7 +543,7 @@ prediction_output_section = html.Div(
                                         'lightbulb for ',
                                         
                                         html.Span(
-                                            '100 hours.',
+                                            '100 hours',
                                             className = 'fade-sentence',
                                         )
                                     ],

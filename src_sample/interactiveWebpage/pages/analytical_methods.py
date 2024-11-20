@@ -9,6 +9,7 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import random
 import numpy as np
+from statsmodels.stats.proportion import proportions_ztest
 
 from  utils.data_pipeline import (
     processing_pipeline,
@@ -30,6 +31,23 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
+sj_df.drop(columns = ['awnd', 'wdf2', 'wdf5', 'wsf2', 'wsf5'], inplace = True)
+# Adding a unique identifier for each dataframe to keep track of the region
+sj_df['region'] = 'sj'
+sf_df['region'] = 'sf'
+
+# Concatenating the dataframes
+combined_df = pd.concat([sj_df, sf_df], axis=0).reset_index(drop=True)
+# Calculate 90th quantile
+q90_tmax = combined_df.groupby('region')['tmax'].quantile(0.90).to_dict()
+# Set tmax threshold to 90th quantile
+combined_df['is_hot_extreme'] = combined_df.apply(lambda row: row['tmax'] >= q90_tmax[row['region']], axis=1)
+# Calculate 10th quantile
+q10_tmin = combined_df.groupby('region')['tmin'].quantile(0.10).to_dict()
+# Set tmin threshold to 10th quantile
+combined_df['is_cold_extreme'] = combined_df.apply(lambda row: row['tmin'] <= q10_tmin[row['region']], axis=1)
+combined_df['year'] = combined_df['year'].astype(str)
+
 analytics_header_section = html.Div(
     [
         dbc.Row(
@@ -43,7 +61,7 @@ analytics_header_section = html.Div(
                     style = {
                         'font-size': '50px',
                         'height': '100%',
-                        #'text-shadow': '2px 2px 4px #000000',
+                        'font-variant': 'small-caps',
                         
                     },
                 ),
@@ -211,7 +229,6 @@ feature_importances_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000'
                             },
                         ),
                         html.P(
@@ -303,7 +320,6 @@ shap_intro_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -706,8 +722,100 @@ pdp_section = html.Div(
             ],
         ),
     ],
-    className = 'mb-5',
+    className = 'mb-10',
 )
+
+
+
+# Testing if shifts in climate are significant
+extreme_weather_section = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H4("Select Region for Correlation Analysis"), 
+                        dcc.Dropdown(
+                            id='region_option',
+                            options=[
+                                {'label': 'San Jose', 'value': 'sj'},
+                                {'label': 'San Francisco', 'value': 'sf'},
+                            ],
+                            value='sj',
+
+                        ),
+                    ],
+                    width=12,
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            id='extreme-weather-correlation'
+                        )
+                    ],
+                    width=12
+                ),
+            ],
+            className = 'mb-3',
+        ),
+        dbc.Row(
+            [
+                dbc.Col([], width = 4),
+                # dbc.Col(
+                #     [
+                #         html.P(
+                #             [
+                #                 'z-score for past events (2013 - 2018): ',
+                #                 html.Span(
+                #                     id = 'extreme-weather-z-score-past',
+                #                 ),
+                #             ],
+                #             style = {
+                #                 'marginTop': 20,
+                #                 'color': 'black',
+                #             },
+                #         ),
+                #     ],
+                #     width = 4,
+                # ),
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'z-score for past events (2019 - 2023): ',
+                                html.Span(
+                                    id = 'extreme-weather-z-score-recent',
+                                ),
+                            ],
+                            style = {
+                                'marginTop': 20,
+                                'color': 'black',
+                            },
+                        ),
+                    ],
+                    width = 4,
+                ),
+                dbc.Col([], width = 4),
+            ],
+        ),
+    ],
+    className = 'mb-10',
+)
+
+
+
+
+
+
+
+
+
+
 
 # Time-series analysis with LSTM
 lstm_section = html.Div(
@@ -1195,6 +1303,7 @@ layout = dbc.Container(
                 shap_dot_plot_section,
                 shap_decision_plot_section,
                 pdp_section,
+                extreme_weather_section,
                 lstm_section,
                 sarima_section,
                 analysis_summary_section,
@@ -1273,6 +1382,89 @@ def update_sj_feature_importances_section(loc):
     )
 
     return [fig]
+
+
+
+# Helper function for analyze correlation
+def calc_z(df, event_col, recent_col):
+    # Extract counts for the z-test
+    recent_counts = df[df[recent_col]][event_col].sum()
+    recent_total = df[df[recent_col]].shape[0]
+    past_counts = df[~df[recent_col]][event_col].sum()
+    past_total = df[~df[recent_col]].shape[0]
+
+    # Perform two-proportion z-test
+    count = np.array([recent_counts, past_counts])
+    nobs = np.array([recent_total, past_total])
+    stat, pval = proportions_ztest(count, nobs)
+    return round(stat, 4), round(pval, 4)
+
+# Helper function to generate bar plots
+def plot_proportions(stats, event_type):
+    df = stats.reset_index()
+    df['Period'] = df['is_recent'].map({True: 'Recent', False: 'Past'})
+
+    fig = px.bar(
+        df, 
+        x='Period', 
+        y='proportion', 
+        title=f"{event_type.capitalize()} Extreme Events",
+        labels={'proportion': 'Proportion of Events'},
+        text='proportion'
+    )
+    fig.update_traces(texttemplate='%{text:.2%}', textposition='outside')
+    return fig
+
+# Extreme weather callback
+@callback(
+    [
+        Output('extreme-weather-correlation', 'figure'),
+        #Output('extreme-weather-z-score-past', 'children'),
+        Output('extreme-weather-z-score-recent', 'children'),
+    ],
+    Input('region_option', 'value')
+)
+def analyze_correlation(loc):
+    fn = f'joblib_files/base_data/{loc}_combined.joblib'
+    df = load(fn)
+
+    # Define thresholds for extreme events
+    hot_thresholds = {'sj': df['tmax'].quantile(0.90)}
+    cold_thresholds = {'sj': df['tmin'].quantile(0.10)}
+
+    # Add flags for extreme events
+    df['is_hot_extreme'] = df['tmax'] >= hot_thresholds['sj']
+    df['is_cold_extreme'] = df['tmin'] <= cold_thresholds['sj']
+
+    # CHange years??
+    RECENT_YEARS = [2019, 2020, 2021, 2022, 2023]
+    df['is_recent'] = df['year'].astype(int).isin(RECENT_YEARS)
+
+    # Calculate proportions of extreme events
+    def calculate_proportions(df, event_col, recent_col):
+        # Group by recent and past periods
+        counts = df.groupby(recent_col)[event_col].agg(['sum', 'count'])
+        counts['proportion'] = counts['sum'] / counts['count']
+        return counts
+
+    hot_stats = calculate_proportions(df, 'is_hot_extreme', 'is_recent')
+    cold_stats = calculate_proportions(df, 'is_cold_extreme', 'is_recent')
+
+    # Perform the z-tests
+    hot_ztest = calc_z(df, 'is_hot_extreme', 'is_recent')
+    cold_ztest = calc_z(df, 'is_cold_extreme', 'is_recent')
+
+    hot_fig = plot_proportions(hot_stats, "Hot")
+    cold_fig = plot_proportions(cold_stats, "Cold")
+
+    # Combine hot and cold results?
+    # hot_fig.update_layout(title=f"{loc.upper()} Hot Extreme Events\nZ-Test: {hot_ztest}")
+    # cold_fig.update_layout(title=f"{loc.upper()} Cold Extreme Events\nZ-Test: {cold_ztest}")
+
+    # return both figs? return z-scores for recent and past?
+    # return [hot_fig, hot_ztest[0], hot_ztest[1]] if loc == 'sj' else [cold_fig, cold_ztest[0], cold_ztest[1]]
+    return [hot_fig, hot_ztest[1]] if loc == 'sj' else [cold_fig, cold_ztest[1]]
+
 
 # LSTM - single step
 @callback(

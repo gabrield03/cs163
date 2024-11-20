@@ -22,27 +22,27 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
-data_header = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    html.P(
-                        'Project Objective',
-                    ),
-                    className = 'text-center mb-5 mt-5',
-                    width = 12,
-                    style = {
-                        'font-size': '50px',
-                        'height': '100%',
-                        #'text-shadow': '2px 2px 4px #000000',
-                    },
-                ),
-            ],
-        ),
-    ],
-    className = 'mb-5',
-)
+# data_header = html.Div(
+#     [
+#         dbc.Row(
+#             [
+#                 dbc.Col(
+#                     html.P(
+#                         'Project Objective',
+#                     ),
+#                     className = 'text-center mb-5 mt-5',
+#                     width = 12,
+#                     style = {
+#                         'font-size': '50px',
+#                         'height': '100%',
+#                         #'text-shadow': '2px 2px 4px #000000',
+#                     },
+#                 ),
+#             ],
+#         ),
+#     ],
+#     className = 'mb-5',
+# )
 
 goals_and_sources_section = html.Div(
     [
@@ -50,16 +50,16 @@ goals_and_sources_section = html.Div(
             [
                 dbc.Col(
                     html.P(
-                        'Project Goals',
+                        'Goals',
                         style = {
                             'text-align': 'center',
-                            'font-size': '40px',
+                            'font-size': '50px',
                             'font-variant': 'small-caps',
                             #'text-shadow': '2px 2px 4px #000000',
                         },
                     ),
                     width = 12,
-                    className = 'mb-2 text-center',
+                    className = 'mt-5 mb-2 text-center',
                 ),
             ],
         ),
@@ -303,7 +303,7 @@ layout = dbc.Container(
     [
         html.Div(
             [
-                data_header,
+                #data_header,
                 goals_and_sources_section,
                 data_table1,
                 data_table2,
