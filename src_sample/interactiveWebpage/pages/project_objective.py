@@ -22,27 +22,6 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
-# data_header = html.Div(
-#     [
-#         dbc.Row(
-#             [
-#                 dbc.Col(
-#                     html.P(
-#                         'Project Objective',
-#                     ),
-#                     className = 'text-center mb-5 mt-5',
-#                     width = 12,
-#                     style = {
-#                         'font-size': '50px',
-#                         'height': '100%',
-#                         #'text-shadow': '2px 2px 4px #000000',
-#                     },
-#                 ),
-#             ],
-#         ),
-#     ],
-#     className = 'mb-5',
-# )
 
 goals_and_sources_section = html.Div(
     [
@@ -55,7 +34,6 @@ goals_and_sources_section = html.Div(
                             'text-align': 'center',
                             'font-size': '50px',
                             'font-variant': 'small-caps',
-                            #'text-shadow': '2px 2px 4px #000000',
                         },
                     ),
                     width = 12,
@@ -68,7 +46,7 @@ goals_and_sources_section = html.Div(
                 dbc.Col(
                     html.P(
                         [
-                            'There are two major goals for this project.',
+                            'There are two major goals and one sub-goal for this project.',
 
                             html.Br(), html.Br(),
                             'First, I wanted to identify the weather features that affect ',
@@ -83,7 +61,7 @@ goals_and_sources_section = html.Div(
                             'How do extreme weather events affect the energy usage of each region? ',
 
                             html.Br(), html.Br(),
-                            'A related sub-goal was to build a model that accurately predicts the ',
+                            'A sub-goal is to build a model that accurately predicts the ',
                             'energy usage of each region based on varying weather variables such as ',
                             'maximum temperature and minimum temperature.',
                         

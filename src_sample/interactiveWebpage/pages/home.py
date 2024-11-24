@@ -149,8 +149,6 @@ home_front_section = html.Div(
 )
 
 # Random forest for feature importances
-#### Need to do statistical tests to see if sj increase in hot events ####
-#### and sf increase in cold events is true/statistically significant ####
 feature_importances_extreme_weather_section = html.Div(
     [
         dbc.Row(
@@ -457,18 +455,46 @@ hypothetical_input_section = html.Div(
     className = 'mb-5',
 )
 
+chloropleth_desc_section = html.Div(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'Regional color shows the difference of average energy (kWh) usage as temperatures change',
+                                'from the base temperatures: Max Temperature (°F): 60 and Min Temperature (°F): 0',
+                            ],
+                            className = 'text-center',
+                            style = {
+                                'color': 'white',
+                                #'font-size': '27px',
+                                'word-break': 'keep-all',
+                                'font-style': 'normal',
+                                #'font-variant': 'small-caps',
+                            },
+                        ),
+                    ],
+                    width = 12,
+                ),
+            ],
+        ),
+    ],
+),
+
 # Chloropleth plot
 chloropleth_map_section = html.Div(
     [
         dcc.Graph(
-            id = 'chloropleth-output',
+            id = 'chloropleth-output', 
         ),
     ],
     style = {
         'display': 'flex',
         'justify-content': 'center',
         'align-items': 'center', 
-    }
+    },
 )
 
 # Hypothetical input predictions
@@ -539,12 +565,13 @@ prediction_output_section = html.Div(
                             [
                                 html.P(
                                     [
-                                        '1 kWh is equivalent to running an LED (10-watt) ',
-                                        'lightbulb for ',
-                                        
+                                        '1 kWh is equivalent to running an incandescent ',
+                                        'lightbulb (100-watts) for ',
                                         html.Span(
-                                            '100 hours',
-                                            className = 'fade-sentence',
+                                            '10 hours',
+                                            style = {
+                                                'color': 'yellow'
+                                            }
                                         )
                                     ],
                                     style = {
@@ -563,118 +590,12 @@ prediction_output_section = html.Div(
     className = 'mb-20 mt-5',
 )
 
-# SHAP Dot plot function - unused bc pythonanywhere cant make parallel plots
-def shap_parallel_coord_plot(loc):
-    base_df = load(f'joblib_files/base_data/{loc}_combined.joblib')
-
-    plot_title = 'San Jose' if loc == 'sj' else 'San Francisco'
-
-    # Which columns for sj_df? All or only ones matching sf_df?
-    dim_cols = [
-        'zipcode', 'year', 'totalcustomers', 'totalkwh', 'averagekwh',
-        'month-numeric', 'prcp', 'tmax', 'tmin'
-    ]
-    
-    fig = px.parallel_coordinates(
-        base_df,
-        color = 'averagekwh',
-        # dimensions = base_df.columns,
-        dimensions = dim_cols,
-        color_continuous_scale=px.colors.diverging.Tealrose,
-    )
-
-    fig.update_layout(
-        #title = f'Data Distributions for {plot_title}',
-        xaxis_title = 'Features',
-        yaxis_title = 'Values',
-    )
-
-    return fig
-
-# SHAP Dot Plots
-shap_parallel_coord_plot_section = html.Div(
-    [
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.P(
-                            'San Jose Data Relationship',
-                            style = {
-                                'text-align': 'center',
-                                'font-size': '25px',
-                                'font-variant': 'small-caps',
-                                'color': '#ffffff',
-                            }
-                        )
-                    ],
-                    width = 5,
-                ),
-                dbc.Col([], width = 2),
-                dbc.Col(
-                    [
-                        html.P(
-                            'San Francisco Data Relationship',
-                            style = {
-                                'text-align': 'center',
-                                'font-size': '25px',
-                                'font-variant': 'small-caps',
-                                'color': '#ffffff',
-                            }
-                        )
-                    ],
-                    width = 5,
-                ),
-            ],
-            className = 'mb-1',
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.Img(
-                            src="assets/shap_plots/sj_parallel_coord_plot.png",
-                            alt="SHAP Parallel Coord Plot for SJ",
-                            style={"width": "100%", "height": "auto"}
-                        )
-                        # dcc.Graph(
-                        #     id = 'shap_parallel_coord_plot',
-                        #     figure = shap_parallel_coord_plot('sj'),
-                        # ),
-                    ],
-                    width = 5,
-                    #align = 'center',
-                ),
-                dbc.Col([], width = 2),
-                dbc.Col(
-                    [
-                        html.Img(
-                            src="assets/shap_plots/sf_parallel_coord_plot.png",
-                            alt="SHAP Parallel Coord Plot for SF",
-                            style={"width": "100%", "height": "auto"}
-                        )
-                        # dcc.Graph(
-                        #     id = 'shap_parallel_coord_plot',
-                        #     figure = shap_parallel_coord_plot('sf'),
-                        # ),
-                    ],
-                    width = 5,
-                    #align = 'center',
-                ),
-            ],
-            className = 'mb-3',
-        ),
-    ],
-    className = 'mb-5 pb-5',
-)
-
 info_combined_section = html.Div(
     [
         feature_importances_extreme_weather_section,
         hypothetical_input_section,
         chloropleth_map_section,
         prediction_output_section,
-        #shap_parallel_coord_plot_section,
     ],
     style = {
         'backgroundColor': 'black',
@@ -814,114 +735,6 @@ def update_feature_importances_section(loc):
 
     return [fig]
 
-# Callback and function for energy predictions
-@callback(
-    [
-        Output('chloropleth-output', 'figure'),
-        Output('sf-prediction-output', 'children'),
-        Output('sj-prediction-output', 'children'),
-        
-    ],
-    [
-        Input('tmax-slider', 'value'),
-        Input('tmin-slider', 'value')
-    ]
-)
-def update_chloropleth(tmax, tmin):
-    tmax = float(tmax)
-    tmin = float(tmin)
-
-    sj_temp_at_low = 431 # sj low 431, high: 449
-    sf_temp_at_low = 305 # sf low 305, high: 275
-
-    # Access predictions
-    sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
-    sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
-
-    sj_value = sj_pred.item() if hasattr(sj_pred, 'item') else sj_pred
-    sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
-
-    # Format output
-    sj_output = f'{math.floor(sj_value)} kWh'
-    sf_output = f'{math.floor(sf_value)} kWh'
-
-    bay_area = None
-    with open('assets/geojson_bay_area.json', 'r') as resp:
-        bay_area = json.load(resp)
-
-    county_ids = ['06085', '06075']
-    vals = [int(sj_value), int(sf_value)]
-
-    df = pd.DataFrame(data = (county_ids, vals))
-    
-    # Change sj
-    df.iloc[1, 0] = df.iloc[1, 0] - sj_temp_at_low
-
-    # Change sf
-    df.iloc[1, 1] = df.iloc[1, 1] - sf_temp_at_low
-
-
-    vals = [int(df.iloc[1, 0]), int(df.iloc[1, 1])]
-
-    fig = px.choropleth_mapbox(
-        df,
-        geojson = bay_area,
-        locations = county_ids,
-        color = vals,
-        featureidkey = 'id',
-        color_continuous_scale = 'Sunsetdark',
-        range_color = [-30, 30],
-        zoom = 7.9,
-        center = {
-            'lat': 37.397574,
-            'lon': -121.808050
-        },
-        opacity = 0.5,
-        labels = {
-            'color': 'Avg Energy (kWh)'
-        }
-    )
-
-    # Why doesn't my annotation show?
-    # note = 'NYSE Trading Days After Announcement<br>Source:<a href="https://www.nytimes.com/"">The NY TIMES</a> Data: <a href="https://www.yahoofinance.com/">Yahoo! Finance</a>'
-    note = 'Regional color shows the difference of average energy (kWh) usage as temperatures change<br> \
-            from the base temperatures: Max Temperature (°F): 60 and Min Temperature (°F): 0'
-    fig.add_annotation(
-        # showarrow = False,
-        text = note,
-        font = dict(
-            size = 10,
-            color = 'white',
-        ), 
-        xref = 'x domain',
-        x = 0.5,
-        yref = 'y domain',
-        y = -0.5
-    )
-
-    fig.update_layout(
-        legend = dict(
-            font = dict(
-                size = 12
-            ),
-            x = 1,
-            xanchor = 'right',
-            y = 0.5,
-            yanchor = 'middle',
-        ),
-        width = 1020,
-        height = 600,
-        margin = {
-            'r':0,
-            't':0,
-            'l':0,
-            'b':0
-        },
-        mapbox_accesstoken = token,
-    )
-    
-    return fig, sf_output, sj_output
-
 # Callback for extreme weather bar plots
 @callback(
     [
@@ -1022,3 +835,110 @@ def update_extreme_weather(selected_tab):
     )
 
     return [fig]
+
+
+# Callback and function for energy predictions
+@callback(
+    [
+        Output('chloropleth-output', 'figure'),
+        Output('sf-prediction-output', 'children'),
+        Output('sj-prediction-output', 'children'),
+        
+    ],
+    [
+        Input('tmax-slider', 'value'),
+        Input('tmin-slider', 'value')
+    ]
+)
+def update_chloropleth(tmax, tmin):
+    tmax = float(tmax)
+    tmin = float(tmin)
+
+    sj_temp_at_low = 431 # sj low 431, high: 449
+    sf_temp_at_low = 305 # sf low 305, high: 275
+
+    # Access predictions
+    sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
+    sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
+
+    sj_value = sj_pred.item() if hasattr(sj_pred, 'item') else sj_pred
+    sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred
+
+    # Format output
+    sj_output = f'{math.floor(sj_value)} kWh'
+    sf_output = f'{math.floor(sf_value)} kWh'
+
+    bay_area = None
+    with open('assets/geojson_bay_area.json', 'r') as resp:
+        bay_area = json.load(resp)
+
+    county_ids = ['06085', '06075']
+    vals = [int(sj_value), int(sf_value)]
+
+    df = pd.DataFrame(data = (county_ids, vals))
+    
+    # Change sj
+    df.iloc[1, 0] = df.iloc[1, 0] - sj_temp_at_low
+
+    # Change sf
+    df.iloc[1, 1] = df.iloc[1, 1] - sf_temp_at_low
+
+
+    vals = [int(df.iloc[1, 0]), int(df.iloc[1, 1])]
+
+    fig = px.choropleth_mapbox(
+        df,
+        geojson = bay_area,
+        locations = county_ids,
+        color = vals,
+        featureidkey = 'id',
+        color_continuous_scale = 'Sunsetdark',
+        range_color = [-30, 30],
+        zoom = 7.9,
+        center = {
+            'lat': 37.397574,
+            'lon': -121.808050
+        },
+        opacity = 0.5,
+        labels = {
+            'color': 'Energy Difference'
+        }
+    )
+
+    fig.add_annotation(
+        dict(
+            font = dict(
+                color = 'white',
+                size = 12
+            ),
+            x = 0,
+            y = -0.05,
+            showarrow = False,
+            text = 'Regional color reflects the difference from energy usage at the baseline temperatures - Max: 60°F, Min: 0°F',
+            textangle = 0,
+            xanchor = 'left',
+            xref = 'paper',
+            yref = 'paper'
+        ),
+    )
+
+    fig.update_layout(
+        legend = dict(
+            font = dict(
+                color = 'White',
+                size = 12
+            ),
+        ),
+        width = 1020,
+        height = 600,
+        margin = {
+            'r': 0,
+            't': 0,
+            'l': 0,
+            'b': 30
+        },
+        paper_bgcolor = 'black',
+        mapbox_accesstoken = token,
+    )
+    
+    return fig, sf_output, sj_output

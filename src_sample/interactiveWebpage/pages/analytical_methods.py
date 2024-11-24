@@ -9,7 +9,7 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import random
 import numpy as np
-from statsmodels.stats.proportion import proportions_ztest
+from scipy.stats import ttest_ind
 
 from  utils.data_pipeline import (
     processing_pipeline,
@@ -79,7 +79,7 @@ analytics_info_section = html.Div(
                 dbc.Col(
                     html.P(
                         [
-                            'This section focuses on two of the following advanced analysis methods:',
+                            'This section focuses on three of the following advanced analysis methods:',
                         ],
                         style = {
                             'font-size': '25px',
@@ -92,7 +92,6 @@ analytics_info_section = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col([], width = 2),
                 dbc.Col(
                     [
                         dbc.Button(
@@ -110,9 +109,27 @@ analytics_info_section = html.Div(
                             },
                         ),
                     ],
-                    width = 3,
+                    width = 4,
                 ),
-                dbc.Col([], width = 3),
+                dbc.Col(
+                    [
+                        dbc.Button(
+                            html.Span(
+                                'Extreme Events Analysis',
+                                id='extreme_events_analysis_tooltip',
+                            ),
+                            color='secondary',
+                            id='extreme_events_analysis_button',
+                            className='me-1 small-button',
+                            n_clicks=0,
+                            style={
+                                'font-size': '16px',
+                                'background-color': '#bdc3c7',
+                            },
+                        ),
+                    ],
+                    width = 4,
+                ),
                 dbc.Col(
                     [
                         dbc.Button(
@@ -130,13 +147,22 @@ analytics_info_section = html.Div(
                             },
                         ),
                     ],
-                    width = 3,
+                    width = 4,
                 ),
                 dbc.Tooltip(
                     'click me!',
                     target = 'feature_analysis_tooltip',
                     placement = 'top',
                     style = {
+                        'font-size': '14px',
+                        'color': '#333333',
+                    },
+                ),
+                dbc.Tooltip(
+                    'click me!',
+                    target='extreme_events_analysis_tooltip',
+                    placement='top',
+                    style={
                         'font-size': '14px',
                         'color': '#333333',
                     },
@@ -160,11 +186,11 @@ analytics_info_section = html.Div(
                             dbc.Card(
                                 html.P(
                                     [
-                                        'This analysis will focus on understanding the influence of historical weather data on ',
+                                        'This analysis focuses on understanding the influence of historical weather data on ',
                                         'energy consumption in San Francisco and San Jose. The goal is to identify which weather ',
-                                        'variables (e.g., temperature, precipitation, wind speed) have a significant impact on ',
-                                        'energy consumption and whether these impacts differ between the two regions. This will help ',
-                                        'reveal any disproportionate effects of weather conditions on energy demand in each area.',
+                                        'variables have a significant impact on energy consumption and whether these impacts differ ',
+                                        'between the two regions. It will reveal disproportionate effects of weather conditions ',
+                                        'on energy usage.',
                                     ],
                                     style = {
                                         'font-size': '20px',
@@ -178,6 +204,33 @@ analytics_info_section = html.Div(
                                 },
                             ),
                             id = 'feature_analysis_collapse',
+                            is_open = False,
+                        ),
+                    ],
+                ),
+                dbc.Col(
+                    [
+                        dbc.Collapse(
+                            dbc.Card(
+                                html.P(
+                                    [
+                                        'This analysis will look at extreme (hot and cold) events in each region. The thresholds ',
+                                        'set for extreme events are the hottest 90% months in a year and the coldest 10% months ',
+                                        'in a year. It focuses on identifying whether the occurrences of each event is statistically ',
+                                        'significant or if it could be due to random weather variability.'
+                                    ],
+                                    style = {
+                                        'font-size': '20px',
+                                        'font-style': 'italic',
+                                        'color': '#444444',
+                                    },
+                                ),
+                                body = True,
+                                style = {
+                                    'background-color': '#d4d7da',
+                                },
+                            ),
+                            id = 'extreme_events_analysis_collapse',
                             is_open = False,
                         ),
                     ],
@@ -584,7 +637,6 @@ pdp_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '40px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -727,25 +779,124 @@ pdp_section = html.Div(
 
 
 
-# Testing if shifts in climate are significant
+# Extreme weather events
 extreme_weather_section = html.Div(
     [
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        html.H4("Select Region for Correlation Analysis"), 
-                        dcc.Dropdown(
-                            id='region_option',
-                            options=[
-                                {'label': 'San Jose', 'value': 'sj'},
-                                {'label': 'San Francisco', 'value': 'sf'},
+                        html.P(
+                            [
+                                'Extreme Weather Events and Their Significance',
                             ],
-                            value='sj',
+                            style = {
+                                'text-align': 'center',
+                                'font-size': '40px',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'One of the goals of this project is to perform a surface-level analysis assessing ',
+                                'regional shifts in climate, their frequency, and their potential impacts on energy usage. ',
+                                'This involves evaluating changes in the occurrence of extreme weather events ',
+                                '(both hot and cold) over time in San Jose and San Francisco.',
+
+                                html.Br(), html.Br(),
+                            ],
+                            style = {
+                                'font-size': '25px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'The visualizations below show two bar plots: one for extreme cold events and another for ',
+                                'extreme hot events. Each plot displays the proportions of extreme events observed in two time ',
+                                'periods: Past (2013 - 2018) and Recent (2019 -2023), separated by region (SJ and SF). ',
+                                'A two-sample t-test was performed to assess whether the observed differences in proportions ',
+                                'between the Past and Recent periods are statistically significant.',
+                            ],
+                            style={
+                                'font-size': '20px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'The two-sample t-test was chosen because the sample sizes for some periods are small, ',
+                                'and it allows for comparing the means of two independent samples without assuming equal variance. ',
+                                html.Br(), html.Br(), html.Br(),
+
+                                html.H3('Hot Extreme Events:'),
+
+                                html.Span(
+                                    'San Jose (SJ):',
+                                    style = {
+                                        'font-weight': 'bold',
+                                    },
+                                ),
+                                'The proportion of events increased from 5.13% in the Past to 16.67% in the Recent period, ',
+                                'with a statistically significant p-value of 0.0375, suggesting a meaningful increase in extreme hot events over time.',
+                                html.Br(),
+                                html.Span(
+                                    'San Francisco (SF):',
+                                    style = {
+                                        'font-weight': 'bold',
+                                    },
+                                ),
+                                'The proportion of events showed a modest increase from 9.86% to 11.67%, ',
+                                'but with a p-value of 0.7426, indicating no statistically significant change.',
+                                
+                                html.Br(), html.Br(), html.Br(),
+
+                                html.H3('Cold Extreme Events:'),
+
+                                html.Span(
+                                    'San Jose (SJ):',
+                                    style = {
+                                        'font-weight': 'bold',
+                                    },
+                                ),
+                                'The proportion of events decreased from 11.54% to 8.33%, but with a p-value of 0.5323, ',
+                                'this change is not statistically significant.',
+                                html.Br(),
+                                html.Span(
+                                    'San Francisco (SF):',
+                                    style = {
+                                        'font-weight': 'bold',
+                                    },
+                                ),
+                                'The proportion of events increased significantly from 5.63% to 18.33%, ',
+                                'with a p-value of 0.0295, suggesting a notable rise in extreme cold events in this region.',
+                            ],
+                            style = {
+                                'font-size': '20px',
+                                'word-break': 'keep-all',
+                            },
+                        ),
+                    ],
+                ),
+            ],
+            className = 'mb-5',
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Dropdown(
+                            id = 'temperature_option',
+                            options = [
+                                {'label': 'Hot Extreme Events', 'value': 'hot'},
+                                {'label': 'Cold Extreme Events', 'value': 'cold'},
+                            ],
+                            value = 'hot',
 
                         ),
                     ],
-                    width=12,
+                    width = 12,
                 ),
             ],
             className = 'mb-3',
@@ -755,7 +906,7 @@ extreme_weather_section = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                            id='extreme-weather-correlation'
+                            id = 'extreme-weather-corr'
                         )
                     ],
                     width=12
@@ -765,31 +916,15 @@ extreme_weather_section = html.Div(
         ),
         dbc.Row(
             [
-                dbc.Col([], width = 4),
-                # dbc.Col(
-                #     [
-                #         html.P(
-                #             [
-                #                 'z-score for past events (2013 - 2018): ',
-                #                 html.Span(
-                #                     id = 'extreme-weather-z-score-past',
-                #                 ),
-                #             ],
-                #             style = {
-                #                 'marginTop': 20,
-                #                 'color': 'black',
-                #             },
-                #         ),
-                #     ],
-                #     width = 4,
-                # ),
+                dbc.Col([], width = 1),
+                
                 dbc.Col(
                     [
                         html.P(
                             [
-                                'z-score for past events (2019 - 2023): ',
+                                'p-value (SJ): ',
                                 html.Span(
-                                    id = 'extreme-weather-z-score-recent',
+                                    id = 'extreme-weather-sj-p-value',
                                 ),
                             ],
                             style = {
@@ -800,22 +935,31 @@ extreme_weather_section = html.Div(
                     ],
                     width = 4,
                 ),
-                dbc.Col([], width = 4),
+                dbc.Col(
+                    [
+                        html.P(
+                            [
+                                'p-value (SF): ',
+                                html.Span(
+                                    id = 'extreme-weather-sf-p-value',
+                                ),
+                            ],
+                            style = {
+                                'marginTop': 20,
+                                'color': 'black',
+                            },
+                        ),
+                    ],
+                    width = 4,
+                ),
+
+                dbc.Col([], width = 1),
             ],
+            justify = 'between',
         ),
     ],
     className = 'mb-10',
 )
-
-
-
-
-
-
-
-
-
-
 
 # Time-series analysis with LSTM
 lstm_section = html.Div(
@@ -1169,9 +1313,10 @@ analysis_summary_section = html.Div(
                                 'text-align': 'center',
                                 'font-size': '60px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
+
+                        # Feature Analysis Summary
                         html.P(
                             [
                                 'Analysis of Features',
@@ -1181,20 +1326,19 @@ analysis_summary_section = html.Div(
                                 'text-align': 'left',
                                 'font-size': '35px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
                             [
-                                'Our analysis demonstrates that energy consumption patterns in San Jose ',
+                                'The analysis demonstrates that energy consumption patterns in San Jose ',
                                 'and San Francisco are influenced by distinct weather-related factors, ', 
                                 'revealing how local climate characteristics can lead to differing energy ',
                                 'demands between regions. Using a random forest model paired with SHAP ',
-                                '(SHapley Additive exPlanations)—a statistical method that breaks down the ',
-                                'impact of each feature on model predictions—we quantified the importance ',
+                                '(SHapley Additive exPlanations) - a statistical method that breaks down the ',
+                                'impact of each feature on model predictions - I quantified the importance ',
                                 'of various factors. SHAP is particularly valuable here because it assigns ',
                                 '"importance" scores to features based on their average impact on model ',
-                                'predictions, enabling a clear assessment of each feature\'s role.',
+                                'predictions. This provides a clear assessment of each feature\'s role.',
 
                                 html.Br(), html.Br(),
 
@@ -1222,21 +1366,92 @@ analysis_summary_section = html.Div(
                                 'shifts in temperature, possibly indicating a higher sensitivity to climate ',
                                 'variability. Conversely, San Jose\'s reliance on seasonality hints that while its ',
                                 'energy consumption may be less responsive to incremental temperature changes, ',
-                                'seasonal cycles play a dominant role in its demand pattern. However, because ',
-                                'temperature and seasonality are interdependent [NEED REFERENCE TO BACK THIS CLAIM], it would be naive to conclude ',
-                                'that San Jose is less vulnerable to climate changes; further analysis is ',
-                                'warranted to determine the relationship between seasonality and global temperature ',
-                                'shifts. This study suggests that regional energy planning could benefit from ',
-                                'tailored approaches that account for these differing sensitivities.',
-                            
+                                'seasonal cycles play a dominant role in its demand pattern. ',
+                                
+                                html.Br(), html.Br(),
+                                'It is important to note that this project does not delve into the possible ',
+                                'interdependency between temperature and seasonality. So, it would be inappropriate',
+                                'to conclude that San Jose is less vulnerable to changes in climate. ',
+                                'It would be beneficial for future analysis to analyze the relationship', 
+                                'between seasonality and global temperature shifts.',
+                                
                                 html.Br(), html.Br(),
                             ],
                             style = {
-                                'font-size': '25px',
+                                'font-size': '20px',
                                 'word-break': 'keep-all',
                                 'font-style': 'italic',
                             },
                         ),
+
+
+                        # Extreme Events Summary
+                        html.P(
+                            [
+                                html.Br(),
+                                'Analysis of Extreme Events',
+                                html.Br(),
+                            ],
+                            style={
+                                'text-align': 'left',
+                                'font-size': '35px',
+                                'font-variant': 'small-caps',
+                            },
+                        ),
+                        html.P(
+                            [
+                                'The occurrence and significance of extreme weather events were analyzed to identify potential ',
+                                'regional shifts in climate patterns and their impact on energy usage. The analysis focused ',
+                                'on two types of events: extreme hot and extreme cold across two distinct periods: Past (2013 - 2018) ',
+                                'and Recent (2019 - 2023), for San Jose and San Francisco. The results reveal that the ',
+                                'frequency of these events have statistically changed for some regions based on the type of event.',
+
+                                html.Br(), html.Br(),
+
+                                'To assess the statistical significance of differences in event proportions between the Past and Recent periods, ',
+                                'a two-sample t-test was performed. This test was chosen for its ability to evaluate differences in means between ',
+                                'two independent samples. The resulting p-values are critical in determining whether observed differences ',
+                                'represent genuine shifts in weather patterns or are attributable to random variability.',
+
+                                html.Br(), html.Br(),
+
+                                'For hot extreme events, the results indicate contrasting trends between the two regions. In San Jose, the ',
+                                'proportion of hot extreme events increased significantly, rising from 5.13% to 16.67%. This increase is ',
+                                'statistically significant (p-value = 0.0375), and suggests that extreme heat events have become ',
+                                'more frequent in this region. This shift could have implications for increased energy demand due to cooling requirements during these time periods.',
+                                'In San Francisco, the proportion of hot extreme events also increased (9.86% to 11.67%), but ',
+                                'the resulting p-value of 0.7426 indicates no statistical significance. This suggests that, ',
+                                'the observed increase in extreme heat events in SF may not represent a meaningful or consistent trend.',
+
+                                html.Br(), html.Br(),
+
+                                'For cold extreme events, the results reveal an interesting divergence in weather trends between the two regions. ',
+                                'In San Jose, the proportion of cold extreme events declined from 11.54% to 8.33%. ',
+                                'The p-value of 0.5323 indicates that this decrease is not statistically significant. The cold extremes ',
+                                'that were observed could have been caused by random variability in the weather.',
+                                'In San Francisco, the proportion of cold extreme events increased markedly, rising from 5.63% ',
+                                'to 18.33%. Its corresponding p-value 0.0295 is statistically significant. This increase points to a meaningful ',
+                                'rise in the frequency of cold extremes in SF, potentially reflecting localized shifts in weather variability.',
+
+                                html.Br(), html.Br(),
+
+                                'The results can help us understand the shifting climates in each region. Often, the two regions experience',
+                                'different weather patterns: one facing increased heat extremes while the other faces rising cold extremes. ',
+                                'The p-values serve as a measure of confidence in the observed changes. The low p-values as seen in SJ hot extremes ',
+                                '(p = 0.0375) and SF cold extremes (p = 0.0295) suggests real and consistent temperature shifts, while the higher ',
+                                'p-values indicate observations due to random variation.',
+
+                                html.Br(), html.Br(),
+                            ],
+                            style={
+                                'font-size': '20px',
+                                'word-break': 'keep-all',
+                                'font-style': 'italic',
+                            },
+                        ),
+
+
+                        # Time-Series Summary
                         html.P(
                             [
                                 'Analysis of Time-Series Predictions',
@@ -1246,7 +1461,6 @@ analysis_summary_section = html.Div(
                                 'text-align': 'left',
                                 'font-size': '35px',
                                 'font-variant': 'small-caps',
-                                #'text-shadow': '2px 2px 4px #000000',
                             },
                         ),
                         html.P(
@@ -1279,7 +1493,7 @@ analysis_summary_section = html.Div(
                                 html.Br(), html.Br(),
                             ],
                             style = {
-                                'font-size': '25px',
+                                'font-size': '20px',
                                 'word-break': 'keep-all',
                                 'font-style': 'italic',
                             },
@@ -1319,33 +1533,36 @@ layout = dbc.Container(
 
 # Callback to toggle visibility of each collapse
 @callback(
-    Output('feature_analysis_collapse', 'is_open'),
+    [
+        Output('feature_analysis_collapse', 'is_open'),
+        Output('extreme_events_analysis_collapse', 'is_open'),
+        Output('time_series_analysis_collapse', 'is_open'),
+    ],
     [
         Input('feature_analysis_button', 'n_clicks'),
-    ],
-    [
-        State('feature_analysis_collapse', 'is_open')
-    ],
-)
-def toggle_left(n_left, is_open):
-    if n_left:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output('time_series_analysis_collapse', 'is_open'),
-    [
+        Input('extreme_events_analysis_button', 'n_clicks'),
         Input('time_series_analysis_button', 'n_clicks'),
     ],
     [
-        State('time_series_analysis_collapse', 'is_open')
+        State('feature_analysis_collapse', 'is_open'),
+        State('extreme_events_analysis_collapse', 'is_open'),
+        State('time_series_analysis_collapse', 'is_open'),
     ],
 )
-def toggle_left(n_right, is_open):
-    if n_right:
-        return not is_open
-    return is_open
+def toggle_sections(feature_click, extreme_click, time_click, feature_open, extreme_open, time_open):
+    # Determine which button triggered the callback
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        return feature_open, extreme_open, time_open
+
+    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    # Toggle the state of the clicked button while keeping others unchanged
+    return (
+        not feature_open if button_id == 'feature_analysis_button' else feature_open,
+        not extreme_open if button_id == 'extreme_events_analysis_button' else extreme_open,
+        not time_open if button_id == 'time_series_analysis_button' else time_open,
+    )
 
 # Callback for Feature Importances
 @callback(
@@ -1386,85 +1603,112 @@ def update_sj_feature_importances_section(loc):
 
 
 # Helper function for analyze correlation
-def calc_z(df, event_col, recent_col):
-    # Extract counts for the z-test
-    recent_counts = df[df[recent_col]][event_col].sum()
-    recent_total = df[df[recent_col]].shape[0]
-    past_counts = df[~df[recent_col]][event_col].sum()
-    past_total = df[~df[recent_col]].shape[0]
+def perform_ttest(df, event_col, recent_col):
+    # Split data into recent and past samples
+    recent_sample = df[df[recent_col]][event_col]
+    past_sample = df[~df[recent_col]][event_col]
 
-    # Perform two-proportion z-test
-    count = np.array([recent_counts, past_counts])
-    nobs = np.array([recent_total, past_total])
-    stat, pval = proportions_ztest(count, nobs)
-    return round(stat, 4), round(pval, 4)
+    # Perform two-sample t-test
+    t_stat, p_value = ttest_ind(recent_sample, past_sample, equal_var = False)
 
-# Helper function to generate bar plots
-def plot_proportions(stats, event_type):
-    df = stats.reset_index()
-    df['Period'] = df['is_recent'].map({True: 'Recent', False: 'Past'})
+    return round(t_stat, 2), round(p_value, 4)
 
-    fig = px.bar(
-        df, 
-        x='Period', 
-        y='proportion', 
-        title=f"{event_type.capitalize()} Extreme Events",
-        labels={'proportion': 'Proportion of Events'},
-        text='proportion'
-    )
-    fig.update_traces(texttemplate='%{text:.2%}', textposition='outside')
-    return fig
+# Helper function to calculate the proportion of extreme events
+def calculate_proportions(df, event_col, recent_col):
+    # Group by recent and past periods
+    counts = df.groupby(recent_col)[event_col].agg(['sum', 'count'])
+    counts['proportion'] = counts['sum'] / counts['count']
+
+    return counts
 
 # Extreme weather callback
 @callback(
     [
-        Output('extreme-weather-correlation', 'figure'),
-        #Output('extreme-weather-z-score-past', 'children'),
-        Output('extreme-weather-z-score-recent', 'children'),
+        Output('extreme-weather-corr', 'figure'),
+        Output('extreme-weather-sj-p-value', 'children'),
+        Output('extreme-weather-sf-p-value', 'children'),
     ],
-    Input('region_option', 'value')
+    Input('temperature_option', 'value')
 )
-def analyze_correlation(loc):
-    fn = f'joblib_files/base_data/{loc}_combined.joblib'
-    df = load(fn)
+def analyze_regional_correlation(weather_type):
+    # Load data
+    sj_fn = 'joblib_files/base_data/sj_combined.joblib'
+    sf_fn = 'joblib_files/base_data/sf_combined.joblib'
+    sj_df = load(sj_fn)
+    sf_df = load(sf_fn)
 
     # Define thresholds for extreme events
-    hot_thresholds = {'sj': df['tmax'].quantile(0.90)}
-    cold_thresholds = {'sj': df['tmin'].quantile(0.10)}
+    hot_thresholds = {'sj': sj_df['tmax'].quantile(0.90), 'sf': sf_df['tmax'].quantile(0.90)}
+    cold_thresholds = {'sj': sj_df['tmin'].quantile(0.10), 'sf': sf_df['tmin'].quantile(0.10)}
 
-    # Add flags for extreme events
-    df['is_hot_extreme'] = df['tmax'] >= hot_thresholds['sj']
-    df['is_cold_extreme'] = df['tmin'] <= cold_thresholds['sj']
+    # Find the extreme events
+    sj_df['is_hot_extreme'] = sj_df['tmax'] >= hot_thresholds['sj']
+    sj_df['is_cold_extreme'] = sj_df['tmin'] <= cold_thresholds['sj']
+    sf_df['is_hot_extreme'] = sf_df['tmax'] >= hot_thresholds['sf']
+    sf_df['is_cold_extreme'] = sf_df['tmin'] <= cold_thresholds['sf']
 
-    # CHange years??
+    # Time periods for 'recent' and 'past'
     RECENT_YEARS = [2019, 2020, 2021, 2022, 2023]
-    df['is_recent'] = df['year'].astype(int).isin(RECENT_YEARS)
+    sj_df['is_recent'] = sj_df['year'].astype(int).isin(RECENT_YEARS)
+    sf_df['is_recent'] = sf_df['year'].astype(int).isin(RECENT_YEARS)
 
-    # Calculate proportions of extreme events
-    def calculate_proportions(df, event_col, recent_col):
-        # Group by recent and past periods
-        counts = df.groupby(recent_col)[event_col].agg(['sum', 'count'])
-        counts['proportion'] = counts['sum'] / counts['count']
-        return counts
+    # Calculate proportions for the specific temp extreme
+    event_col = f'is_{weather_type}_extreme'
+    sj_stats = calculate_proportions(sj_df, event_col, 'is_recent')
+    sf_stats = calculate_proportions(sf_df, event_col, 'is_recent')
 
-    hot_stats = calculate_proportions(df, 'is_hot_extreme', 'is_recent')
-    cold_stats = calculate_proportions(df, 'is_cold_extreme', 'is_recent')
+    # Perform t-tests
+    sj_ttest = perform_ttest(sj_df, event_col, 'is_recent')
+    sf_ttest = perform_ttest(sf_df, event_col, 'is_recent')
 
-    # Perform the z-tests
-    hot_ztest = calc_z(df, 'is_hot_extreme', 'is_recent')
-    cold_ztest = calc_z(df, 'is_cold_extreme', 'is_recent')
+    # Combine SJ and SF stats for plotting
+    combined_stats = pd.concat(
+        [
+            sj_stats.assign(Region='SJ').reset_index(),
+            sf_stats.assign(Region='SF').reset_index()
+        ]
+    )
 
-    hot_fig = plot_proportions(hot_stats, "Hot")
-    cold_fig = plot_proportions(cold_stats, "Cold")
+    # Generate grouped bar plot
+    fig = px.bar(
+        combined_stats,
+        x = 'is_recent',
+        y = 'proportion',
+        color = 'Region',
+        barmode = 'group',
+        labels = {
+            'is_recent': 'Time Period',
+            'proportion': 'Proportion of Events'
+        },
+        title = f'{weather_type.capitalize()} Extreme Events',
+        text = 'proportion'
+    )
 
-    # Combine hot and cold results?
-    # hot_fig.update_layout(title=f"{loc.upper()} Hot Extreme Events\nZ-Test: {hot_ztest}")
-    # cold_fig.update_layout(title=f"{loc.upper()} Cold Extreme Events\nZ-Test: {cold_ztest}")
+    fig.update_traces(
+        texttemplate = '%{text:.2%}',
+        textposition = 'outside'
+    )
 
-    # return both figs? return z-scores for recent and past?
-    # return [hot_fig, hot_ztest[0], hot_ztest[1]] if loc == 'sj' else [cold_fig, cold_ztest[0], cold_ztest[1]]
-    return [hot_fig, hot_ztest[1]] if loc == 'sj' else [cold_fig, cold_ztest[1]]
+    fig.update_layout(
+        margin = {
+            'r': 30,
+            't': 30,
+            'l': 30,
+            'b': 30
+        },
+        legend_title_text = 'Region',
+        xaxis = dict(
+            tickmode = 'array',
+            tickvals = [False, True],
+            ticktext = ['Past', 'Recent']
+        )
+    )
 
+    return (
+        fig,
+        f"{sj_ttest[1]:.4f}",  # SJ p-value
+        f"{sf_ttest[1]:.4f}",  # SF p-value
+    )
 
 # LSTM - single step
 @callback(
