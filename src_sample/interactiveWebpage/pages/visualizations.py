@@ -4,14 +4,12 @@ import plotly.express as px
 import plotly.graph_objects as go
 from scipy.stats import gaussian_kde
 
-import dash
-from dash import Dash, dcc, html, callback
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 import os
-import pickle
-from joblib import dump, load
+from joblib import load
 
 ### Load Data ###
 sj_df = pd.DataFrame()
@@ -23,13 +21,6 @@ if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
 if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
     sf_df = load('joblib_files/base_data/sf_combined.joblib')
 
-# Descriptions for each plot
-sj_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Jose from 2013 to 2024 (°F).'])
-sf_max_temp_heat = html.P(['Plot Description:', html.Br(), html.Br(), 'This heatmap presents the average monthly maximum and minimum temperatures in San Francisco from 2013 to 2024 (°F).'])
-sj_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Jose from 2013 to 2024 (kWh)."])
-sf_averagekwh_heat = html.P(['Plot Description:', html.Br(), html.Br(), "This heatmap shows the distribution of average monthly energy usage in San Francisco from 2013 to 2024 (kWh)."])
-
-#### Define the Container Partitions ####
 # Visualizations page header
 visualizations_header = html.Div(
     [
@@ -182,18 +173,17 @@ comb_heatmaps = html.Div(
             ],
             className = 'mb-2 text-center',
         ),
-
         dbc.Row(
             [
                 dbc.Col(
                     [
                         dcc.Tabs(
                             id = 'heatmap-tabs',
-                            value = 'sj_avgkwh',
+                            value = 'sj',
                             children = [
                                 dcc.Tab(
-                                    label = 'SJ Average kWh',
-                                    value = 'sj_avgkwh',
+                                    label = 'SJ Average (kWh) and Max Temp',
+                                    value = 'sj',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
                                         'color': '#2c3e50'
@@ -205,34 +195,8 @@ comb_heatmaps = html.Div(
                                 ),
 
                                 dcc.Tab(
-                                    label = 'SF Average kWh',
-                                    value = 'sf_avgkwh',
-                                    style = {
-                                        'backgroundColor': '#bdc3c7',
-                                        'color': '#2c3e50'
-                                    }, 
-                                    selected_style = {
-                                        'backgroundColor': '#1abc9c',
-                                        'color': '#2c3e50'
-                                    },
-                                ),
-
-                                dcc.Tab(
-                                    label = 'SJ Max Temp',
-                                    value = 'sj_tmax',
-                                    style = {
-                                        'backgroundColor': '#bdc3c7',
-                                        'color': '#2c3e50'
-                                    }, 
-                                    selected_style = {
-                                        'backgroundColor': '#1abc9c',
-                                        'color': '#2c3e50'
-                                    },
-                                ),
-
-                                dcc.Tab(
-                                    label = 'SF Max Temp',
-                                    value = 'sf_tmax',
+                                    label = 'SF Average (kWh) and Max Temp',
+                                    value = 'sf',
                                     style = {
                                         'backgroundColor': '#bdc3c7',
                                         'color': '#2c3e50'
@@ -245,7 +209,7 @@ comb_heatmaps = html.Div(
                             ],
                         ),
                     ],
-                    className = 'mb-2',
+                    className = 'mb-3',
                 ),
             ],
         ),
@@ -255,23 +219,19 @@ comb_heatmaps = html.Div(
                 dbc.Col(
                     [
                         dcc.Graph(
-                            id = 'heatmap',
-                            figure = {},
+                            id = 'heatmap-energy',
                         ),
                     ],
-                    width = 7,
+                    width = 6,
                 ),
 
                 dbc.Col(
                     [
-                        html.Div(
-                            id = 'heatmap_output_container',
-                            children = [],
-                            style = {
-                                'color': '#0f0f0f',
-                            },
+                        dcc.Graph(
+                            id = 'heatmap-temp',
                         ),
                     ],
+                    width = 6,
                 ), 
             ],
         ),
@@ -521,73 +481,77 @@ def update_weather(option_selected):
 # Callback for heatmaps
 @callback(
     [
-        Output(component_id = 'heatmap_output_container', component_property = 'children'),
-        Output('heatmap', 'figure')
+        Output('heatmap-energy', 'figure'),
+        Output('heatmap-temp', 'figure')
     ],
     Input('heatmap-tabs', 'value')
 )
 # Function for heatmaps
-def update_heatmap(selected_tab):
-    color_scale = 'Bluyl'
-    container = ''
-    df = ''
+def update_heatmap(region):
+    # Initialize variables
+    df = sj_df if region == 'sj' else sf_df
 
-    # Choose dataset based on clicked tab
-    if selected_tab == 'sj_avgkwh':
-        df = sj_df
-        value_column = 'averagekwh'
-        title = 'Avg Energy Usage (SJ - 95110)'
-        container = sj_averagekwh_heat
+    value_col_energy = 'averagekwh'
+    title_energy = f'Average Energy Usage ({region.upper()})'
+    color_scale_energy = 'Bluyl'
 
-    elif selected_tab == 'sf_avgkwh':
-        df = sf_df
-        value_column = 'averagekwh'
-        title = 'Avg Energy Usage (SF - 94102)'
-        container = sf_averagekwh_heat
+    value_col_temp = 'tmax'
+    title_temp = f'Average Max Temp ({region.upper()})'
+    color_scale_temp = 'YlOrRd'
 
-    elif selected_tab == 'sj_tmax':
-        df = sj_df
-        value_column = 'tmax'
-        title = 'Avg Max Temp (SJ - 95110)'
-        color_scale = 'YlOrRd'
-        container = sj_max_temp_heat
-
-    else:
-        df = sf_df
-        value_column = 'tmax'
-        title = 'Avg Max Temp (SF - 94102)'
-        color_scale = 'YlOrRd'
-        container = sf_max_temp_heat
-
-    # Create pivot table for heatmap: months (x-axis) and years (y-axis)
-    heatmap_data = df.pivot_table(
-        values = value_column, 
+    # Pivot each df for the heatmap
+    heatmap_data_energy = df.pivot_table(
+        values = value_col_energy, 
         index = 'year', 
         columns = 'month',
         aggfunc = 'mean',
         observed = False
     )
 
-    # Generate the heatmap
-    fig = px.imshow(
-        heatmap_data,
-        labels = dict(
-            x = "Month",
-            y = "Year",
-            color = value_column
-        ),
-        x = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        y = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
-        color_continuous_scale = color_scale
+    heatmap_data_temp = df.pivot_table(
+        values = value_col_temp, 
+        index = 'year', 
+        columns = 'month',
+        aggfunc = 'mean',
+        observed = False
     )
 
-    # Update the layout
-    fig.update_layout(
-        title = title,
-        xaxis_title = "Month",
-        yaxis_title = "Year",
-        height = 600,
-        paper_bgcolor='#ecf0f1',  # Outside the plot area background
-    )
+    data = {
+        'Energy': [heatmap_data_energy, color_scale_energy, title_energy],
+        'Temp': [heatmap_data_temp, color_scale_temp, title_temp]
+    }
+
+    figs = []
+
+    # Plot each data set
+    for k, v in data.items():
+        fig = px.imshow(
+            v[0],
+            labels = dict(
+                x = "Month",
+                y = "Year",
+                color = k
+            ),
+            x = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            y = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+            color_continuous_scale = v[1],
+        )
+        fig.update_layout(
+            margin = {
+                'r': 30,
+                'l': 30,
+                'b': 30
+            },
+            title = v[2],
+            xaxis_title = None,
+            yaxis_title = None,
+            height = 600,
+            paper_bgcolor = '#ecf0f1',
+            xaxis = dict(
+                tickangle = 45
+            ),
+        )
+
+        figs.append(fig)
     
-    return container, fig
+    return figs[0], figs[1]

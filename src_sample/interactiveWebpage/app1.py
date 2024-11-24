@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc, html
 
 from pages import (
-    home, home_old,
+    home,
     project_objective, analytical_methods, 
     visualizations, real_time_analysis
 )
@@ -11,8 +11,8 @@ from pages import (
 # Set the App Properties
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.LUX, '/assets/styles.css'],
-    meta_tags=[
+    external_stylesheets = [dbc.themes.LUX, '/assets/styles.css'],
+    meta_tags = [
         {'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}
     ],
     suppress_callback_exceptions=True
@@ -24,8 +24,8 @@ navbar = dbc.Navbar(
         [
             # Home link on the left
             dbc.NavbarBrand(
-                "Home", href="/",
-                className="ml-auto",
+            'Home', href = '/',
+                className = 'ml-auto',
                 style = {
                     'color': '#ffffff',
                     'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
@@ -36,42 +36,42 @@ navbar = dbc.Navbar(
             dbc.Nav(
                 [
                     dbc.NavLink(
-                        "Project Objective",
-                        href="/project-objective",
-                        active="exact",
+                        'Project Objective',
+                        href = '/project-objective',
+                        active = 'exact',
                         style = {
                             'color': '#ffffff',
                             'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                     dbc.NavLink(
-                        "Analytical Methods",
-                        href="/analytical-methods",
-                        active="exact",
+                        'Analytical Methods',
+                        href = '/analytical-methods',
+                        active = 'exact',
                         style = {
                             'color': '#ffffff',
                             'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                     dbc.NavLink(
-                        "Visualizations",
-                        href="/visualizations",
-                        active="exact",
+                        'Visualizations',
+                        href = '/visualizations',
+                        active = 'exact',
                         style = {
                             'color': '#ffffff',
                             'textShadow': '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
                         }
                     ),
                 ],
-                navbar=True,
-                className="ml-auto",
+                navbar = True,
+                className = 'ml-auto',
             ),
         ],
-        fluid=True,
+        fluid = True,
     ),
-    color="transparent",
-    dark=True,
-    className="mb-4 fixed-top",
+    color = 'transparent',
+    dark = True,
+    className = 'mb-4 fixed-top',
 )
 
 # Main page layout
@@ -107,7 +107,7 @@ def render_page_content(pathname):
     else:
         return html.Div(
             [
-                html.H1('404: Not found', className='text-danger'),
+                html.H1('404: Not found', className = 'text-danger'),
                 html.Hr(),
                 html.P(f'The pathname {pathname} was not recognized...'),
             ],

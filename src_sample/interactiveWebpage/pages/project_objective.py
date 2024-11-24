@@ -281,7 +281,6 @@ layout = dbc.Container(
     [
         html.Div(
             [
-                #data_header,
                 goals_and_sources_section,
                 data_table1,
                 data_table2,
