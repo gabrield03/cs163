@@ -2,23 +2,16 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 import pandas as pd
-import matplotlib.pyplot as plt
-from plotly.tools import mpl_to_plotly
 import plotly.express as px
 import plotly.graph_objs as go
-from plotly.subplots import make_subplots
-import random
-import numpy as np
 from scipy.stats import ttest_ind
 
 from  utils.data_pipeline import (
     processing_pipeline,
     pred_lstm_single_step, pred_lstm_multi_step,
-    inverse_transform_predictions, inverse_transform_categorical,
     pred_sarima
 )
 import os
-import pickle
 from joblib import dump, load
 
 ### Load Data ###
@@ -1669,16 +1662,26 @@ def analyze_regional_correlation(weather_type):
         ]
     )
 
+    bar_colors_cold = {
+        'SJ': '#3399FF',
+        'SF': '#99CCFF'
+    }
+    bar_colors_hot = {
+        'SJ': '#FF3333',
+        'SF': '#FF9999'
+    }
+    
     # Generate grouped bar plot
     fig = px.bar(
         combined_stats,
         x = 'is_recent',
         y = 'proportion',
         color = 'Region',
+        color_discrete_map = bar_colors_cold if weather_type == 'cold' else bar_colors_hot,
         barmode = 'group',
         labels = {
             'is_recent': 'Time Period',
-            'proportion': 'Proportion of Events'
+            'proportion': 'Occurrence Percentage'
         },
         title = f'{weather_type.capitalize()} Extreme Events',
         text = 'proportion'
