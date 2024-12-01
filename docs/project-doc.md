@@ -431,36 +431,64 @@ The following sections should be used for the visualization planning. These are 
 ## Web Page Plan
 <!--- Explain how many pages you will have in total and what content will be shown in each page. (Each diagram discussed above should be given a proper location in this section. Also, it is required to have (1) "Project Objective" page, which explains the main goals and data sources, and (2) "Analytical Methods" page, where you explain the major techniques used in the project and provide further references. -->
 
-- My project website will include a Home Page, Project Objective Page, Analytical Methods Page, Data Exploration Page, and potentially an About Me Page. Here's how each page will be structured and the types of visuals they will include:
+- My project website will have 4 pages and they are: a Home Page, Project Objective Page, Analytical Methods Page, and a Data Exploration Page. 
+For this specific project, an About Me page will not be included, but future work will eventually implement an About Me page.
+They will be structured and and contain the types of visuals as follows:
 
     - Home Page
-        The home page is designed to attract visitor attention and provide a visual summary of the project's goals in a clean, uncluttered layout.
+        - The home page is designed to attract visitor attention and provide a visual summary of the project's goals in a clean, uncluttered layout.
 
-        - This page will feature 3-4 key visuals:
-            - A horizontal bar graph and a line plot, which efficiently convey the main objectives and results of the project.
-            - An interactive slider section that allows users to see predicted energy consumption for each region based on maximum and minimum temperatures.
-            - Optionally, a plot showing relationships within each dataset to help visitors understand data interconnections.
+        - This page will have 1 looping home page video and 3 key visuals:
+			- The looping video is drone footage of the San Francisco city. It tells the web page visitor that the location is "SF or Bay Area".
+
+			- Two bar plots that convey the main objectives and results of the project.
+            	- The horizontal bar plot allows the visitor to understand, at a glance, which weather variables are the most important for each region.
+				- The vertical bar plot shows the visitor the temperature trends over the past years and how they differ by region.
+			
+			- An interactive map with temperature sliders.
+				- The visitor can change the minimum and maximum temperatures on each slider. The regional colors on the map will change 
+				in relation to the difference in energy consumption from the lowest temperatures (Max: 60 °F, Min: 0 °F).
+				- This allows the user to see how different temperatures are likely to affect energy usage in each area. Specifically, 
+				that each area is affected differently.
+				- Below is the actual energy consumption prediction for each region and a note informing visitors what 1 kWh is equivalent to.
 
     - Project Objective Page
-        - This page will introduce the project's main goals, the reasons behind it, tables summarizing the regional datasets, and the data sources.
+        - This page will introduce the project's main goals, tables summarizing the regional datasets, and the data sources.
 
-        - Visuals on this page will be minimal, but it will include two interactive tables showing data samples. Each numerical feature will also have a distribution overview to help visitors understand the data composition.
+        - Visuals on this page will be minimal, but it will include two interactive tables showing regional data. 
+		- Each numerical feature in the table will have a distribution plot to help visitors understand the data patterns.
+
+		- The Data Sources section will provide a brief description of who the data was collected from, what the data contains, and a link to each source.
 
     - Analytical Methods Page
-        - This page focuses on the two primary analytical techniques in the project - feature analysis and time-series analysis. The page will offer an in-depth explanation of the methods, with academic-level detail.
+        - This page focuses on the primary analytical techniques in the project - feature analysis, extreme event analysis, and time-series analysis. 
+		- The page will offer an in-depth explanation of the methods, with academic-level detail - not just an overview of results.
 
-        - The page will contain various static and interactive visuals:
-            - A feature importance bar graph, SHAP bubble plots, SHAP decision plots, and partial dependence plots (PDP) for each region.
-            - Regional LSTM single-step and multi-step line plots showing predictions for different time intervals, as well as an interactive SARIMA prediction line plot to compare model performance against LSTM predictions.
+        - The page will contain various static and interactive visuals and in-depth descriptions of the visualizations and methods used:
+            - Interactive: 
+				- Feature importance bar plots
+				- SHAP bubble plots
+				- Extreme events bar plots
+				- LSTM single-step and multi-step line graphs
+				- SARIMA line graph
+
+			- Static: 
+				- SHAP decision plots
+				- PDP plots
+
+		- Summary of Analysis section:
+			- This section summarizes the methodologies and findings of each of the analytical techniques (the objectives) of the project.
+
 
     - Data Exploration Page
         - This page focuses on exploratory data analysis (EDA) to provide a visual understanding of the data and highlight key features related to energy usage and temperature patterns.
         
 		- All visuals on this page will be interactive:
-            - Bar plots and heatmaps for temperature extremes (maximum and minimum) and average energy usage distributions in each region.
-            - Heatmaps offer an alternative view of data distribution patterns to enrich the EDA insights.
+			- There are two side-by-side regional energy and weather bar plots.
+				- They depict average energy usage and average maximum and minimum temperatures for each region.
+				- The user can select different drop down choices to see different regions.
 
-    - About Me Page
-        - This page may or may not be included, depending on the project timeline. If included, it will provide a brief overview of my background, possibly a photo, and links to my social profiles.
-
-        - I do not anticipate including any diagrams on this page.
+            - Below that are two side-by-side heatmaps. They show similar information as the bar plots (average energy and (max/min) temperature), 
+			but display the trends over time.
+				- The heatmaps allow users to see how energy usage and temperature have changed over the past 10+ years. 
+				Also, the monthly and yearly patterns and differences between regions can be clearly identified.
