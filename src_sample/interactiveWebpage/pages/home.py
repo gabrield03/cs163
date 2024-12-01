@@ -923,9 +923,10 @@ def update_chloropleth(tmax, tmin):
     )
 
     fig.update_layout(
+        paper_bgcolor = 'black',
         legend = dict(
             font = dict(
-                color = 'White',
+                color = 'white',
                 size = 12
             ),
         ),
@@ -937,7 +938,6 @@ def update_chloropleth(tmax, tmin):
             'l': 0,
             'b': 30
         },
-        paper_bgcolor = 'black',
         mapbox_accesstoken = token,
     )
     
