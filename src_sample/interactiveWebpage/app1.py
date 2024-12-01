@@ -3,9 +3,10 @@ import dash_bootstrap_components as dbc
 from dash import Input, Output, dcc, html
 
 from pages import (
+    data_exploration,
     home,
     project_objective, analytical_methods, 
-    visualizations, real_time_analysis
+    real_time_analysis
 )
 
 # Set the App Properties
@@ -54,8 +55,8 @@ navbar = dbc.Navbar(
                         }
                     ),
                     dbc.NavLink(
-                        'Visualizations',
-                        href = '/visualizations',
+                        'Data Exploration',
+                        href = '/data-exploration',
                         active = 'exact',
                         style = {
                             'color': '#ffffff',
@@ -96,8 +97,8 @@ app.layout = html.Div(
 def render_page_content(pathname):
     if pathname == '/':
         return home.layout
-    elif pathname == '/visualizations':
-        return visualizations.layout
+    elif pathname == '/data-exploration':
+        return data_exploration.layout
     elif pathname == '/analytical-methods':
         return analytical_methods.layout
     elif pathname == '/real-time-analysis':
