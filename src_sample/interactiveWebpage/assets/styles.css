@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #FAF9F6;
+}
+
+#home-page-content {
+    background-color: #000000 !important;
+    /* min-height: 100vh; */
+    position: absolute;
+}
+
+.pages-content {
+    background-color: #FAF9F6 !important;
+}
+
+/* Fix the small margins */
+body {
+    margin: 0;
+}
+
+
+.fade-word {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    font-size: 2vw; 
+    font-family: sans-serif;
+    position: absolute;
+}
+
+
+.fade-word.visible {
+    opacity: 1;
+}
+
+@keyframes fadeInOut {
+    0%, 30% { 
+        opacity: 0; 
+        color: white;
+    }
+    50%, 80% { 
+        opacity: 1; 
+        color: yellow;
+    }
+    100% { 
+        opacity: 0; 
+        color: white; 
+    }
+}
+
+.fade-sentence {
+    animation: fadeInOut 6s infinite;
+    text-align: center;
+    font-size: 20px;
+}
+
+
+
+/* Custom accordion */
+/* Button not clicked */
+.accordion-button.collapsed {
+    background-color: #d3d3d3 !important;
+}
+
+/* Button clicked */
+.accordion-button:not(.collapsed) {
+    background-color: #a1a1a1 !important;
+}
+
+/* Border extra */
+.accordion-item {
+    border: 1px solid #603c3c !important;
+}
+
+.small-button {
+    font-size: 12px !important;
+    padding: 5px 10px !important;
+}
+
+/* Custom carousel */
+/* Controls indicators */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #000000;
+}
+
+/* Indicators */
+.carousel-indicators {
+    bottom: -40px;
+    background-color: #000000;
+}
+
+/* Move Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+    top: unset;
+    bottom: -32px;
+    width: 5%;
+}
+
+
+.mb-20 {
+    margin-bottom: 20rem;
+}
+
+.mb-10 {
+    margin-bottom: 10rem;
+}
+
+.mt-10 {
+    margin-top: 10rem;
+}
