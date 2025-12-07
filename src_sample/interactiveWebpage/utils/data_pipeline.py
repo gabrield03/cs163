@@ -23,10 +23,10 @@ from sklearn.base import BaseEstimator, TransformerMixin
 # import tensorflow as tf
 # from keras import Sequential
 
-from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping
-from keras.losses import MeanSquaredError
-from keras.metrics import MeanAbsoluteError
+# from keras.optimizers import Adam
+# from keras.callbacks import EarlyStopping
+# from keras.losses import MeanSquaredError
+# from keras.metrics import MeanAbsoluteError
 
 # from keras.layers import Dense, LSTM
 
@@ -688,21 +688,21 @@ def lstm_data_processing(loc):
 #             self._sample_batch = result
 #         return result
     
-def compile_and_fit(model, window, patience = 10, max_epochs = 100):
-    early_stopping = EarlyStopping(monitor = 'val_loss',
-                                    patience = patience,
-                                    mode = 'min')
+# def compile_and_fit(model, window, patience = 10, max_epochs = 100):
+#     early_stopping = EarlyStopping(monitor = 'val_loss',
+#                                     patience = patience,
+#                                     mode = 'min')
     
-    model.compile(loss = MeanSquaredError(),
-                    optimizer = Adam(),
-                    metrics = [MeanAbsoluteError()])
+#     model.compile(loss = MeanSquaredError(),
+#                     optimizer = Adam(),
+#                     metrics = [MeanAbsoluteError()])
     
-    history = model.fit(window.train,
-                        epochs = max_epochs,
-                        validation_data = window.val,
-                        callbacks = [early_stopping])
+#     history = model.fit(window.train,
+#                         epochs = max_epochs,
+#                         validation_data = window.val,
+#                         callbacks = [early_stopping])
     
-    return history
+#     return history
 
 # Inverse transformation functions
 def inverse_transform_predictions(data, scaler):
