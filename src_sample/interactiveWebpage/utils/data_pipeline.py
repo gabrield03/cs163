@@ -9,6 +9,7 @@ from dash.dash_table.Format import Format, Scheme
 from dash import html
 import plotly.graph_objects as go
 import base64
+import requests
 from io import BytesIO
 import shap
 from joblib import dump, load
@@ -490,7 +491,8 @@ def processing_pipeline(df, loc):
 
 # Process the data for LSTM
 def lstm_data_processing(loc):
-    df = load(f'joblib_files/base_data/{loc}_combined.joblib')
+    df_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/{loc}_combined.joblib"
+    df = load_joblib_from_github(df_url)
 
     #### Data preprocessing for lstm ####
     # Drop unnecessary columns
@@ -855,7 +857,10 @@ def predict_with_hypothetial(model, hypothetical_df, data_window):
 def pred_sarima(loc, file_specifier):
     joblib_filename_sarima_res = f'joblib_files/sarima/{loc}_sarima_{file_specifier}.joblib'
 
-    df = load(f'joblib_files/base_data/{loc}_combined.joblib')
+    # df = load(f'joblib_files/base_data/{loc}_combined.joblib')
+
+    df_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/{loc}_combined.joblib"
+    df = load_joblib_from_github(df_url)
 
     ps = range(0, 4, 1)
     qs = range(0, 4, 1)
@@ -936,3 +941,11 @@ if os.path.exists('joblib_files/base_data/sj_energy_df.joblib') and os.path.exis
         combine_historical_data(df1, df2, df3, df4)
     else:
         print('Some error occurred while loading clean data')
+
+
+### Load Data ###
+def load_joblib_from_github(raw_url: str):
+    """Load a joblib file directly from GitHub RAW."""
+    response = requests.get(raw_url)
+    response.raise_for_status()
+    return load(BytesIO(response.content))

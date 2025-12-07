@@ -6,25 +6,21 @@ import pandas as pd
 import math
 import numpy as np
 
-from  utils.data_pipeline import processing_pipeline
+from  utils.data_pipeline import processing_pipeline, load_joblib_from_github
 
+import requests
+from io import BytesIO
 import os
 from joblib import load
 import json
 
 
 ### Load Data ###
-sj_df = pd.DataFrame()
-sf_df = pd.DataFrame()
+sj_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sj_combined.joblib"
+sf_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sf_combined.joblib"
 
-if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
-    sj_df = load('joblib_files/base_data/sj_combined.joblib')
-
-if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
-    sf_df = load('joblib_files/base_data/sf_combined.joblib')
-
-sj_df = load('joblib_files/base_data/sj_combined.joblib')
-sf_df = load('joblib_files/base_data/sf_combined.joblib')
+sj_df = load_joblib_from_github(sj_url)
+sf_df = load_joblib_from_github(sf_url)
 
 sj_df.drop(columns = ['awnd', 'wdf2', 'wdf5', 'wsf2', 'wsf5'], inplace = True)
 # Adding a unique identifier for each dataframe to keep track of the region
@@ -668,11 +664,16 @@ def update_feature_importances_section(loc):
     df = None
     df = sj_df if loc == 'sj' else sf_df
 
-    importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
-    if not os.path.exists(importances_fn):
-        importances_df = processing_pipeline(df, loc)
-    else:
-        importances_df = load(importances_fn)
+    # importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
+    # if not os.path.exists(importances_fn):
+    #     importances_df = processing_pipeline(df, loc)
+    # else:
+    #     importances_df = load(importances_fn)
+
+
+
+    importances_df_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/processed_data/{loc}_importances_df.joblib"
+    importances_df = load_joblib_from_github(importances_df_url)
 
     rename_cols = {
         'season': 'Season', 'month': 'Month', 'year': 'Year',
@@ -858,8 +859,15 @@ def update_chloropleth(tmax, tmin):
     sf_temp_at_low = 305 # sf low 305, high: 275
 
     # Access predictions
-    sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
-    sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
+    # sj_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib')
+    # sf_pred = load(f'joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib')
+
+    sj_pred_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/lstm/lstm_hypothetical_inputs/sj_{tmax}_{tmin}.joblib"
+    sf_pred_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/lstm/lstm_hypothetical_inputs/sf_{tmax}_{tmin}.joblib"
+
+    sj_pred = load_joblib_from_github(sj_pred_url)
+    sf_pred = load_joblib_from_github(sf_pred_url)
+
 
     sj_value = sj_pred.item() if hasattr(sj_pred, 'item') else sj_pred
     sf_value = sf_pred.item() if hasattr(sf_pred, 'item') else sf_pred

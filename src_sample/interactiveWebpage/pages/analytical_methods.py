@@ -6,23 +6,24 @@ import plotly.express as px
 import plotly.graph_objs as go
 from scipy.stats import ttest_ind
 
-from  utils.data_pipeline import (
+from utils.data_pipeline import (
     processing_pipeline,
     pred_lstm_single_step, pred_lstm_multi_step,
-    pred_sarima
+    pred_sarima,
+    load_joblib_from_github
 )
+import requests
+from io import BytesIO
 import os
 from joblib import dump, load
 
+
 ### Load Data ###
-sj_df = pd.DataFrame()
-sf_df = pd.DataFrame()
+sj_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sj_combined.joblib"
+sf_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sf_combined.joblib"
 
-if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
-    sj_df = load('joblib_files/base_data/sj_combined.joblib')
-
-if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
-    sf_df = load('joblib_files/base_data/sf_combined.joblib')
+sj_df = load_joblib_from_github(sj_url)
+sf_df = load_joblib_from_github(sf_url)
 
 sj_df.drop(columns = ['awnd', 'wdf2', 'wdf5', 'wsf2', 'wsf5'], inplace = True)
 # Adding a unique identifier for each dataframe to keep track of the region
@@ -455,8 +456,11 @@ shap_intro_section = html.Div(
 
 # SHAP Dot plot function
 def shap_dot_plot():
-    sj_shap = load('joblib_files/shap/sj_shap_plot.joblib')
-    sf_shap = load('joblib_files/shap/sf_shap_plot.joblib')
+    sj_shap_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/shap/sj_shap_plot.joblib"
+    sf_shap_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/shap/sf_shap_plot.joblib"
+
+    sj_shap = load_joblib_from_github(sj_shap_url)
+    sf_shap = load_joblib_from_github(sf_shap_url)
 
     # Combine into one DataFrame for scatter plot
     dot_data = pd.concat(
@@ -1573,12 +1577,15 @@ def update_sj_feature_importances_section(loc):
     df = None
     df = sj_df if loc == 'sj' else sf_df
 
-    importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
-    if not os.path.exists(importances_fn):
-        feature_importances_section = processing_pipeline(df, loc)
-    else:
-        feature_importances_section = load(importances_fn)
-    
+    # importances_fn = f'joblib_files/processed_data/{loc}_importances_df.joblib'
+    # if not os.path.exists(importances_fn):
+    #     feature_importances_section = processing_pipeline(df, loc)
+    # else:
+    #     feature_importances_section = load(importances_fn)
+
+    importances_fn_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/processed_data/{loc}_importances_df.joblib"
+    feature_importances_section = load_joblib_from_github(importances_fn_url)
+
     fig = px.bar(
         feature_importances_section,
         x = 'feature',
@@ -1625,10 +1632,17 @@ def calculate_proportions(df, event_col, recent_col):
 )
 def analyze_regional_correlation(weather_type):
     # Load data
-    sj_fn = 'joblib_files/base_data/sj_combined.joblib'
-    sf_fn = 'joblib_files/base_data/sf_combined.joblib'
-    sj_df = load(sj_fn)
-    sf_df = load(sf_fn)
+    # sj_fn = 'joblib_files/base_data/sj_combined.joblib'
+    # sf_fn = 'joblib_files/base_data/sf_combined.joblib'
+    # sj_df = load(sj_fn)
+    # sf_df = load(sf_fn)
+
+    sj_fn_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sj_combined.joblib"
+    sf_fn_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sf_combined.joblib"
+    sj_df = load_joblib_from_github(sj_fn_url)
+    sf_df = load_joblib_from_github(sf_fn_url)
+
+
 
     # Define thresholds for extreme events
     hot_thresholds = {'sj': sj_df['tmax'].quantile(0.90), 'sf': sf_df['tmax'].quantile(0.90)}
@@ -1730,17 +1744,20 @@ def update_lstm_single_step(region):
     file_specifier = 1
     shift = 1
 
-    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
+    # joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib'
 
-    lstm_results = None
+    # lstm_results = None
 
-    # Load LSTM scores and predictions
-    if request_new_joblib:
-        lstm_results = pred_lstm_single_step(region, file_specifier, shift)
-    else:
-        if os.path.exists(joblib_filename_lstm_res):
-            lstm_results = load(joblib_filename_lstm_res)
-    
+    # # Load LSTM scores and predictions
+    # if request_new_joblib:
+    #     lstm_results = pred_lstm_single_step(region, file_specifier, shift)
+    # else:
+    #     if os.path.exists(joblib_filename_lstm_res):
+    #         lstm_results = load(joblib_filename_lstm_res)
+
+    lstm_results_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/lstm/{region}_lstm_single_step_{file_specifier}.joblib"
+    lstm_results = load_joblib_from_github(lstm_results_url)
+
     train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
     test_score = lstm_results['test_score']
@@ -1786,16 +1803,19 @@ def update_lstm_multi_step(region):
     file_specifier = 1
     shift = 12
 
-    joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
+    # joblib_filename_lstm_res = f'joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib'
 
-    lstm_results = None
+    # lstm_results = None
 
-    # Load LSTM scores and predictions
-    if request_new_joblib:
-        lstm_results = pred_lstm_multi_step(region, file_specifier, shift)
-    else:
-        if os.path.exists(joblib_filename_lstm_res):
-            lstm_results = load(joblib_filename_lstm_res)
+    # # Load LSTM scores and predictions
+    # if request_new_joblib:
+    #     lstm_results = pred_lstm_multi_step(region, file_specifier, shift)
+    # else:
+    #     if os.path.exists(joblib_filename_lstm_res):
+    #         lstm_results = load(joblib_filename_lstm_res)
+
+    lstm_results_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/lstm/{region}_lstm_multi_step_{file_specifier}.joblib"
+    lstm_results = load_joblib_from_github(lstm_results_url)            
     
     train_score = lstm_results['train_score']
     val_score = lstm_results['val_score']
@@ -1842,18 +1862,21 @@ def update_sarima(region):
     request_new_joblib = False
     file_specifier = 1
 
-    joblib_filename_sarima_res = f'joblib_files/sarima/{region}_sarima_{file_specifier}.joblib'
+    # joblib_filename_sarima_res = f'joblib_files/sarima/{region}_sarima_{file_specifier}.joblib'
 
-    plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
+    # plot_title = 'San Jose' if region == 'sj' else 'San Francisco'
 
-    sarima_results = None
+    # sarima_results = None
 
-    # Load SARIMA scores and predictions
-    if request_new_joblib:
-        sarima_results = pred_sarima(region, file_specifier)
-    else:
-        if os.path.exists(joblib_filename_sarima_res):
-            sarima_results = load(joblib_filename_sarima_res)
+    # # Load SARIMA scores and predictions
+    # if request_new_joblib:
+    #     sarima_results = pred_sarima(region, file_specifier)
+    # else:
+    #     if os.path.exists(joblib_filename_sarima_res):
+    #         sarima_results = load(joblib_filename_sarima_res)
+
+    sarima_results_url = f"https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/sarima/{region}_sarima_{file_specifier}.joblib"
+    sarima_results = load_joblib_from_github(sarima_results_url)
 
     test = sarima_results['test']
     df = sarima_results['df']

@@ -8,18 +8,20 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
+import requests
+from io import BytesIO
 import os
 from joblib import load
 
+from utils.data_pipeline import load_joblib_from_github
+
+
 ### Load Data ###
-sj_df = pd.DataFrame()
-sf_df = pd.DataFrame()
+sj_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sj_combined.joblib"
+sf_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sf_combined.joblib"
 
-if os.path.exists('joblib_files/base_data/sj_combined.joblib'):
-    sj_df = load('joblib_files/base_data/sj_combined.joblib')
-
-if os.path.exists('joblib_files/base_data/sf_combined.joblib'):
-    sf_df = load('joblib_files/base_data/sf_combined.joblib')
+sj_df = load_joblib_from_github(sj_url)
+sf_df = load_joblib_from_github(sf_url)    
 
 # Visualizations page header
 visualizations_header = html.Div(
