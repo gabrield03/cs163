@@ -920,9 +920,9 @@ def pred_sarima(loc, file_specifier):
 
 ### Code to fetch, process, and save the historical data ###
 repo_urls = {
-    f'https://raw.githubusercontent.com/gabrield03/cs163/refs/heads/main/src_sample/interactiveWebpage/data/energy/Combined_Energy_Data.csv': ['joblib_files/base_data/energy_data.joblib', ['joblib_files/base_data/sj_energy_df.joblib', 'joblib_files/base_data/sf_energy_df.joblib']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SJ_95110_SJAirport.csv': ['joblib_files/base_data/sj_weather_data.joblib', ['joblib_files/base_data/sj_weather_df.joblib']],
-    f'https://raw.githubusercontent.com/gabrield03/cs163/main/src_sample/interactiveWebpage/data/weather/SF_94102_DowntownSF.csv': ['joblib_files/base_data/sf_weather_data.joblib', ['joblib_files/base_data/sf_weather_df.joblib']]
+    f'https://raw.githubusercontent.com/gabrield03/data_files/refs/heads/main/data/energy/Combined_Energy_Data.csv': ['joblib_files/base_data/energy_data.joblib', ['joblib_files/base_data/sj_energy_df.joblib', 'joblib_files/base_data/sf_energy_df.joblib']],
+    f'https://raw.githubusercontent.com/gabrield03/data_files/refs/heads/main/data/weather/SJ_95110_SJAirport.csv': ['joblib_files/base_data/sj_weather_data.joblib', ['joblib_files/base_data/sj_weather_df.joblib']],
+    f'https://raw.githubusercontent.com/gabrield03/data_files/refs/heads/main/data/weather/SF_94102_DowntownSF.csv': ['joblib_files/base_data/sf_weather_data.joblib', ['joblib_files/base_data/sf_weather_df.joblib']]
 }
 
 # Fetch and clean the historical data
