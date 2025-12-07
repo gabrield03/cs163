@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import requests
 from io import StringIO
 import os
@@ -11,17 +10,15 @@ import plotly.graph_objects as go
 import base64
 import requests
 from io import BytesIO
-import shap
 from joblib import dump, load
 
 # ML libraries
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 import tensorflow as tf
 from keras import Sequential

@@ -1,19 +1,10 @@
-import dash
-from dash import html, dash_table, dcc, callback, Input, Output
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-import pandas as pd
 from utils.data_pipeline import (
-    format_columns, 
     create_table_header, create_table_summary_statistics, create_table_rows,
     load_joblib_from_github
 )
-
-import requests
-from io import BytesIO
-import os
-import pickle
-from joblib import dump, load
 
 ### Load Data ###
 sj_url = "https://raw.githubusercontent.com/gabrield03/data_files/main/joblib_files/base_data/sj_combined.joblib"

@@ -6,12 +6,8 @@ import pandas as pd
 import math
 import numpy as np
 
-from  utils.data_pipeline import processing_pipeline, load_joblib_from_github
+from  utils.data_pipeline import load_joblib_from_github
 
-import requests
-from io import BytesIO
-import os
-from joblib import load
 import json
 
 

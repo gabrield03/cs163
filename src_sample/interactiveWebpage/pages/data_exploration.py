@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
@@ -7,11 +6,6 @@ from scipy.stats import gaussian_kde
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
-
-import requests
-from io import BytesIO
-import os
-from joblib import load
 
 from utils.data_pipeline import load_joblib_from_github
 
