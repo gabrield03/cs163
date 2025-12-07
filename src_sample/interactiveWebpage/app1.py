@@ -5,7 +5,8 @@ from dash import Input, Output, dcc, html
 from pages import (
     data_exploration,
     home,
-    project_objective, analytical_methods, 
+    project_objective,
+    analytical_methods, 
     real_time_analysis
 )
 

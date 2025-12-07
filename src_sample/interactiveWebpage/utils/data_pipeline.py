@@ -20,15 +20,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.base import BaseEstimator, TransformerMixin
 
-import tensorflow as tf
-from keras import Sequential
+# import tensorflow as tf
+# from keras import Sequential
 
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from keras.losses import MeanSquaredError
 from keras.metrics import MeanAbsoluteError
 
-from keras.layers import Dense, LSTM
+# from keras.layers import Dense, LSTM
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -544,149 +544,149 @@ def lstm_data_processing(loc):
 
     return train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder
 
-class DataWindow():
-    def __init__(self, 
-                 input_width, label_width, shift, 
-                 train_df_proc, val_df_proc, test_df_proc, 
-                 label_columns = None, scaler = None):
-        self.train_df = train_df_proc
-        self.val_df = val_df_proc
-        self.test_df = test_df_proc
-        self.scaler = scaler
+# class DataWindow():
+#     def __init__(self, 
+#                  input_width, label_width, shift, 
+#                  train_df_proc, val_df_proc, test_df_proc, 
+#                  label_columns = None, scaler = None):
+#         self.train_df = train_df_proc
+#         self.val_df = val_df_proc
+#         self.test_df = test_df_proc
+#         self.scaler = scaler
 
-        self.label_columns = label_columns
-        if label_columns is not None:
-            self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
-        self.column_indices = {name: i for i, name in enumerate(train_df_proc.columns)}
+#         self.label_columns = label_columns
+#         if label_columns is not None:
+#             self.label_columns_indices = {name: i for i, name in enumerate(label_columns)}
+#         self.column_indices = {name: i for i, name in enumerate(train_df_proc.columns)}
 
-        self.input_width = input_width
-        self.label_width = label_width
-        self.shift = shift
+#         self.input_width = input_width
+#         self.label_width = label_width
+#         self.shift = shift
 
-        self.total_window_size = input_width + shift
-        self.input_slice = slice(0, input_width)
-        self.input_indices = np.arange(self.total_window_size)[self.input_slice]
-        self.label_start = self.total_window_size - self.label_width
-        self.labels_slice = slice(self.label_start, None)
-        self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
+#         self.total_window_size = input_width + shift
+#         self.input_slice = slice(0, input_width)
+#         self.input_indices = np.arange(self.total_window_size)[self.input_slice]
+#         self.label_start = self.total_window_size - self.label_width
+#         self.labels_slice = slice(self.label_start, None)
+#         self.label_indices = np.arange(self.total_window_size)[self.labels_slice]
 
-    def split_to_inputs_labels(self, features):
-        inputs = features[:, self.input_slice, :]
-        labels = features[:, self.labels_slice, :]
-        if self.label_columns is not None:
-            labels = tf.stack([labels[:, :, self.column_indices[name]] for name in self.label_columns], axis = -1)
-        inputs.set_shape([None, self.input_width, None])
-        labels.set_shape([None, self.label_width, None])
-        return inputs, labels
+#     def split_to_inputs_labels(self, features):
+#         inputs = features[:, self.input_slice, :]
+#         labels = features[:, self.labels_slice, :]
+#         if self.label_columns is not None:
+#             labels = tf.stack([labels[:, :, self.column_indices[name]] for name in self.label_columns], axis = -1)
+#         inputs.set_shape([None, self.input_width, None])
+#         labels.set_shape([None, self.label_width, None])
+#         return inputs, labels
 
-    def plot(self, model = None, plot_col = 'averagekwh', max_subplots = 1, loc = 'sj'):
-        inputs, labels = self.sample_batch
+#     def plot(self, model = None, plot_col = 'averagekwh', max_subplots = 1, loc = 'sj'):
+#         inputs, labels = self.sample_batch
 
-        plot_col_index = self.column_indices[plot_col]
-        max_n = min(max_subplots, len(inputs))
+#         plot_col_index = self.column_indices[plot_col]
+#         max_n = min(max_subplots, len(inputs))
 
-        # Inverse-transform inputs for plotting
-        averagekwh_index = self.column_indices[plot_col]
-        input_values_flat = inputs[:, :, averagekwh_index].numpy().flatten()
+#         # Inverse-transform inputs for plotting
+#         averagekwh_index = self.column_indices[plot_col]
+#         input_values_flat = inputs[:, :, averagekwh_index].numpy().flatten()
 
-        # Prepare for inverse transformation
-        batch_size, time_steps, _ = inputs.shape
-        n_features = self.scaler.scale_.shape[0]
+#         # Prepare for inverse transformation
+#         batch_size, time_steps, _ = inputs.shape
+#         n_features = self.scaler.scale_.shape[0]
 
-        # Full input array for inverse transformation
-        full_input_array = np.zeros((input_values_flat.shape[0], n_features))
-        full_input_array[:, averagekwh_index] = input_values_flat
+#         # Full input array for inverse transformation
+#         full_input_array = np.zeros((input_values_flat.shape[0], n_features))
+#         full_input_array[:, averagekwh_index] = input_values_flat
 
-        # Inverse scale
-        original_inputs_flat = self.scaler.inverse_transform(full_input_array)[:, averagekwh_index]
-        original_inputs = original_inputs_flat.reshape(batch_size, time_steps, 1)
+#         # Inverse scale
+#         original_inputs_flat = self.scaler.inverse_transform(full_input_array)[:, averagekwh_index]
+#         original_inputs = original_inputs_flat.reshape(batch_size, time_steps, 1)
 
-        # Inverse transform labels similarly
-        original_labels = inverse_transform_predictions(labels.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
+#         # Inverse transform labels similarly
+#         original_labels = inverse_transform_predictions(labels.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
 
-        plot_title = 'San Jose' if loc == 'sj' else 'San Francisco'
+#         plot_title = 'San Jose' if loc == 'sj' else 'San Francisco'
 
-        fig = go.Figure()
+#         fig = go.Figure()
 
-        for n in range(max_n):
-            # Add inputs line plot
-            fig.add_trace(go.Scatter(
-                x=self.input_indices,
-                y=original_inputs[n, :, plot_col_index],
-                mode='lines+markers',
-                name='Inputs',
-                line=dict(color='blue'),
-                marker=dict(symbol='circle')
-            ))
+#         for n in range(max_n):
+#             # Add inputs line plot
+#             fig.add_trace(go.Scatter(
+#                 x=self.input_indices,
+#                 y=original_inputs[n, :, plot_col_index],
+#                 mode='lines+markers',
+#                 name='Inputs',
+#                 line=dict(color='blue'),
+#                 marker=dict(symbol='circle')
+#             ))
 
-            # Determine label column index for scatter plots
-            label_col_index = self.label_columns_indices.get(plot_col, plot_col_index)
+#             # Determine label column index for scatter plots
+#             label_col_index = self.label_columns_indices.get(plot_col, plot_col_index)
 
-            # Add original labels as scatter plot
-            fig.add_trace(go.Scatter(
-                x=self.label_indices,
-                y=original_labels[n, :, label_col_index],
-                mode='markers',
-                name='Labels',
-                marker=dict(symbol='square', color='green', size=8, line=dict(color='black', width=1))
-            ))
+#             # Add original labels as scatter plot
+#             fig.add_trace(go.Scatter(
+#                 x=self.label_indices,
+#                 y=original_labels[n, :, label_col_index],
+#                 mode='markers',
+#                 name='Labels',
+#                 marker=dict(symbol='square', color='green', size=8, line=dict(color='black', width=1))
+#             ))
 
-            # If model is provided, generate predictions and plot them
-            if model is not None:
-                predictions = model(inputs)
-                original_predictions = inverse_transform_predictions(predictions.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
+#             # If model is provided, generate predictions and plot them
+#             if model is not None:
+#                 predictions = model(inputs)
+#                 original_predictions = inverse_transform_predictions(predictions.numpy(), self.scaler).reshape(batch_size, time_steps, 1)
 
-                fig.add_trace(go.Scatter(
-                    x=self.label_indices,
-                    y=original_predictions[n, :, label_col_index],
-                    mode='markers',
-                    name='Predictions',
-                    marker=dict(symbol='x', color='red', size=8, line=dict(color='black', width=1))
-                ))
+#                 fig.add_trace(go.Scatter(
+#                     x=self.label_indices,
+#                     y=original_predictions[n, :, label_col_index],
+#                     mode='markers',
+#                     name='Predictions',
+#                     marker=dict(symbol='x', color='red', size=8, line=dict(color='black', width=1))
+#                 ))
 
-        fig.update_layout(
-            title = f'LSTM Predictions for {plot_title}',
-            xaxis_title = 'Time Steps (Months)',
-            yaxis_title = 'Average Energy Usage (kWh)',
-            legend_title="Legend",
-            # legend = dict(x = 0.8, y = 1.3),
-            height=500
-        )
+#         fig.update_layout(
+#             title = f'LSTM Predictions for {plot_title}',
+#             xaxis_title = 'Time Steps (Months)',
+#             yaxis_title = 'Average Energy Usage (kWh)',
+#             legend_title="Legend",
+#             # legend = dict(x = 0.8, y = 1.3),
+#             height=500
+#         )
 
-        return fig
+#         return fig
 
-    def make_dataset(self, data):
-        data = np.array(data, dtype = np.float32)
-        ds = tf.keras.preprocessing.timeseries_dataset_from_array(
-            data = data,
-            targets = None,
-            sequence_length = self.total_window_size,
-            sequence_stride = 1,
-            shuffle = True,
-            batch_size = 32
-        )
-        ds = ds.map(self.split_to_inputs_labels)
-        return ds
+#     def make_dataset(self, data):
+#         data = np.array(data, dtype = np.float32)
+#         ds = tf.keras.preprocessing.timeseries_dataset_from_array(
+#             data = data,
+#             targets = None,
+#             sequence_length = self.total_window_size,
+#             sequence_stride = 1,
+#             shuffle = True,
+#             batch_size = 32
+#         )
+#         ds = ds.map(self.split_to_inputs_labels)
+#         return ds
 
-    @property
-    def train(self):
-        return self.make_dataset(self.train_df)
+#     @property
+#     def train(self):
+#         return self.make_dataset(self.train_df)
 
-    @property
-    def val(self):
-        return self.make_dataset(self.val_df)
+#     @property
+#     def val(self):
+#         return self.make_dataset(self.val_df)
 
-    @property
-    def test(self):
-        return self.make_dataset(self.test_df)
+#     @property
+#     def test(self):
+#         return self.make_dataset(self.test_df)
 
-    @property
-    def sample_batch(self):
-        result = getattr(self, '_sample_batch', None)
-        if result is None:
-            result = next(iter(self.train))
-            self._sample_batch = result
-        return result
+#     @property
+#     def sample_batch(self):
+#         result = getattr(self, '_sample_batch', None)
+#         if result is None:
+#             result = next(iter(self.train))
+#             self._sample_batch = result
+#         return result
     
 def compile_and_fit(model, window, patience = 10, max_epochs = 100):
     early_stopping = EarlyStopping(monitor = 'val_loss',
@@ -729,98 +729,98 @@ def inverse_transform_categorical(encoded_data, encoder, cat_columns):
 
     return pd.DataFrame(original_data, columns=cat_columns)
 
-# LSTM Single-Step Predictions on past data
-def pred_lstm_single_step(loc, file_specifier, shift):
-    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_single_step_{file_specifier}.joblib'
+# # LSTM Single-Step Predictions on past data
+# def pred_lstm_single_step(loc, file_specifier, shift):
+#     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_single_step_{file_specifier}.joblib'
 
-    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
+#     train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
 
-    # Initialize data windows
-    wide_window = DataWindow(
-        input_width = 12, label_width = 12, shift = shift,
-        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
-        label_columns = ['averagekwh'],
-        scaler = scaler
-    )
+#     # Initialize data windows
+#     wide_window = DataWindow(
+#         input_width = 12, label_width = 12, shift = shift,
+#         train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
+#         label_columns = ['averagekwh'],
+#         scaler = scaler
+#     )
 
-    # Build and train the LSTM model
-    lstm_model = Sequential([
-        LSTM(32, return_sequences = True),
-        Dense(units=1)
-    ])
+#     # Build and train the LSTM model
+#     lstm_model = Sequential([
+#         LSTM(32, return_sequences = True),
+#         Dense(units=1)
+#     ])
 
-    history = compile_and_fit(lstm_model, wide_window)
+#     history = compile_and_fit(lstm_model, wide_window)
 
-    # Gather predictions
-    inputs, labels = wide_window.sample_batch
-    predictions = lstm_model(inputs)
+#     # Gather predictions
+#     inputs, labels = wide_window.sample_batch
+#     predictions = lstm_model(inputs)
     
-    # Get the plot figure
-    fig = wide_window.plot(model = lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
+#     # Get the plot figure
+#     fig = wide_window.plot(model = lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
 
-    res = {
-        'train_score': lstm_model.evaluate(wide_window.train, verbose = 0),
-        'val_score': lstm_model.evaluate(wide_window.val, verbose = 0),
-        'test_score': lstm_model.evaluate(wide_window.test, verbose = 0),
-        'inputs': inputs.numpy(),
-        'labels': labels.numpy(),
-        'predictions': predictions.numpy(),
-        'scaler': scaler,
-        'encoder': encoder,
-        'fig': fig,
-    }
+#     res = {
+#         'train_score': lstm_model.evaluate(wide_window.train, verbose = 0),
+#         'val_score': lstm_model.evaluate(wide_window.val, verbose = 0),
+#         'test_score': lstm_model.evaluate(wide_window.test, verbose = 0),
+#         'inputs': inputs.numpy(),
+#         'labels': labels.numpy(),
+#         'predictions': predictions.numpy(),
+#         'scaler': scaler,
+#         'encoder': encoder,
+#         'fig': fig,
+#     }
 
-    if not os.path.exists(joblib_filename_lstm_res):
-        dump(res, joblib_filename_lstm_res)
+#     if not os.path.exists(joblib_filename_lstm_res):
+#         dump(res, joblib_filename_lstm_res)
 
-    return res
+#     return res
 
-# LSTM Multi-Step Predictions on past data
-def pred_lstm_multi_step(loc, file_specifier, shift):
-    joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_multi_step_{file_specifier}.joblib'
+# # LSTM Multi-Step Predictions on past data
+# def pred_lstm_multi_step(loc, file_specifier, shift):
+#     joblib_filename_lstm_res = f'joblib_files/lstm/{loc}_lstm_multi_step_{file_specifier}.joblib'
 
-    train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
+#     train_df_processed, val_df_processed, test_df_processed, train_df, val_df, test_df, scaler, encoder = lstm_data_processing(loc)
 
-    # Initialize data windows
-    multi_window = DataWindow(
-        input_width = 12, label_width = 12, shift = shift,
-        train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
-        label_columns = ['averagekwh'],
-        scaler = scaler
-    )
-    # Build the LSTM model
-    ms_lstm_model = Sequential([
-        LSTM(32, return_sequences = True),
-        Dense(units = 1, kernel_initializer = tf.initializers.zeros),
-    ])
+#     # Initialize data windows
+#     multi_window = DataWindow(
+#         input_width = 12, label_width = 12, shift = shift,
+#         train_df_proc = train_df_processed, val_df_proc = val_df_processed, test_df_proc = test_df_processed,
+#         label_columns = ['averagekwh'],
+#         scaler = scaler
+#     )
+#     # Build the LSTM model
+#     ms_lstm_model = Sequential([
+#         LSTM(32, return_sequences = True),
+#         Dense(units = 1, kernel_initializer = tf.initializers.zeros),
+#     ])
 
-    # Compile and fit the model
-    history = compile_and_fit(ms_lstm_model, multi_window)
+#     # Compile and fit the model
+#     history = compile_and_fit(ms_lstm_model, multi_window)
 
-    # Gather data for predictions
-    inputs, labels = multi_window.sample_batch
-    predictions = ms_lstm_model(inputs)
+#     # Gather data for predictions
+#     inputs, labels = multi_window.sample_batch
+#     predictions = ms_lstm_model(inputs)
 
-    # Get the plot figure
-    fig = multi_window.plot(model = ms_lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
+#     # Get the plot figure
+#     fig = multi_window.plot(model = ms_lstm_model, plot_col = 'averagekwh', max_subplots = 1, loc = loc)
 
-    # Return model performance and predictions for further processing
-    res = {
-        'train_score': ms_lstm_model.evaluate(multi_window.train, verbose = 0),
-        'val_score': ms_lstm_model.evaluate(multi_window.val, verbose = 0),
-        'test_score': ms_lstm_model.evaluate(multi_window.test, verbose = 0),
-        'inputs': inputs.numpy(),
-        'labels': labels.numpy(),
-        'predictions': predictions.numpy(),
-        'scaler': scaler,
-        'encoder': encoder,
-        'fig': fig,
-    }
+#     # Return model performance and predictions for further processing
+#     res = {
+#         'train_score': ms_lstm_model.evaluate(multi_window.train, verbose = 0),
+#         'val_score': ms_lstm_model.evaluate(multi_window.val, verbose = 0),
+#         'test_score': ms_lstm_model.evaluate(multi_window.test, verbose = 0),
+#         'inputs': inputs.numpy(),
+#         'labels': labels.numpy(),
+#         'predictions': predictions.numpy(),
+#         'scaler': scaler,
+#         'encoder': encoder,
+#         'fig': fig,
+#     }
 
-    if not os.path.exists(joblib_filename_lstm_res):
-        dump(res, joblib_filename_lstm_res)
+#     if not os.path.exists(joblib_filename_lstm_res):
+#         dump(res, joblib_filename_lstm_res)
 
-    return res
+#     return res
 
 
 # Make predictions on user input
